@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="{% static 'shared.css' %}" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geologica&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100&display=swap" rel="stylesheet">
+</head>
+
+<nav>
+    <div class="header">
+        <ul class="header-items">
+            <li class="header-item" id="header-logo">
+                <span>courses!</span>
+            </li>
+            <li class="header-item">
+                <span>Категории</span>
+            </li>
+            <li class="header-item" id="header-search">
+                <div class="header-search-field">
+                    <form action="/">
+                        <input type="text" id="header-search-input">
+                    </form>
+                </div>
+            </li>
+            <li class="header-item">
+                <span>Стать преподавателем</span>
+            </li>
+            <li class="header-item">
+                <span>Вход</span>
+            </li>
+            <li class="header-item">
+                <span>Регистрация</span>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>
