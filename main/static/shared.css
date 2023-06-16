@@ -1,3 +1,7 @@
+:root {
+  --main-primary-color: #028ec9;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -23,7 +27,7 @@ nav .header {
 
 nav .header #header-logo {
     font-size: 2rem;
-    color: #028ec9;
+    color: var(--main-primary-color);
 }
 
 nav .header ul.header-items {
