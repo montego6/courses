@@ -1,0 +1,20 @@
+.form-wrapper {
+    display: grid;
+    row-gap: 10px;
+}
+
+.form-field {
+    display: grid;
+    grid-template-columns: 200px 400px;
+    row-gap: 120px;
+    align-items: center;
+}
+
+.form-field-input input {
+    height: 2rem;
+    width: 32rem;
+}
+
+.errorlist {
+    list-style: none;
+}

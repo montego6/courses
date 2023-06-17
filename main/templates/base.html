@@ -5,10 +5,12 @@
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     <link href="{% static 'shared.css' %}" rel="stylesheet">
+    <link href="{% static 'forms.css' %}" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geologica&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100&display=swap" rel="stylesheet">
+    <script src="{% static 'script.js' %}" defer></script>
 </head>
 
 <nav>
@@ -17,8 +19,10 @@
             <li class="header-item" id="header-logo">
                 <span>courses!</span>
             </li>
-            <li class="header-item">
-                <span>Категории</span>
+            <li class="header-item" id="header-categories">
+                <span id="header-categories-link">Категории</span>
+                <div id="header-popover-categories" class="invisible">
+                </div>
             </li>
             <li class="header-item" id="header-search">
                 <div class="header-search-field">
@@ -31,10 +35,14 @@
                 <span>Стать преподавателем</span>
             </li>
             <li class="header-item">
+                {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Выйти</a>
+                {% else %}
                 <span>Вход</span>
+                {% endif %}
             </li>
             <li class="header-item">
-                <span>Регистрация</span>
+                <a href="{% url 'registration' %}">Регистрация</a>
             </li>
         </ul>
     </div>

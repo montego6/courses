@@ -60,3 +60,24 @@ nav div.header-search-field input#header-search-input {
     font-size: inherit;
 }
 
+#header-categories {
+    position: relative;
+}
+
+#header-popover-categories {
+    height: 300px;
+    width: 300px;
+    position: absolute;
+    top: 60px;
+    background-color: white;
+    border: 1px solid rgb(216, 216, 216);
+    box-shadow: 4px 4px 12px rgba(0.1, 0.1, 0.1, 0.2)
+}
+
+.invisible {
+    display: none;
+}
+
+.main-body {
+    margin: 50px 200px;
+}
