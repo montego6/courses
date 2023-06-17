@@ -1,7 +1,6 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
 from django.contrib.auth.models import User
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import password_validation
 
 
@@ -29,9 +28,15 @@ class UserRegistrationForm(UserCreationForm):
             'email': 'Электронная почта',
         }
 
-
-    # def save(self, commit=True):
-    #     user = super().save(commit=False)
-    #     if commit:
-    #         user.save()
-    #     return user
+class UserLoginForm(AuthenticationForm):
+    username = UsernameField(
+        label='Имя пользователя',
+        widget=forms.TextInput(attrs={'autofocus': True})
+    )
+    
+    password = forms.CharField(
+    label="Введите пароль",
+    strip=False,
+    widget=forms.PasswordInput,
+    help_text=password_validation.password_validators_help_text_html(),
+)    
