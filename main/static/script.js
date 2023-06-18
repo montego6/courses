@@ -37,7 +37,7 @@ function showSubMenu(menu, element, event) {
 
 function hideMenu (event) {
     menuCoords = this.getBoundingClientRect()
-    if (!(event.clientX + 5 >= menuCoords.right)) {
+    if (!(event.clientX + 3 >= menuCoords.right)) {
         this.classList.add('invisible')
         getChildMenu(this).classList.add('invisible')
     }

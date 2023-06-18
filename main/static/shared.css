@@ -18,19 +18,19 @@ nav {
     font-size: 1rem;
 }
 
-nav .header {
+.header {
     background-color: white;
     margin: 0;
     padding: 20px;
     box-shadow: 0px 4px 4px rgba(0.1, 0.1, 0.1, 0.2)
 }
 
-nav .header #header-logo {
+#header-logo {
     font-size: 2rem;
     color: var(--main-primary-color);
 }
 
-nav .header ul.header-items {
+.header-items {
     list-style: none;
     display: flex;
     align-items: center;
@@ -38,11 +38,12 @@ nav .header ul.header-items {
     column-gap: 12px;
 }
 
-nav .header li#header-search, nav div.header-search-field form {
+#header-search,
+.header-search-field form {
     flex-grow: 1;
 }
 
-nav div.header-search-field {
+.header-search-field {
     background-color: #f2f2f2;
     border: 1px black solid;
     border-radius: 6px;
@@ -51,7 +52,7 @@ nav div.header-search-field {
     align-items: center;
 }
 
-nav div.header-search-field input#header-search-input {
+input#header-search-input {
     border: 0;
     background-color: transparent;
     width: 100%;
@@ -64,7 +65,9 @@ nav div.header-search-field input#header-search-input {
     position: relative;
 }
 
-#header-popover-categories {
+#header-popover-categories,
+#header-popover-subcategories,
+#header-popover-subjects {
     height: 300px;
     width: 240px;
     position: absolute;
@@ -75,25 +78,11 @@ nav div.header-search-field input#header-search-input {
 }
 
 #header-popover-subcategories {
-    height: 300px;
-    width: 240px;
-    position: absolute;
-    top: 60px;
     left: 240px;
-    background-color: white;
-    border: 1px solid rgb(216, 216, 216);
-    box-shadow: 4px 4px 12px rgba(0.1, 0.1, 0.1, 0.2)
 }
 
 #header-popover-subjects {
-    height: 300px;
-    width: 240px;
-    position: absolute;
-    top: 60px;
     left: 480px;
-    background-color: white;
-    border: 1px solid rgb(216, 216, 216);
-    box-shadow: 4px 4px 12px rgba(0.1, 0.1, 0.1, 0.2)
 }
 
 .invisible {
