@@ -40,6 +40,10 @@ function hideMenu (event) {
     if (!(event.clientX + 3 >= menuCoords.right)) {
         this.classList.add('invisible')
         getChildMenu(this).classList.add('invisible')
+    } else if (this === popoverSubjects) {
+        popoverMenu.classList.add('invisible')
+        popoverSubMenu.classList.add('invisible')
+        popoverSubjects.classList.add('invisible')
     }
 }
 

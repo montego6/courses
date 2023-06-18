@@ -1,5 +1,6 @@
 :root {
   --main-primary-color: #028ec9;
+  --main-cat-width: 200px;
 }
 
 * {
@@ -69,7 +70,7 @@ input#header-search-input {
 #header-popover-subcategories,
 #header-popover-subjects {
     height: 300px;
-    width: 240px;
+    width: var(--main-cat-width);
     position: absolute;
     top: 60px;
     background-color: white;
@@ -78,11 +79,11 @@ input#header-search-input {
 }
 
 #header-popover-subcategories {
-    left: 240px;
+    left: var(--main-cat-width);
 }
 
 #header-popover-subjects {
-    left: 480px;
+    left: calc(var(--main-cat-width)*2);
 }
 
 .invisible {
