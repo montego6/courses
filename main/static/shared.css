@@ -66,9 +66,31 @@ nav div.header-search-field input#header-search-input {
 
 #header-popover-categories {
     height: 300px;
-    width: 300px;
+    width: 240px;
     position: absolute;
     top: 60px;
+    background-color: white;
+    border: 1px solid rgb(216, 216, 216);
+    box-shadow: 4px 4px 12px rgba(0.1, 0.1, 0.1, 0.2)
+}
+
+#header-popover-subcategories {
+    height: 300px;
+    width: 240px;
+    position: absolute;
+    top: 60px;
+    left: 240px;
+    background-color: white;
+    border: 1px solid rgb(216, 216, 216);
+    box-shadow: 4px 4px 12px rgba(0.1, 0.1, 0.1, 0.2)
+}
+
+#header-popover-subjects {
+    height: 300px;
+    width: 240px;
+    position: absolute;
+    top: 60px;
+    left: 480px;
     background-color: white;
     border: 1px solid rgb(216, 216, 216);
     box-shadow: 4px 4px 12px rgba(0.1, 0.1, 0.1, 0.2)

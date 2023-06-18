@@ -1,5 +1,47 @@
 categoriesLink = document.getElementById('header-categories-link')
 popoverMenu = document.getElementById('header-popover-categories')
+popoverSubMenu = document.getElementById('header-popover-subcategories')
+popoverSubjects = document.getElementById('header-popover-subjects')
+popoverTemplate = document.getElementById('header-popover-template')
+let categories
+
+fetch('http://localhost:8000/api/categories/').then(response => response.json())
+.then(data => {
+    categories = data
+    createMenuElements(categories, popoverMenu)
+})
+
+getChildMenu = (menu) => (menu === popoverMenu ? popoverSubMenu : popoverSubjects) 
+getChildElements = (menu, element) => (menu === popoverMenu ? element.subcategories: element.subjects)
+
+function createMenuElements(catList, menu) {
+    catList.forEach(catElement => {
+        const clone = popoverTemplate.content.cloneNode(true)
+        clone.querySelector('a').textContent = catElement.name
+        const divEl = clone.querySelector('div')
+        if (!(menu === popoverSubjects)) 
+        {
+            divEl.addEventListener('mouseenter', showSubMenu.bind(divEl, menu, catElement))
+        }
+        menu.append(clone)
+    });
+}
+
+function showSubMenu(menu, element, event) {
+    const childMenu = getChildMenu(menu)
+    childMenu.innerHTML = ''
+    childMenu.classList.remove('invisible')
+    createMenuElements(getChildElements(menu, element), childMenu)
+    childMenu.addEventListener('mouseleave', hideMenu.bind(childMenu))
+}
+
+function hideMenu (event) {
+    menuCoords = this.getBoundingClientRect()
+    if (!(event.clientX + 5 >= menuCoords.right)) {
+        this.classList.add('invisible')
+        getChildMenu(this).classList.add('invisible')
+    }
+}
 
 categoriesLink.addEventListener('mouseenter', (event) => {popoverMenu.classList.remove('invisible')})
 categoriesLink.addEventListener('mouseleave', (event) => 
@@ -10,4 +52,4 @@ categoriesLink.addEventListener('mouseleave', (event) =>
     }
 }
 )
-popoverMenu.addEventListener('mouseleave', (event) => {popoverMenu.classList.add('invisible')})
+popoverMenu.addEventListener('mouseleave', hideMenu.bind(popoverMenu))

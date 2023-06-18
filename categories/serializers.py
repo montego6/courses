@@ -16,14 +16,14 @@ class SubCategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SubCategoryNotNestedSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SubCategory
-        fields = ['id', 'name']
+# class SubCategoryNotNestedSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SubCategory
+#         fields = ['id', 'name']
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    subcategories = SubCategoryNotNestedSerializer(many=True, read_only=True)
+    subcategories = SubCategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Category
