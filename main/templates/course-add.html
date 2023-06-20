@@ -7,11 +7,34 @@
 {% block content %}
 <div class="main-body">
 	<h1>Форма</h1>
-	<form name="course-add" method="POST" enctype="multipart/form-data">
-		{% csrf_token %}
-        <input name="name" type="text">  
-        <input name="parent_subcategory" type="text"> 
-		<button class="form-button-submit" type="submit">Отправить</button>
-	</form>
+    <div id="course-add-first-step">
+        <form name="course-add" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-wrapper">
+                <input type="file" name="cover">
+                <input type="text" name="name">
+                <input type="text" name="short_description">
+                <input type="text" name="full_description">
+                <input type="number" name="price">
+                <input type="text" name="language">
+            </div>
+            <button class="form-button-submit" type="submit">Следующий шаг</button>
+        </form>
+    </div>
+    <div id="course-add-second-step" class="invisible">
+        <div id="what-will-learn">
+            <button id="btn-what-will-learn">Добавить what will learn</button>
+                <template id="template-what-will-learn">
+                    <input type="text" class="what-will-learn-option">
+                </template>
+        </div>
+        <div id="requirements">
+            <button id="btn-requirements">Добавить requirements</button>
+                <template id="template-requirements">
+                    <input type="text" class="requirements-option">
+                </template>
+        </div>
+    <button id="course-confirm-btn">Confirm</button>
+    </div>
 </div>
 {% endblock %}
