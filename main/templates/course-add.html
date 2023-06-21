@@ -11,30 +11,50 @@
         <form name="course-add" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-wrapper">
-                <input type="file" name="cover">
-                <input type="text" name="name">
-                <input type="text" name="short_description">
-                <input type="text" name="full_description">
-                <input type="number" name="price">
-                <input type="text" name="language">
+                <div class="form-field">
+                    <label for="cover">Обложка курса</label>
+                    <input type="file" name="cover">
+                </div>
+                <div class="form-field">
+                    <label for="name">Название курса</label>
+                    <input type="text" name="name" placeholder="Введите название...">
+                </div>
+                <div class="form-field">
+                    <label for="short_description">Короткое описание</label>
+                    <input type="text" name="short_description" placeholder="Введите краткое описание курса...">
+                </div>
+                <div class="form-field">
+                    <label for="full_description">Подробное описание</label>
+                    <!-- <input type="text" id="form-full-description" name="full_description" placeholder="Введите подробное описание курса..."> -->
+                    <textarea name="full_description" cols="50" rows="8"></textarea>
+                </div>  
+                <div class="form-field-half">
+                    <label for="price">Стоимость</label>
+                    <label for="language">Язык</label>
+                </div>
+                <div class="form-field-half">
+                    <input type="number" name="price" placeholder="Введите стоимость курса...">
+                    <input type="text" name="language" placeholder="Введите язык курса...">
+                </div>
             </div>
-            <button class="form-button-submit" type="submit">Следующий шаг</button>
+            <button class="form-button" type="submit">Следующий шаг</button>
         </form>
     </div>
     <div id="course-add-second-step" class="invisible">
         <div id="what-will-learn">
-            <button id="btn-what-will-learn">Добавить what will learn</button>
+            <button class="form-button" id="btn-what-will-learn">Добавить what will learn</button>
                 <template id="template-what-will-learn">
                     <input type="text" class="what-will-learn-option">
                 </template>
         </div>
         <div id="requirements">
-            <button id="btn-requirements">Добавить requirements</button>
+            <button class="form-button" id="btn-requirements">Добавить requirements</button>
                 <template id="template-requirements">
                     <input type="text" class="requirements-option">
                 </template>
         </div>
-    <button id="course-confirm-btn">Confirm</button>
+    <button class="form-button" id="course-backwards-btn">Назад</button>
+    <button class="form-button" id="course-confirm-btn">Подтвердить</button>
     </div>
 </div>
 {% endblock %}

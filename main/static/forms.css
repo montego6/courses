@@ -5,14 +5,62 @@
 
 .form-field {
     display: grid;
-    grid-template-columns: 200px 400px;
-    row-gap: 120px;
+    grid-template-columns: 0.5fr 2fr 1fr;
     align-items: center;
+}
+
+.form-field-half {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.5fr;
+    align-items: center;
+}
+
+.form-wrapper input,
+.form-field textarea {
+    height: 2rem;
+    width: 40rem;
+    padding: 0px 6px;
+    border: 1px solid var(--forms-border-color);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 100;
+    color: var(--forms-text-color)
+}
+
+.form-field-half input {
+    width: 18rem;
+}
+
+.form-field textarea {
+    height: 12rem;
+    resize: vertical;
+}
+
+
+.form-field input::placeholder {
+    color: var(--forms-text-color);
+    opacity: 0.4;
+}
+
+.form-wrapper input:focus, .form-field textarea:focus {
+    border-color: var(--forms-border-color);
+    outline: 0;
+    box-shadow: 0 0 4px 0.1rem var(--forms-focus-shadow); 
 }
 
 .form-field-input input {
     height: 2rem;
     width: 32rem;
+}
+
+.form-button {
+    background-color: white;
+    border: 1px solid black;
+    padding: 8px;
+    margin: 20px 0px;
+    font-family: inherit;
+    font-size: 1rem;
 }
 
 .errorlist {

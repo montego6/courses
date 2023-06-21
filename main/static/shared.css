@@ -1,6 +1,9 @@
 :root {
-  --main-primary-color: #028ec9;
+  --main-primary-color: #028dc9;
   --main-cat-width: 200px;
+  --forms-border-color: rgb(201, 201, 201);
+  --forms-text-color: #212529;
+  --forms-focus-shadow: #028dc97e;
 }
 
 * {

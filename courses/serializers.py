@@ -5,7 +5,8 @@ from .models import Course
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        exclude = ['author', 'students', 'date_created', 'date_updated']
+        fields = '__all__'
+        read_only_fields = ['author', 'students', 'date_created', 'date_updated']
 
     def create(self, validated_data):
         user = None

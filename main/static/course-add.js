@@ -5,6 +5,7 @@ const courseAddSecondStep = document.getElementById('course-add-second-step')
 const whatWillLearnBtn = document.getElementById('btn-what-will-learn')
 const requirementsBtn = document.getElementById('btn-requirements')
 const confirmBtn = document.getElementById('course-confirm-btn')
+const backwardsBtn = document.getElementById('course-backwards-btn')
 
 whatWillLearnBtn.addEventListener('click', (event) => {
     const clone = document.getElementById('template-what-will-learn').content.cloneNode(true)
@@ -14,6 +15,11 @@ whatWillLearnBtn.addEventListener('click', (event) => {
 requirementsBtn.addEventListener('click', (event) => {
     const clone = document.getElementById('template-requirements').content.cloneNode(true)
     document.getElementById('requirements').append(clone)
+})
+
+backwardsBtn.addEventListener('click', (event) => {
+    courseAddFirstStep.classList.remove('invisible')
+    courseAddSecondStep.classList.add('invisible')
 })
 
 // function getCookie(name) {
@@ -40,7 +46,7 @@ confirmBtn.addEventListener('click', (event) => {
     }).then(response => response.json()).then(data => console.log(data))
 
 })
-
+    
 form.addEventListener('submit', (event) => 
 {
     formData = new FormData(form)
