@@ -16,9 +16,29 @@ requirementsBtn.addEventListener('click', (event) => {
     document.getElementById('requirements').append(clone)
 })
 
+// function getCookie(name) {
+//     const value = `; ${document.cookie}`;
+//     const parts = value.split(`; ${name}=`);
+//     if (parts.length === 2) return parts.pop().split(';').shift();
+//   }
+
 confirmBtn.addEventListener('click', (event) => {
-    learnOptions = document.querySelectorAll('what-will-learn-option')
-    const learnOptionsList = 
+    learnOptions = document.querySelectorAll('.what-will-learn-option')
+    const learnList = Array.from(learnOptions, option => option.value)
+    requirementsOptions = document.querySelectorAll('.requirements-option')
+    const requirementsList = Array.from(requirementsOptions, option => option.value)
+    const options = {option: "value"}
+    formData.append('what_will_learn', learnList)
+    formData.append('requirements', requirementsList)
+    formData.append('options', JSON.stringify(options))
+    fetch('http://127.0.0.1:8000/api/courses/', {
+        // headers: {
+        //     "Authorization": "Session " + getCookie('sessionid'),
+        // },
+        method: 'post',
+        body: formData
+    }).then(response => response.json()).then(data => console.log(data))
+
 })
 
 form.addEventListener('submit', (event) => 
@@ -30,5 +50,8 @@ form.addEventListener('submit', (event) =>
     // }).then(response => response.json()).then(data => console.log(data))
     courseAddFirstStep.classList.add('invisible')
     courseAddSecondStep.classList.remove('invisible')
+    fetch('http://127.0.0.1:8000/api/user/', {
+        credentials: "include"
+      }).then(response => response.json()).then(data => console.log(data))
     event.preventDefault()
 })
