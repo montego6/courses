@@ -22,12 +22,6 @@ backwardsBtn.addEventListener('click', (event) => {
     courseAddSecondStep.classList.add('invisible')
 })
 
-// function getCookie(name) {
-//     const value = `; ${document.cookie}`;
-//     const parts = value.split(`; ${name}=`);
-//     if (parts.length === 2) return parts.pop().split(';').shift();
-//   }
-
 confirmBtn.addEventListener('click', (event) => {
     learnOptions = document.querySelectorAll('.what-will-learn-option')
     const learnList = Array.from(learnOptions, option => option.value)
@@ -38,9 +32,6 @@ confirmBtn.addEventListener('click', (event) => {
     formData.append('requirements', requirementsList)
     formData.append('options', JSON.stringify(options))
     fetch('http://127.0.0.1:8000/api/courses/', {
-        // headers: {
-        //     "Authorization": "Session " + getCookie('sessionid'),
-        // },
         method: 'post',
         body: formData
     }).then(response => response.json()).then(data => console.log(data))
@@ -50,14 +41,7 @@ confirmBtn.addEventListener('click', (event) => {
 form.addEventListener('submit', (event) => 
 {
     formData = new FormData(form)
-    // fetch('http://localhost:8000/api/subjects/', {
-    //     method: 'post',
-    //     body: formData
-    // }).then(response => response.json()).then(data => console.log(data))
     courseAddFirstStep.classList.add('invisible')
     courseAddSecondStep.classList.remove('invisible')
-    fetch('http://127.0.0.1:8000/api/user/', {
-        credentials: "include"
-      }).then(response => response.json()).then(data => console.log(data))
     event.preventDefault()
 })

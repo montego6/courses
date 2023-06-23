@@ -20,3 +20,16 @@ class Course(models.Model):
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     is_published = models.BooleanField(default=False)
+
+
+class Section(models.Model):
+    name = models.CharField(max_length=80)
+    description = models.CharField(max_length=200, null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='sections')
+
+
+class Lesson(models.Model):
+    name = models.CharField(max_length=80)
+    description = models.CharField(max_length=200, null=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons')
+    file = models.FileField(upload_to='media/courses/lessons/')
