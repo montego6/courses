@@ -2,10 +2,43 @@
 {% load static %}
 {% block title %}Войти на сайт{% endblock %}
 {% block imports %}
-<script src="{% static 'course-add.js' %}" defer></script>
+<link href="{% static 'course-single.css' %}" rel="stylesheet">
+<script src="{% static 'course-single.js' %}" defer></script>
 {% endblock %}  
 {% block content %}
 <div class="main-body">
-<p>{{ id }}</p>
+    <p id="course-id" class="invisible">{{ id }}</p>
+    <p id="course-name"></p>
+    <div id="course-sections">
+        <template id="template-course-section">
+            <div class="course-section">
+                <div class="course-section-header">
+                    <span class="section-name"></span>
+                    <span>Развернуть</span>
+                    <span class="section-description"></span>
+                </div>
+                <div class="course-section-body">
+                    <button class="form-button">Добавить урок</button>
+                </div>
+            </div>
+        </template>
+    </div>
+    <button id="btn-add-section" class="form-button">Добавить секцию</button>
+    <div class="invisible" id="section-add">
+        <form name="section-add" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-wrapper">
+                <div class="form-field">
+                    <label for="name">Название секции</label>
+                    <input type="text" name="name" placeholder="Введите название...">
+                </div>
+                <div class="form-field">
+                    <label for="description">Описание секции</label>
+                    <input type="text" name="description" placeholder="Введите описание...">
+                </div>
+            </div>
+            <button class="form-button" type="submit">Добавить секцию</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
