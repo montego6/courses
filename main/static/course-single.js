@@ -6,6 +6,7 @@ const courseId = document.getElementById('course-id').textContent
 const addSectionBtn = document.getElementById('btn-add-section')
 addSectionBtn.addEventListener('click', (event) => addSectionForm.classList.remove('invisible'))
 
+
 fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
 
 
@@ -14,10 +15,14 @@ function initializePage(data) {
     data.sections.forEach(section => {
         const clone = document.getElementById('template-course-section').content.cloneNode(true)
         clone.querySelector('span.section-name').textContent = section.name
-        clone.querySelector('span.section-description').textContent = section.description
         clone.querySelector('div.course-section').setAttribute('section-id', section.id)
+        clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
         document.getElementById('course-sections').append(clone)
     })
+}
+
+function expandSection(event) {
+    this.classList.toggle('invisible')
 }
 
 function createSection(data) {

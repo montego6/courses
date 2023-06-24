@@ -1,15 +1,47 @@
+:root {
+    --section-border: 1px solid black;
+    --section-color: rgb(213, 219, 224);
+}
+
 .course-section {
     width: 800px;
-    border: 1px solid red;
 }
 
 .course-section-header {
-    background-color: rgb(213, 219, 224);
+    background-color: var(--section-color);
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    border-top: var(--section-border);
+    border-left: var(--section-border);
+    border-right: var(--section-border);
 }
 
-.header-icon-expand {
-    width: 48px;
-    height: 48px;
+.course-section-header span:last-child {
+    margin-left: auto;
+}
+
+.course-section:last-child {
+    border-bottom: var(--section-border);
+}
+
+.course-section-body {
+    border-top: var(--section-border);
+    border-left: var(--section-border);
+    border-right: var(--section-border);
+    padding: 0px 12px;
+}
+
+.section-header-icon-expand {
+    width: 20px;
+    height: 20px;
+}
+
+.text-underline {
+    text-decoration: underline;
+    text-underline-offset: 0.4rem;
+}
+
+.text-underline:hover {
+    cursor: pointer;
 }
