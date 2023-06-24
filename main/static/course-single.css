@@ -1,4 +1,15 @@
 .course-section {
     width: 800px;
-    border: 1px solid black;
+    border: 1px solid red;
+}
+
+.course-section-header {
+    background-color: rgb(213, 219, 224);
+    display: flex;
+    flex-direction: column;
+}
+
+.header-icon-expand {
+    width: 48px;
+    height: 48px;
 }
