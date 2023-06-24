@@ -1,4 +1,7 @@
 let courseData
+
+const csrf_token = document.querySelector('#csrf-token input').value 
+console.log(csrf_token)
 const form = document.forms.namedItem('section-add')
 const addSectionForm = document.getElementById('section-add')
 const courseId = document.getElementById('course-id').textContent
@@ -17,12 +20,27 @@ function initializePage(data) {
         clone.querySelector('span.section-name').textContent = section.name
         clone.querySelector('div.course-section').setAttribute('section-id', section.id)
         clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
+        clone.querySelector('span.section-delete').addEventListener('click', deleteSection.bind(clone.querySelector('div.course-section')))
         document.getElementById('course-sections').append(clone)
     })
 }
 
 function expandSection(event) {
     this.classList.toggle('invisible')
+}
+
+function deleteSection(event) {
+    this.remove()
+    const id = this.getAttribute('section-id')
+    fetch(`http://127.0.0.1:8000/api/sections/${id}/`, {
+        method: 'delete', 
+        headers: {
+            'X-CSRFToken': csrf_token,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {console.log(data)
+    })
 }
 
 function createSection(data) {
@@ -46,4 +64,6 @@ form.addEventListener('submit', (event) =>
     })
     event.preventDefault()
 })
+
+
 
