@@ -45,3 +45,30 @@
 .text-underline:hover {
     cursor: pointer;
 }
+
+.nested-form .form-field{
+    grid-template-columns: 3fr 3fr 1fr;
+}
+
+.nested-form input {
+    width: 32rem;
+}
+
+.section-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.section-lesson {
+    display: flex;
+    align-items: center;
+    padding: 6px 0px;
+}
+
+.lesson-name {
+    padding-left: 6px;
+}
+
+.lesson-delete {
+    margin-left: auto;
+}
