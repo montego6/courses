@@ -18,24 +18,35 @@ class AdditionalFileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SectionItemRelatedField(serializers.RelatedField):
+# class SectionItemRelatedField(serializers.RelatedField):
+#     def to_representation(self, value):
+#         if isinstance(value, Lesson):
+#             serializer = LessonSerializer(value)
+#         elif isinstance(value, AdditionalFile):
+#             serializer = AdditionalFileSerializer(value)
+#         else:
+#             raise Exception('Unexpected type of section item')
+#         return serializer.data
+
+
+class SectionItemSerializer(serializers.Serializer):
     def to_representation(self, value):
-        if isinstance(value, Lesson):
-            serializer = LessonSerializer(value)
-        elif isinstance(value, AdditionalFile):
-            serializer = AdditionalFileSerializer(value)
+        item = value.content_object
+        if isinstance(item, Lesson):
+            serializer = LessonSerializer(item)
+        elif isinstance(item, AdditionalFile):
+            serializer = AdditionalFileSerializer(item)
         else:
             raise Exception('Unexpected type of section item')
         return serializer.data
 
 
+# class SectionItemSerializer(serializers.ModelSerializer):
+#     content_object = SectionItemRelatedField(read_only=True)
 
-class SectionItemSerializer(serializers.ModelSerializer):
-    content_object = SectionItemRelatedField(read_only=True)
-
-    class Meta:
-        model = SectionItem
-        fields = ['content_object']
+#     class Meta:
+#         model = SectionItem
+#         fields = ['content_object']
     
 
 class SectionSerializer(serializers.ModelSerializer):

@@ -59,16 +59,16 @@
     height: 20px;
 }
 
-.section-lesson {
+.section-item {
     display: flex;
     align-items: center;
     padding: 6px 0px;
 }
 
-.lesson-name {
+.item-name {
     padding-left: 6px;
 }
 
-.lesson-delete {
+.item-delete {
     margin-left: auto;
 }

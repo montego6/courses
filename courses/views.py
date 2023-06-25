@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Course, Section, Lesson
-from .serializers import CourseSerializer, SectionSerializer, LessonSerializer
+from .models import Course, Section, Lesson, AdditionalFile
+from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -22,6 +22,12 @@ class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
 
+
+class AdditionalFileViewSet(viewsets.ModelViewSet):
+    queryset = AdditionalFile.objects.all()
+    serializer_class = AdditionalFileSerializer
+
+    
 
 class GetUser(APIView):
     def get(self, request):

@@ -41,7 +41,7 @@ function createSection(section) {
     clone.querySelector('div.course-section').setAttribute('section-id', section.id)
     clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
     clone.querySelector('span.section-delete').addEventListener('click', deleteSection.bind(clone.querySelector('div.course-section')))
-    section.lessons.forEach(lesson => createLesson(clone.querySelector('div.course-section'), lesson))
+    section.items.forEach(item => createItem(clone.querySelector('div.course-section'), item))
     const addLessonForm = clone.querySelector('.lesson-add-form')
     clone.querySelector('.btn-lesson-add').addEventListener('click', event => addLessonForm.classList.remove('invisible'))
     const formLesson = clone.querySelector('form')
@@ -49,27 +49,29 @@ function createSection(section) {
     document.getElementById('course-sections').append(clone)
 }
 
-function createLesson(section, lesson) {
-    const lessonTemplate = document.getElementById('template-section-lesson')
+function createItem(section, item) {
+    const lessonTemplate = document.getElementById('template-section-item')
     const clone = lessonTemplate.content.cloneNode(true)
-    clone.querySelector('.lesson-name').textContent = lesson.name
-    clone.querySelector('.section-lesson').setAttribute('lesson-id', lesson.id)
-    clone.querySelector('.lesson-delete').addEventListener('click', deleteLesson.bind(clone.querySelector('.section-lesson')))
-    section.querySelector('.section-lessons').append(clone)
+    clone.querySelector('.item-name').textContent = item.name
+    clone.querySelector('.section-item').setAttribute('item-id', item.id)
+    clone.querySelector('.section-item').setAttribute('item-type', item.type)
+    clone.querySelector('svg use').setAttribute('href', `#icon-${item.type}`)
+    clone.querySelector('.item-delete').addEventListener('click', deleteItem.bind(clone.querySelector('.section-item')))
+    section.querySelector('.section-items').append(clone)
 }
 
-function deleteLesson(event) {
+function deleteItem(event) {
     this.remove()
-    const id = this.getAttribute('lesson-id')
-    fetch(`http://127.0.0.1:8000/api/lessons/${id}/`, {
+    const id = this.getAttribute('item-id')
+    const type = this.getAttribute('item-type')
+    fetch(`http://127.0.0.1:8000/api/${type}s/${id}/`, {
         method: 'delete', 
         headers: {
             'X-CSRFToken': csrf_token,
         }
     })
     .then(response => response.json())
-    .then(data => {console.log(data)
-    })
+    .then(data => {console.log(data)})
 }
 
 function postLesson(event) {
@@ -83,7 +85,7 @@ function postLesson(event) {
     }).then(response => response.json())
     .then(data => {
         if (data.id) {
-            createLesson(section, data)
+            createItem(section, data)
         }
         console.log(data)
     })

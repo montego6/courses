@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 
@@ -42,6 +42,7 @@ class Lesson(models.Model):
     description = models.CharField(max_length=200, null=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons')
     file = models.FileField(upload_to='media/courses/lessons/')
+    section_items = GenericRelation(SectionItem)
 
 
 class AdditionalFile(models.Model):
@@ -49,4 +50,5 @@ class AdditionalFile(models.Model):
     description = models.CharField(max_length=200, null=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='extra_files')
     file = models.FileField(upload_to='media/courses/extra_files/')
+    section_items = GenericRelation(SectionItem)
 
