@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -28,8 +30,23 @@ class Section(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='sections')
 
 
+class SectionItem(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='items')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id') 
+
+
 class Lesson(models.Model):
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=200, null=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons')
     file = models.FileField(upload_to='media/courses/lessons/')
+
+
+class AdditionalFile(models.Model):
+    name = models.CharField(max_length=80)
+    description = models.CharField(max_length=200, null=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='extra_files')
+    file = models.FileField(upload_to='media/courses/extra_files/')
+

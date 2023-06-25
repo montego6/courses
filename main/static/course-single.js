@@ -5,9 +5,6 @@ const courseId = document.getElementById('course-id').textContent
 const formSection = document.forms.namedItem('section-add')
 const addSectionForm = document.getElementById('section-add')
 
-
-
-
 const addSectionBtn = document.getElementById('btn-add-section')
 addSectionBtn.addEventListener('click', (event) => addSectionForm.classList.remove('invisible'))
 
