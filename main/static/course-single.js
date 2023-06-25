@@ -4,10 +4,10 @@ const courseId = document.getElementById('course-id').textContent
 
 const formSection = document.forms.namedItem('section-add')
 const addSectionForm = document.getElementById('section-add')
-
 const addSectionBtn = document.getElementById('btn-add-section')
 addSectionBtn.addEventListener('click', (event) => addSectionForm.classList.remove('invisible'))
 
+const itemTypes = ['lesson', 'extra_file']
 
 fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
 
@@ -42,10 +42,12 @@ function createSection(section) {
     clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
     clone.querySelector('span.section-delete').addEventListener('click', deleteSection.bind(clone.querySelector('div.course-section')))
     section.items.forEach(item => createItem(clone.querySelector('div.course-section'), item))
-    const addLessonForm = clone.querySelector('.lesson-add-form')
-    clone.querySelector('.btn-lesson-add').addEventListener('click', event => addLessonForm.classList.remove('invisible'))
-    const formLesson = clone.querySelector('form')
-    formLesson.addEventListener('submit', postLesson)
+    itemTypes.forEach(itemType => {
+        const addForm = clone.querySelector(`.${itemType}-add-form`)
+        clone.querySelector(`.btn-${itemType}-add`).addEventListener('click', event => addForm.classList.remove('invisible'))
+        const itemForm = clone.querySelector(`form[name=${itemType}-add]`)
+        itemForm.addEventListener('submit', postItem.bind(itemForm, itemType))
+    })
     document.getElementById('course-sections').append(clone)
 }
 
@@ -74,12 +76,12 @@ function deleteItem(event) {
     .then(data => {console.log(data)})
 }
 
-function postLesson(event) {
+function postItem(itemType, event) {
     const formData = new FormData(this)
     const section = this.closest('div.course-section')
     const sectionId = section.getAttribute('section-id')
     formData.append('section', sectionId)
-    fetch('http://127.0.0.1:8000/api/lessons/', {
+    fetch(`http://127.0.0.1:8000/api/${itemType}s/`, {
         method: 'post',
         body: formData
     }).then(response => response.json())

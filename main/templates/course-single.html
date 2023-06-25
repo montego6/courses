@@ -38,6 +38,7 @@
                     <div class="section-items">
                     </div>
                     <button class="form-button btn-lesson-add">Добавить урок</button>
+                    <button class="form-button btn-extra_file-add">Добавить материал</button>
                     <div class="invisible lesson-add-form">
                         <form name="lesson-add" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
@@ -52,6 +53,26 @@
                                 </div>
                                 <div class="form-field">
                                     <label for="file">Видеофайл</label>
+                                    <input type="file" name="file">
+                                </div>
+                            </div>
+                            <button class="form-button" type="submit">Добавить урок</button>
+                        </form>
+                    </div>
+                    <div class="invisible extra_file-add-form">
+                        <form name="extra_file-add" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-wrapper nested-form">
+                                <div class="form-field">
+                                    <label for="name">Название допматериала</label>
+                                    <input type="text" name="name" placeholder="Введите название...">
+                                </div>
+                                <div class="form-field">
+                                    <label for="description">Описание допматериала</label>
+                                    <input type="text" name="description" placeholder="Введите описание...">
+                                </div>
+                                <div class="form-field">
+                                    <label for="file">Файл</label>
                                     <input type="file" name="file">
                                 </div>
                             </div>
