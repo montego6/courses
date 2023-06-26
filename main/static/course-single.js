@@ -7,19 +7,19 @@ const addSectionForm = document.getElementById('section-add')
 const addSectionBtn = document.getElementById('btn-add-section')
 addSectionBtn.addEventListener('click', (event) => addSectionForm.classList.remove('invisible'))
 
-const itemTypes = ['lesson', 'extra_file']
 
 fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
-
 
 function initializePage(data) {
     document.getElementById('course-name').textContent = data.name
     data.sections.forEach(section => createSection(section))
 }
 
+
 function expandSection(event) {
     this.classList.toggle('invisible')
 }
+
 
 function deleteSection(event) {
     this.remove()
@@ -37,24 +37,37 @@ function deleteSection(event) {
 
 function createSection(section) {
     const clone = document.getElementById('template-course-section').content.cloneNode(true)
+    const sectionDiv = clone.querySelector('div.course-section')
     clone.querySelector('span.section-name').textContent = section.name
-    clone.querySelector('div.course-section').setAttribute('section-id', section.id)
+    sectionDiv.setAttribute('section-id', section.id)
     clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
-    clone.querySelector('span.section-delete').addEventListener('click', deleteSection.bind(clone.querySelector('div.course-section')))
+    clone.querySelector('span.section-delete').addEventListener('click', deleteSection.bind(sectionDiv))
     
     const dropdownAdd = clone.querySelector('.dropdown-add')
     clone.querySelector('.btn-add-item').addEventListener('click', event => dropdownAdd.classList.toggle('invisible'))
-
-    section.items.forEach(item => createItem(clone.querySelector('div.course-section'), item))
-    itemTypes.forEach(itemType => {
+    clone.querySelectorAll('.dropdown-add-item').forEach(dropdownLink => {
+        const itemType = dropdownLink.getAttribute('item-type')
         const addForm = clone.querySelector(`.${itemType}-add-form`)
-        clone.querySelector(`.btn-${itemType}-add`).addEventListener('click', event => addForm.classList.remove('invisible'))
+        const allForms = clone.querySelectorAll('.section-forms')
+        dropdownLink.addEventListener('click', event => {
+            allForms.forEach(sectionForm => sectionForm.classList.add('invisible'))
+            addForm.classList.remove('invisible')
+        })
         const itemForm = clone.querySelector(`form[name=${itemType}-add]`)
         itemForm.addEventListener('submit', postItem.bind(itemForm, itemType))
     })
+
+    section.items.forEach(item => createItem(clone.querySelector('div.course-section'), item))
+    // itemTypes.forEach(itemType => {
+    //     const addForm = clone.querySelector(`.${itemType}-add-form`)
+    //     clone.querySelector(`.btn-${itemType}-add`).addEventListener('click', event => addForm.classList.remove('invisible'))
+    //     const itemForm = clone.querySelector(`form[name=${itemType}-add]`)
+    //     itemForm.addEventListener('submit', postItem.bind(itemForm, itemType))
+    // })
     document.getElementById('course-sections').append(clone)
 
 }
+
 
 function createItem(section, item) {
     const lessonTemplate = document.getElementById('template-section-item')
@@ -63,6 +76,12 @@ function createItem(section, item) {
     clone.querySelector('.section-item').setAttribute('item-id', item.id)
     clone.querySelector('.section-item').setAttribute('item-type', item.type)
     clone.querySelector('svg use').setAttribute('href', `#icon-${item.type}`)
+    if (item.type === 'test') {
+        clone.querySelector('.item-option').textContent = 'Добавить вопросы'
+        clone.querySelector('.item-option').addEventListener('click', event => {
+            document.querySelector('#dialog-questions').showModal()
+        })
+    }
     clone.querySelector('.item-delete').addEventListener('click', deleteItem.bind(clone.querySelector('.section-item')))
     section.querySelector('.section-items').append(clone)
 }
@@ -96,6 +115,7 @@ function postItem(itemType, event) {
         }
         console.log(data)
     })
+    
     event.preventDefault()
 }
 

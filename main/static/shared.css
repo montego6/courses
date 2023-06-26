@@ -97,3 +97,11 @@ input#header-search-input {
 .main-body {
     margin: 50px 200px;
 }
+
+.backdrop {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 12;
+}
