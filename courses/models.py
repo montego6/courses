@@ -52,3 +52,15 @@ class AdditionalFile(models.Model):
     file = models.FileField(upload_to='media/courses/extra_files/')
     section_items = GenericRelation(SectionItem)
 
+
+class Test(models.Model):
+    name = models.CharField(max_length=80)
+    description = models.CharField(max_length=200, null=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='tests')
+    section_items = GenericRelation(SectionItem)
+
+
+class TestQuestion(models.Model):
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='questions')
+    options = ArrayField(models.CharField(max_length=100), size=3)
+    answer = models.CharField(max_length=100)

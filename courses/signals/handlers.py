@@ -1,9 +1,11 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from courses.models import SectionItem, Lesson, AdditionalFile
+from courses.models import SectionItem, Lesson, AdditionalFile, Test
 
 
 @receiver(post_save, sender=Lesson)
 @receiver(post_save, sender=AdditionalFile)
-def create_section_item(sender, instance, **kwargs):
-    SectionItem.objects.create(content_object=instance, section=instance.section)
+@receiver(post_save, sender=Test)
+def create_section_item(sender, instance, created, **kwargs):
+    if created:
+        SectionItem.objects.create(content_object=instance, section=instance.section)
