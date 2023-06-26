@@ -1,9 +1,10 @@
-categoriesLink = document.getElementById('header-categories-link')
-popoverMenu = document.getElementById('header-popover-categories')
-popoverSubMenu = document.getElementById('header-popover-subcategories')
-popoverSubjects = document.getElementById('header-popover-subjects')
-popoverTemplate = document.getElementById('header-popover-template')
+const categoriesLink = document.getElementById('header-categories-link')
+const popoverMenu = document.getElementById('header-popover-categories')
+const popoverSubMenu = document.getElementById('header-popover-subcategories')
+const popoverSubjects = document.getElementById('header-popover-subjects')
+const popoverTemplate = document.getElementById('header-popover-template')
 let categories
+
 
 fetch('http://localhost:8000/api/categories/').then(response => response.json())
 .then(data => {

@@ -7,6 +7,12 @@ const addSectionForm = document.getElementById('section-add')
 const addSectionBtn = document.getElementById('btn-add-section')
 addSectionBtn.addEventListener('click', (event) => addSectionForm.classList.remove('invisible'))
 
+const backdrop = document.querySelector('#backdrop')
+backdrop.addEventListener('click', event => {
+    backdrop.classList.add('invisible')
+    document.querySelector('dialog[opengit]').close()
+})
+
 
 fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
 
@@ -79,7 +85,8 @@ function createItem(section, item) {
     if (item.type === 'test') {
         clone.querySelector('.item-option').textContent = 'Добавить вопросы'
         clone.querySelector('.item-option').addEventListener('click', event => {
-            document.querySelector('#dialog-questions').showModal()
+            document.querySelector('#dialog-questions').show()
+            backdrop.classList.remove('invisible')
         })
     }
     clone.querySelector('.item-delete').addEventListener('click', deleteItem.bind(clone.querySelector('.section-item')))
