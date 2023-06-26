@@ -41,6 +41,10 @@ function createSection(section) {
     clone.querySelector('div.course-section').setAttribute('section-id', section.id)
     clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
     clone.querySelector('span.section-delete').addEventListener('click', deleteSection.bind(clone.querySelector('div.course-section')))
+    
+    const dropdownAdd = clone.querySelector('.dropdown-add')
+    clone.querySelector('.btn-add-item').addEventListener('click', event => dropdownAdd.classList.toggle('invisible'))
+
     section.items.forEach(item => createItem(clone.querySelector('div.course-section'), item))
     itemTypes.forEach(itemType => {
         const addForm = clone.querySelector(`.${itemType}-add-form`)
@@ -49,6 +53,7 @@ function createSection(section) {
         itemForm.addEventListener('submit', postItem.bind(itemForm, itemType))
     })
     document.getElementById('course-sections').append(clone)
+
 }
 
 function createItem(section, item) {

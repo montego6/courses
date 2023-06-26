@@ -1,6 +1,7 @@
 :root {
     --section-border: 1px solid black;
     --section-color: rgb(213, 219, 224);
+    --section-dropdown-hover-color: #002d41;
 }
 
 .course-section {
@@ -71,4 +72,40 @@
 
 .item-delete {
     margin-left: auto;
+}
+
+.btn-add-item {
+    width: 140px;
+    height: fit-content;
+    border: 1px solid black;
+    margin-top: 12px;
+    padding: 8px 10px;
+    font-family: inherit;
+    font-weight: 400;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.dropdown-add {
+    position: absolute;
+    border: inherit;
+    padding: inherit;
+    background-color: white;
+    font-weight: 100;
+    top: 40px;
+    width: 140px;
+}
+
+.dropdown-add ul {
+    list-style: none;
+}
+
+.dropdown-add-item {
+    margin: 4px 0px;
+}
+
+.dropdown-add-item:hover {
+    color: var(--section-dropdown-hover-color);
+    cursor: pointer;
 }
