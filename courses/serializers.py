@@ -44,6 +44,7 @@ class TestSerializer(SectionItemCreation, ItemOptionSerializer, serializers.Mode
     class Meta:
         model = Test
         fields = '__all__'
+        # fields = ['name', 'description', 'section', 'option', 'type', 'questions']
 
 
 class HomeworkSerializer(SectionItemCreation, ItemOptionSerializer, serializers.ModelSerializer):
@@ -69,7 +70,9 @@ class SectionItemSerializer(serializers.Serializer):
             serializer = HomeworkSerializer(item)        
         else:
             raise Exception('Unexpected type of section item')
-        return serializer.data
+        data = serializer.data.copy()
+        data['option'] = value.option
+        return data
 
 
 # class SectionItemSerializer(serializers.ModelSerializer):
