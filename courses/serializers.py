@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion
+from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -34,6 +34,13 @@ class TestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class HomeworkSerializer(serializers.ModelSerializer):
+    type = serializers.CharField(default='homework', read_only=True)
+
+    class Meta:
+        model = Homework
+        fields = '__all__'
+
 # class SectionItemRelatedField(serializers.RelatedField):
 #     def to_representation(self, value):
 #         if isinstance(value, Lesson):
@@ -54,6 +61,8 @@ class SectionItemSerializer(serializers.Serializer):
             serializer = AdditionalFileSerializer(item)
         elif isinstance(item, Test):
             serializer = TestSerializer(item)
+        elif isinstance(item, Homework):
+            serializer = HomeworkSerializer(item)        
         else:
             raise Exception('Unexpected type of section item')
         return serializer.data

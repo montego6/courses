@@ -64,12 +64,6 @@ function createSection(section) {
     })
 
     section.items.forEach(item => createItem(clone.querySelector('div.course-section'), item))
-    // itemTypes.forEach(itemType => {
-    //     const addForm = clone.querySelector(`.${itemType}-add-form`)
-    //     clone.querySelector(`.btn-${itemType}-add`).addEventListener('click', event => addForm.classList.remove('invisible'))
-    //     const itemForm = clone.querySelector(`form[name=${itemType}-add]`)
-    //     itemForm.addEventListener('submit', postItem.bind(itemForm, itemType))
-    // })
     document.getElementById('course-sections').append(clone)
 
 }

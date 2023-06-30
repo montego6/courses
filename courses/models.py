@@ -65,3 +65,11 @@ class TestQuestion(models.Model):
     question = models.CharField(max_length=180)
     options = ArrayField(models.CharField(max_length=100), size=3)
     answer = models.CharField(max_length=100)
+
+
+class Homework(models.Model):
+    name = models.CharField(max_length=80)
+    description = models.CharField(max_length=200, null=True)
+    task = models.CharField(max_length=1000)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='homeworks')
+    section_items = GenericRelation(SectionItem)

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion
-from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer
+from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework
+from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
 from .serializers import TestSerializer, TestQuestionSerializer
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
@@ -37,6 +37,11 @@ class TestViewSet(viewsets.ModelViewSet):
 class TestQuestionViewSet(viewsets.ModelViewSet):
     queryset = TestQuestion.objects.all()
     serializer_class = TestQuestionSerializer
+
+
+class HomeworkViewSet(viewsets.ModelViewSet):
+    queryset = Homework.objects.all()
+    serializer_class = HomeworkSerializer
     
 
 class GetUser(APIView):
