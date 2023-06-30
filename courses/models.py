@@ -62,5 +62,6 @@ class Test(models.Model):
 
 class TestQuestion(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='questions')
+    question = models.CharField(max_length=180)
     options = ArrayField(models.CharField(max_length=100), size=3)
     answer = models.CharField(max_length=100)

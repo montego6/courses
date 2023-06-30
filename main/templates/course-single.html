@@ -8,7 +8,43 @@
 {% block content %}
 <div class="main-body">
     <dialog id="dialog-questions">
-        <p>This is dialog</p>
+        <template id="template-test-question">
+            <div class="test-question">
+                <span class="test-question-counter"></span>
+                <span class="test-question-name"></span>
+                <span class="text-underline test-question-delete">Удалить</span>
+            </div>
+        </template>
+        <div id="test-questions">
+        </div>        
+        <p>Добавить вопрос:</p>
+        <div class="form-question-add">
+            <form name="question-add" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-wrapper nested-form">
+                    <div class="form-field">
+                        <label for="question">Вопрос</label>
+                        <input type="text" name="question" placeholder="Введите вопрос...">
+                    </div>
+                    <div class="form-field question-field">
+                        <label for="option">Вариант ответа #1</label>
+                        <input type="text" name="option" placeholder="Введите ответ...">
+                        <input type="radio" name="answer" checked>
+                    </div>
+                    <div class="form-field question-field">
+                        <label for="option">Вариант ответа #2</label>
+                        <input type="text" name="option" placeholder="Введите ответ...">
+                        <input type="radio" name="answer">
+                    </div>
+                    <div class="form-field question-field">
+                        <label for="option">Вариант ответа #3</label>
+                        <input type="text" name="option" placeholder="Введите ответ...">
+                        <input type="radio" name="answer">
+                    </div>
+                </div>
+                <button class="form-button" type="submit">Добавить вопрос</button>
+            </form>
+        </div>
     </dialog>
     <p id="csrf-token">{% csrf_token %}</p>
     <div class="invisible">

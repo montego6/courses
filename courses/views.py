@@ -36,7 +36,7 @@ class TestViewSet(viewsets.ModelViewSet):
 
 class TestQuestionViewSet(viewsets.ModelViewSet):
     queryset = TestQuestion.objects.all()
-    serializer_class = TestQuestion
+    serializer_class = TestQuestionSerializer
     
 
 class GetUser(APIView):

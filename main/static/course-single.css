@@ -47,7 +47,7 @@
     cursor: pointer;
 }
 
-.nested-form .form-field{
+.nested-form .form-field {
     grid-template-columns: 3fr 3fr 1fr;
 }
 
@@ -112,7 +112,40 @@
 #dialog-questions {
     position: absolute;
     margin: auto;
-    width: 400px;
-    height: 600px;
+    width: 800px;
+    height: fit-content;
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
 }
 
+
+.question-field input[type=radio] {
+    width: 18px;
+    margin-left: 8px;
+}
+
+.test-question {
+    display: flex;
+    padding: 6px 0px;
+    column-gap: 10px;
+}
+
+.test-question-delete {
+    margin-left: auto;
+    margin-right: 60px;
+}
+
+#test-questions {
+    margin-bottom: 12px;
+    counter-reset: question;
+}
+
+.test-question-name::before {
+    counter-increment: question;
+    content: ""counter(question)" ";
+}
+
+.form-question-add {
+    margin-top: 12px;
+}

@@ -10,7 +10,7 @@ addSectionBtn.addEventListener('click', (event) => addSectionForm.classList.remo
 const backdrop = document.querySelector('#backdrop')
 backdrop.addEventListener('click', event => {
     backdrop.classList.add('invisible')
-    document.querySelector('dialog[opengit]').close()
+    document.querySelector('dialog[open]').close()
 })
 
 
@@ -87,6 +87,9 @@ function createItem(section, item) {
         clone.querySelector('.item-option').addEventListener('click', event => {
             document.querySelector('#dialog-questions').show()
             backdrop.classList.remove('invisible')
+            initializeTestQuestions(item.id)
+            const questionForm = document.querySelector('#dialog-questions form')
+            questionForm.addEventListener('submit', postQuestion.bind(questionForm, item.id))
         })
     }
     clone.querySelector('.item-delete').addEventListener('click', deleteItem.bind(clone.querySelector('.section-item')))
@@ -124,6 +127,50 @@ function postItem(itemType, event) {
     })
     
     event.preventDefault()
+}
+
+
+function postQuestion(testId, event) {
+    const checkedRadio = this.querySelector('input[checked]')
+    checkedRadio.value = checkedRadio.previousElementSibling.value
+    const formData = new FormData(this)
+    const options = Array.from(this.querySelectorAll('input[name=option]'), element => element.value)
+    formData.append('test', testId)
+    formData.append('options', options)
+    fetch(`http://127.0.0.1:8000/api/questions/`, {
+        method: 'post',
+        body: formData
+    }).then(response => response.json())
+    .then(data => {
+        console.log(data)
+        if (data.id) {
+            createQuestion(data)
+        }
+    })
+    event.preventDefault()
+}
+
+
+function createQuestion(data) {
+    const clone = document.getElementById('template-test-question').content.cloneNode(true)
+    clone.querySelector('.test-question-name').textContent = data.question
+    const questionElement = clone.querySelector('.test-question')
+    questionElement.setAttribute('item-type', 'question')
+    questionElement.setAttribute('item-id', data.id)
+    clone.querySelector('.test-question-delete').addEventListener('click', deleteItem.bind(questionElement))
+    document.getElementById('test-questions').append(clone)
+}
+
+function initializeTestQuestions(testId) {
+    fetch(`http://127.0.0.1:8000/api/tests/${testId}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.id) {
+            document.getElementById('test-questions').innerHTML = ''
+            data.questions.forEach(question => createQuestion(question))
+        }
+        console.log(data)
+    })
 }
 
 
