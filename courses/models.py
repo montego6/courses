@@ -6,6 +6,12 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+COURSE_OPTION_CHOICES = [
+    ('basic', 'All the basic content'),
+    ('extra', 'Some additional files'),
+    ('premium', 'All the content you need'),
+]
+
 
 class Course(models.Model):
     name = models.CharField(max_length=80, db_index=True)
@@ -34,8 +40,8 @@ class SectionItem(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='items')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id') 
-
+    content_object = GenericForeignKey('content_type', 'object_id')
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=COURSE_OPTION_CHOICES[0][0])
 
 class Lesson(models.Model):
     name = models.CharField(max_length=80)
@@ -43,6 +49,7 @@ class Lesson(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons')
     file = models.FileField(upload_to='media/courses/lessons/')
     section_items = GenericRelation(SectionItem)
+    
 
 
 class AdditionalFile(models.Model):
@@ -53,11 +60,13 @@ class AdditionalFile(models.Model):
     section_items = GenericRelation(SectionItem)
 
 
+
 class Test(models.Model):
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=200, null=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='tests')
     section_items = GenericRelation(SectionItem)
+
 
 
 class TestQuestion(models.Model):
@@ -73,3 +82,4 @@ class Homework(models.Model):
     task = models.CharField(max_length=1000)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='homeworks')
     section_items = GenericRelation(SectionItem)
+

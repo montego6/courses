@@ -2,7 +2,19 @@ from rest_framework import serializers
 from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework
 
 
-class LessonSerializer(serializers.ModelSerializer):
+class SectionItemCreation:
+    def create(self, validated_data):
+        option = validated_data.pop('option', 'basic')
+        instance = self.Meta.model.objects.create(**validated_data)
+        SectionItem.objects.create(content_object=instance, section=instance.section, option=option)
+        return instance
+    
+
+class ItemOptionSerializer(serializers.Serializer):
+    option = serializers.CharField(default='basic')
+
+
+class LessonSerializer(SectionItemCreation, ItemOptionSerializer, serializers.ModelSerializer):
     type = serializers.CharField(default='lesson', read_only=True)
     
     class Meta:
@@ -10,7 +22,7 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AdditionalFileSerializer(serializers.ModelSerializer):
+class AdditionalFileSerializer(SectionItemCreation, ItemOptionSerializer, serializers.ModelSerializer):
     type = serializers.CharField(default='extra_file', read_only=True)
 
     class Meta:
@@ -25,7 +37,7 @@ class TestQuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TestSerializer(serializers.ModelSerializer):
+class TestSerializer(SectionItemCreation, ItemOptionSerializer, serializers.ModelSerializer):
     type = serializers.CharField(default='test', read_only=True)
     questions = TestQuestionSerializer(many=True, read_only=True)
 
@@ -34,22 +46,14 @@ class TestSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class HomeworkSerializer(serializers.ModelSerializer):
+class HomeworkSerializer(SectionItemCreation, ItemOptionSerializer, serializers.ModelSerializer):
     type = serializers.CharField(default='homework', read_only=True)
 
     class Meta:
         model = Homework
         fields = '__all__'
 
-# class SectionItemRelatedField(serializers.RelatedField):
-#     def to_representation(self, value):
-#         if isinstance(value, Lesson):
-#             serializer = LessonSerializer(value)
-#         elif isinstance(value, AdditionalFile):
-#             serializer = AdditionalFileSerializer(value)
-#         else:
-#             raise Exception('Unexpected type of section item')
-#         return serializer.data
+
 
 
 class SectionItemSerializer(serializers.Serializer):
