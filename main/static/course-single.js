@@ -1,4 +1,6 @@
 let courseData
+let courseOption
+const courseOptions = ['basic', 'extra', 'premium']
 const csrf_token = document.querySelector('#csrf-token input').value 
 const courseId = document.getElementById('course-id').textContent
 
@@ -13,10 +15,22 @@ backdrop.addEventListener('click', event => {
     document.querySelector('dialog[open]').close()
 })
 
+const optionsTabLinks = document.querySelectorAll('.course-option-link')
+optionsTabLinks.forEach(link => link.addEventListener('click', event => {
+    optionsTabLinks.forEach(link => link.classList.remove('course-option-link-selected'))
+    courseOption = event.target.getAttribute('course-option')
+    event.target.classList.add('course-option-link-selected')
+    getCourseData()
+}))
 
-fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
+optionsTabLinks[0].click()
+
+function getCourseData() {
+    fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
+}
 
 function initializePage(data) {
+    document.getElementById('course-sections').innerHTML = ''
     document.getElementById('course-name').textContent = data.name
     data.sections.forEach(section => createSection(section))
 }
@@ -63,7 +77,12 @@ function createSection(section) {
         itemForm.addEventListener('submit', postItem.bind(itemForm, itemType))
     })
 
-    section.items.forEach(item => createItem(clone.querySelector('div.course-section'), item))
+    const filteredItems = section.items.filter(item => {
+        const optionIndex = courseOptions.findIndex(el => el === courseOption)
+        const slicedArr = courseOptions.slice(0, optionIndex + 1)
+        return slicedArr.includes(item.option)
+    })
+    filteredItems.forEach(item => createItem(clone.querySelector('div.course-section'), item))
     document.getElementById('course-sections').append(clone)
 
 }
@@ -109,6 +128,7 @@ function postItem(itemType, event) {
     const section = this.closest('div.course-section')
     const sectionId = section.getAttribute('section-id')
     formData.append('section', sectionId)
+    formData.append('option', courseOption)
     fetch(`http://127.0.0.1:8000/api/${itemType}s/`, {
         method: 'post',
         body: formData

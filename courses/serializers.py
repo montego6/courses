@@ -2,19 +2,19 @@ from rest_framework import serializers
 from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework
 
 
-class SectionItemCreation:
-    def create(self, validated_data):
-        option = validated_data.pop('option', 'basic')
-        instance = self.Meta.model.objects.create(**validated_data)
-        SectionItem.objects.create(content_object=instance, section=instance.section, option=option)
-        return instance
+# class SectionItemCreation:
+#     def create(self, validated_data):
+#         option = validated_data.pop('option', 'basic')
+#         instance = self.Meta.model.objects.create(**validated_data)
+#         SectionItem.objects.create(content_object=instance, section=instance.section, option=option)
+#         return instance
     
 
-class ItemOptionSerializer(serializers.Serializer):
-    option = serializers.CharField(default='basic')
+# class ItemOptionSerializer(serializers.Serializer):
+#     option = serializers.CharField(default='basic')
 
 
-class LessonSerializer(SectionItemCreation, ItemOptionSerializer, serializers.ModelSerializer):
+class LessonSerializer(serializers.ModelSerializer):
     type = serializers.CharField(default='lesson', read_only=True)
     
     class Meta:
@@ -22,7 +22,7 @@ class LessonSerializer(SectionItemCreation, ItemOptionSerializer, serializers.Mo
         fields = '__all__'
 
 
-class AdditionalFileSerializer(SectionItemCreation, ItemOptionSerializer, serializers.ModelSerializer):
+class AdditionalFileSerializer(serializers.ModelSerializer):
     type = serializers.CharField(default='extra_file', read_only=True)
 
     class Meta:
@@ -37,7 +37,7 @@ class TestQuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TestSerializer(SectionItemCreation, ItemOptionSerializer, serializers.ModelSerializer):
+class TestSerializer(serializers.ModelSerializer):
     type = serializers.CharField(default='test', read_only=True)
     questions = TestQuestionSerializer(many=True, read_only=True)
 
@@ -47,7 +47,7 @@ class TestSerializer(SectionItemCreation, ItemOptionSerializer, serializers.Mode
         # fields = ['name', 'description', 'section', 'option', 'type', 'questions']
 
 
-class HomeworkSerializer(SectionItemCreation, ItemOptionSerializer, serializers.ModelSerializer):
+class HomeworkSerializer(serializers.ModelSerializer):
     type = serializers.CharField(default='homework', read_only=True)
 
     class Meta:
@@ -70,18 +70,8 @@ class SectionItemSerializer(serializers.Serializer):
             serializer = HomeworkSerializer(item)        
         else:
             raise Exception('Unexpected type of section item')
-        data = serializer.data.copy()
-        data['option'] = value.option
-        return data
+        return serializer.data
 
-
-# class SectionItemSerializer(serializers.ModelSerializer):
-#     content_object = SectionItemRelatedField(read_only=True)
-
-#     class Meta:
-#         model = SectionItem
-#         fields = ['content_object']
-    
 
 class SectionSerializer(serializers.ModelSerializer):
     items = SectionItemSerializer(many=True, read_only=True)

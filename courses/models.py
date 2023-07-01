@@ -41,7 +41,6 @@ class SectionItem(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
-    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=COURSE_OPTION_CHOICES[0][0])
 
 
 class Lesson(models.Model):
@@ -50,6 +49,7 @@ class Lesson(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons')
     file = models.FileField(upload_to='media/courses/lessons/')
     section_items = GenericRelation(SectionItem)
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=COURSE_OPTION_CHOICES[0][0])
     
 
 class AdditionalFile(models.Model):
@@ -58,6 +58,7 @@ class AdditionalFile(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='extra_files')
     file = models.FileField(upload_to='media/courses/extra_files/')
     section_items = GenericRelation(SectionItem)
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=COURSE_OPTION_CHOICES[0][0])
 
 
 class Test(models.Model):
@@ -65,6 +66,7 @@ class Test(models.Model):
     description = models.CharField(max_length=200, null=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='tests')
     section_items = GenericRelation(SectionItem)
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=COURSE_OPTION_CHOICES[0][0])
 
 
 class TestQuestion(models.Model):
@@ -80,4 +82,5 @@ class Homework(models.Model):
     task = models.CharField(max_length=1000)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='homeworks')
     section_items = GenericRelation(SectionItem)
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=COURSE_OPTION_CHOICES[0][0])
 

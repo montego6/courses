@@ -149,3 +149,32 @@
 .form-question-add {
     margin-top: 12px;
 }
+
+#course-options-tab {
+    margin-bottom: 20px;
+}
+
+.course-option-link {
+    cursor: pointer;
+    position: relative;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+    width: 400px;
+}
+
+.course-option-link-selected::after {
+    content: '';
+    border-bottom: 3px solid black;
+    position: absolute;
+    width: 100%;
+    display: block;
+    top: 40px;
+}
+

@@ -66,101 +66,106 @@
             </div>
         </div>
     </template>
+    <div id="course-options-tab">
+        <span class="course-option-link" tabindex="0" course-option="basic">Basic</span>
+        <span class="course-option-link" tabindex="0" course-option="extra">Extra</span>
+        <span class="course-option-link" tabindex="0" course-option="premium">Premium</span>
+    </div>
+    <hr/>
     <p id="course-name"></p>
-    <div id="course-sections">
-        <template id="template-course-section">
-            <div class="course-section">
-                <div class="course-section-header">
+    <template id="template-course-section">
+        <div class="course-section">
+            <div class="course-section-header">
+                <svg class="section-header-icon-expand">
+                    <use href="#icon-expand"></use>
+                </svg>
+                <span class="section-name"></span>
+                <span class="text-underline section-delete">Удалить</span>
+            </div>
+            <div class="course-section-body invisible">
+                <div class="section-items">
+                </div>
+                <div class="btn-add-item">
+                    <span>Добавить</span>
                     <svg class="section-header-icon-expand">
                         <use href="#icon-expand"></use>
                     </svg>
-                    <span class="section-name"></span>
-                    <span class="text-underline section-delete">Удалить</span>
+                    <div class="dropdown-add invisible">
+                        <ul>
+                            <li class="dropdown-add-item" item-type="lesson">
+                                <span>Урок</span>
+                            </li>
+                            <li class="dropdown-add-item" item-type="extra_file">
+                                <span>Доп. материал</span>
+                            </li>
+                            <li class="dropdown-add-item" item-type="test">
+                                <span>Тест</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="course-section-body invisible">
-                    <div class="section-items">
-                    </div>
-                    <div class="btn-add-item">
-                        <span>Добавить</span>
-                        <svg class="section-header-icon-expand">
-                            <use href="#icon-expand"></use>
-                        </svg>
-                        <div class="dropdown-add invisible">
-                            <ul>
-                                <li class="dropdown-add-item" item-type="lesson">
-                                    <span>Урок</span>
-                                </li>
-                                <li class="dropdown-add-item" item-type="extra_file">
-                                    <span>Доп. материал</span>
-                                </li>
-                                <li class="dropdown-add-item" item-type="test">
-                                    <span>Тест</span>
-                                </li>
-                            </ul>
+                <!-- <button class="form-button btn-lesson-add">Добавить урок</button>
+                <button class="form-button btn-extra_file-add">Добавить материал</button> -->
+                <div class="invisible section-forms lesson-add-form">
+                    <form name="lesson-add" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-wrapper nested-form">
+                            <div class="form-field">
+                                <label for="name">Название урока</label>
+                                <input type="text" name="name" placeholder="Введите название...">
+                            </div>
+                            <div class="form-field">
+                                <label for="description">Описание урока</label>
+                                <input type="text" name="description" placeholder="Введите описание...">
+                            </div>
+                            <div class="form-field">
+                                <label for="file">Видеофайл</label>
+                                <input type="file" name="file">
+                            </div>
                         </div>
-                    </div>
-                    <!-- <button class="form-button btn-lesson-add">Добавить урок</button>
-                    <button class="form-button btn-extra_file-add">Добавить материал</button> -->
-                    <div class="invisible section-forms lesson-add-form">
-                        <form name="lesson-add" method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="form-wrapper nested-form">
-                                <div class="form-field">
-                                    <label for="name">Название урока</label>
-                                    <input type="text" name="name" placeholder="Введите название...">
-                                </div>
-                                <div class="form-field">
-                                    <label for="description">Описание урока</label>
-                                    <input type="text" name="description" placeholder="Введите описание...">
-                                </div>
-                                <div class="form-field">
-                                    <label for="file">Видеофайл</label>
-                                    <input type="file" name="file">
-                                </div>
+                        <button class="form-button" type="submit">Добавить урок</button>
+                    </form>
+                </div>
+                <div class="invisible section-forms extra_file-add-form">
+                    <form name="extra_file-add" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-wrapper nested-form">
+                            <div class="form-field">
+                                <label for="name">Название допматериала</label>
+                                <input type="text" name="name" placeholder="Введите название...">
                             </div>
-                            <button class="form-button" type="submit">Добавить урок</button>
-                        </form>
-                    </div>
-                    <div class="invisible section-forms extra_file-add-form">
-                        <form name="extra_file-add" method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="form-wrapper nested-form">
-                                <div class="form-field">
-                                    <label for="name">Название допматериала</label>
-                                    <input type="text" name="name" placeholder="Введите название...">
-                                </div>
-                                <div class="form-field">
-                                    <label for="description">Описание допматериала</label>
-                                    <input type="text" name="description" placeholder="Введите описание...">
-                                </div>
-                                <div class="form-field">
-                                    <label for="file">Файл</label>
-                                    <input type="file" name="file">
-                                </div>
+                            <div class="form-field">
+                                <label for="description">Описание допматериала</label>
+                                <input type="text" name="description" placeholder="Введите описание...">
                             </div>
-                            <button class="form-button" type="submit">Добавить материал</button>
-                        </form>
-                    </div>
-                    <div class="invisible section-forms test-add-form">
-                        <form name="test-add" method="POST" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="form-wrapper nested-form">
-                                <div class="form-field">
-                                    <label for="name">Название теста</label>
-                                    <input type="text" name="name" placeholder="Введите название...">
-                                </div>
-                                <div class="form-field">
-                                    <label for="description">Описание теста</label>
-                                    <input type="text" name="description" placeholder="Введите описание...">
-                                </div>
+                            <div class="form-field">
+                                <label for="file">Файл</label>
+                                <input type="file" name="file">
                             </div>
-                            <button class="form-button" type="submit">Добавить тест</button>
-                        </form>
-                    </div>
+                        </div>
+                        <button class="form-button" type="submit">Добавить материал</button>
+                    </form>
+                </div>
+                <div class="invisible section-forms test-add-form">
+                    <form name="test-add" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-wrapper nested-form">
+                            <div class="form-field">
+                                <label for="name">Название теста</label>
+                                <input type="text" name="name" placeholder="Введите название...">
+                            </div>
+                            <div class="form-field">
+                                <label for="description">Описание теста</label>
+                                <input type="text" name="description" placeholder="Введите описание...">
+                            </div>
+                        </div>
+                        <button class="form-button" type="submit">Добавить тест</button>
+                    </form>
                 </div>
             </div>
-        </template>
-    </div>
+        </div>
+    </template>
+    <div id="course-sections"></div>
     <button id="btn-add-section" class="form-button">Добавить секцию</button>
     <div class="invisible" id="section-add">
         <form name="section-add" method="POST" enctype="multipart/form-data">
