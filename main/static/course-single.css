@@ -1,7 +1,34 @@
 :root {
     --section-border: 1px solid black;
     --section-color: rgb(213, 219, 224);
-    --section-dropdown-hover-color: #002d41;
+}
+
+#course-header {
+   color: white;
+   background-color: rgb(49, 49, 49); 
+   width: 100%;
+   height: 260px;
+   padding-top: 20px;
+}
+
+#course-header-content {
+    margin: 0px 300px;
+}
+
+#course-header-bottom {
+    display: flex;
+    align-items: center;
+    column-gap: 6px;
+}
+
+#course-body {
+    margin: 20px 300px;
+}
+
+.course-header-icon {
+    stroke: white;
+    height: 20px;
+    width: 20px;
 }
 
 .course-section {
@@ -10,16 +37,13 @@
 
 .course-section-header {
     background-color: var(--section-color);
+    font-weight: 400;
     display: flex;
-    align-items: center;
+    align-items: center;    
     padding: 12px;
     border-top: var(--section-border);
     border-left: var(--section-border);
     border-right: var(--section-border);
-}
-
-.course-section-header span:last-child {
-    margin-left: auto;
 }
 
 .course-section:last-child {
@@ -38,26 +62,9 @@
     height: 20px;
 }
 
-.text-underline {
-    text-decoration: underline;
-    text-underline-offset: 0.4rem;
-}
-
-.text-underline:hover {
-    cursor: pointer;
-}
-
-.nested-form .form-field {
-    grid-template-columns: 3fr 3fr 1fr;
-}
-
-.nested-form input {
-    width: 32rem;
-}
-
 .section-icon {
-    width: 20px;
-    height: 20px;
+    width: 12px;
+    height: 12px;
 }
 
 .section-item {
@@ -73,108 +80,3 @@
 .item-right {
     margin-left: auto;
 }
-
-.btn-add-item {
-    width: 140px;
-    height: fit-content;
-    border: 1px solid black;
-    padding: 8px 10px;
-    font-family: inherit;
-    font-weight: 400;
-    display: flex;
-    justify-content: center;
-    position: relative;
-}
-
-.dropdown-add {
-    position: absolute;
-    border: inherit;
-    padding: inherit;
-    background-color: white;
-    font-weight: 100;
-    top: 40px;
-    width: 140px;
-}
-
-.dropdown-add ul {
-    list-style: none;
-}
-
-.dropdown-add-item {
-    margin: 4px 0px;
-}
-
-.dropdown-add-item:hover {
-    color: var(--section-dropdown-hover-color);
-    cursor: pointer;
-}
-
-#dialog-questions {
-    position: absolute;
-    margin: auto;
-    width: 800px;
-    height: fit-content;
-    border: none;
-    border-radius: 20px;
-    padding: 20px;
-}
-
-
-.question-field input[type=radio] {
-    width: 18px;
-    margin-left: 8px;
-}
-
-.test-question {
-    display: flex;
-    padding: 6px 0px;
-    column-gap: 10px;
-}
-
-.test-question-delete {
-    margin-left: auto;
-    margin-right: 60px;
-}
-
-#test-questions {
-    margin-bottom: 12px;
-    counter-reset: question;
-}
-
-.test-question-name::before {
-    counter-increment: question;
-    content: ""counter(question)" ";
-}
-
-.form-question-add {
-    margin-top: 12px;
-}
-
-#course-options-tab {
-    margin-bottom: 20px;
-}
-
-.course-option-link {
-    cursor: pointer;
-    position: relative;
-}
-
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-    padding: 0;
-    width: 400px;
-}
-
-.course-option-link-selected::after {
-    content: '';
-    border-bottom: 3px solid black;
-    position: absolute;
-    width: 100%;
-    display: block;
-    top: 40px;
-}
-
