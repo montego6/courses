@@ -28,8 +28,9 @@ confirmBtn.addEventListener('click', (event) => {
     requirementsOptions = document.querySelectorAll('.requirements-option')
     const requirementsList = Array.from(requirementsOptions, option => option.value)
     const options = {option: "value"}
-    formData.append('what_will_learn', learnList)
-    formData.append('requirements', requirementsList)
+    learnList.forEach(learn => formData.append('what_will_learn', learn))
+    requirementsList.forEach(requirement => formData.append('requirements', requirement))
+    // formData.append('requirements', requirementsList)
     formData.append('options', JSON.stringify(options))
     fetch('http://127.0.0.1:8000/api/courses/', {
         method: 'post',

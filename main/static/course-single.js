@@ -12,6 +12,28 @@ function initializePage(data) {
     document.getElementById('course-short_description').textContent = data.short_description
     document.getElementById('course-date_updated').textContent = data.date_updated
     document.getElementById('course-language').textContent = data.language
+    
+    data.what_will_learn.forEach(item => {
+        const clone = document.getElementById('template-what_will_learn').content.cloneNode(true)
+        clone.querySelector('span').textContent = item
+        document.getElementById('what_will_learn-items').append(clone)
+    })
+
+    let lessonCounter = 0
+    data.sections.forEach(section => {
+        lessonArr = section.items.filter(item => item.type === 'lesson')
+        lessonCounter += lessonArr.length
+    })
+    document.getElementById('course-content-info').textContent = `${data.sections.length} секций - ${lessonCounter} видеоуроков`
+
+    data.requirements.forEach(requierement => {
+        const clone = document.getElementById('template-requirements').content.cloneNode(true)
+        clone.querySelector('li').textContent = requierement
+        document.querySelector('#course-requirements ul').append(clone)
+    })
+
+    document.getElementById('course-full_description').innerHTML = data.full_description
+
     data.sections.forEach(section => createSection(section))
 }
 

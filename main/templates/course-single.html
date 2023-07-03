@@ -12,6 +12,7 @@
     <svg id="icon-expand" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
     <svg id="icon-date" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
     <svg id="icon-language" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+    <svg id="icon-check" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
     <svg id="icon-lesson" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
     <svg id="icon-extra_file" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V9l-7-7z"/><path d="M13 3v6h6"/></svg>
     <svg id="icon-test" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
@@ -61,7 +62,36 @@
         </div>
     </div>
 </template>
+<template id="template-what_will_learn">
+    <div class="what_will_learn-item">
+        <svg class="what_will_learn-icon">
+            <use href="#icon-check"></use>
+        </svg>
+        <span class="what_will_learn-text"></span>
+    </div>
+</template>
 <div id="course-body">
+    <div id="course-what_will_learn">
+        <h2>Чему вы научитесь:</h2>
+        <div id="what_will_learn-items"></div>
+    </div>
+    <div id="content-title">
+        <h2>Материалы курсы</h2>
+    </div>
+    <div id="content-info">
+        <span id="course-content-info"></span>
+    </div>  
     <div id="course-sections"></div>
+    <template id="template-requirements">
+        <li class="course-requirement"></li>
+    </template>
+    <div id="course-requirements">
+        <h2>Необходимые требования</h2>
+        <ul></ul>
+    </div>
+    <div id="course-description">
+        <h2>Подробное описание</h2>
+        <div id="course-full_description"></div>
+    </div>
 </div>
 {% endblock %}

@@ -23,12 +23,39 @@
 
 #course-body {
     margin: 20px 300px;
+    width: 800px;
 }
 
 .course-header-icon {
     stroke: white;
     height: 20px;
     width: 20px;
+}
+
+#course-what_will_learn {
+    border: 1px solid black;
+    width: 800px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+#what_will_learn-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.what_will_learn-icon {
+    width: 20px;
+    height: 20px;
+}
+
+#content-title {
+    margin-bottom: 20px;
+}
+
+#content-info {
+    padding: 2px;
+    margin-bottom: 10px;
 }
 
 .course-section {
@@ -79,4 +106,22 @@
 
 .item-right {
     margin-left: auto;
+}
+
+#course-requirements {
+    border: 1px solid black;
+    width: 800px;
+    padding: 12px;
+}
+
+#course-requirements ul {
+    list-style: inside;
+}
+
+/* #course-description {
+
+} */
+
+#course-full_description ul {
+    list-style: inside;
 }
