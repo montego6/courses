@@ -80,16 +80,14 @@
         <video class="video-js" class="vjs-fluid" width="800" controls>
         </video>
     </div>
+    <template id="template-video-player-ui-element">
+        <li class="video-player-ui-item"></li>
+    </template>
     <div id="video-player-ui">
-        <div id="ui-previous-video" class="video-player-item">
-            <span class="video-player-item-name"><span>Предыдущее видео:</span></span>
-        </div>    
-        <div id="ui-current-video" class="video-player-item">
-            <span class="video-player-item-name"><span>Текущее видео:</span></span>
-        </div>    
-        <div id="ui-next-video" class="video-player-item">
-            <span class="video-player-item-name"><span>Следующее видео:</span></span>
-        </div>    
+        <div id="video-player-ui-previous-section" class="invisible">Предыдущая секция</div>
+        <ul class="video-player-items">
+        </ul>
+        <div id="video-player-ui-next-section" class="invisible">Следущая секция</div>
     </div>
     <div class="vjs-playlist"></div>
     <div id="course-what_will_learn">

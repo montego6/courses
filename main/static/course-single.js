@@ -4,34 +4,64 @@ getCourseData()
 
 
 let player = videojs(document.querySelector('.video-js'))
+let firstLessonInEachSection = []
 
-player.playlist([
-    { 
-    name: 'Video1',
-    sources: [{
-        src: '/files/media/courses/lessons/0.0_%D0%92%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5.mp4',
-        type: 'video/mp4'
-    }]
-}, 
-{
-    name: 'video2',
-    sources: [{
-        src: '/files/media/courses/lessons/1.1_%D0%94%D0%BB%D1%8F_%D1%87%D0%B5%D0%B3%D0%BE_%D0%BD%D1%83%D0%B6%D0%BD%D0%B0_%D0%9E%D0%A1.mp4',
-        type: 'video/mp4'
-    }]
-}, {
-    name: 'video3',
-    sources: [{
-        src: '/files/media/courses/lessons/1.2_%D0%9F%D0%B5%D1%80%D0%B2%D0%B0%D1%8F_%D0%9E%D0%A1_._%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F_Multics.mp4',
-        type: 'video/mp4'
-    }]
-}  
-])
-player.playlist.autoadvance(0)
-player.on('playlistitem', () => {})
-document.getElementById('ui-next-video').addEventListener('click', event => player.playlist.currentItem(2))
 
-// player.playlistUi()
+// player.playlist.autoadvance(0)
+// player.on('playlistitem', () => {})
+// document.getElementById('ui-next-video').addEventListener('click', event => player.playlist.currentItem(2))
+
+
+function initializePlayer(lessonPlaylist) {
+    player.playlist(lessonPlaylist)
+    player.playlist.autoadvance(0)
+    player.on('playlistitem', () => {
+        updatePlayerUI()
+    })
+
+}
+
+function updatePlayerUI() {
+    document.querySelector('.video-player-items').innerHTML = ''
+    currentLesson = player.playlist.currentItem()
+    currentSectionIndex = firstLessonInEachSection.findLastIndex(lessonIndex => lessonIndex <= currentLesson)
+    lessonPlaylist = player.playlist()
+    nextSectionLesson = firstLessonInEachSection[currentSectionIndex + 1] || firstLessonInEachSection[currentSectionIndex] + 1
+    prevSectionLesson = firstLessonInEachSection[currentSectionIndex - 1] || firstLessonInEachSection[currentSectionIndex] - 1
+    lessonsSectionPlaylist =  lessonPlaylist.filter(lesson => (lesson.playlistItemId_ - 1 < nextSectionLesson) &&
+                                                              (lesson.playlistItemId_ - 1 > prevSectionLesson))
+    
+    // console.log(currentLesson)
+    // console.log(currentSectionIndex)
+    lessonsSectionPlaylist.forEach(lesson => {
+        const clone = document.getElementById('template-video-player-ui-element').content.cloneNode(true)
+        clone.querySelector('li').textContent = lesson.name
+        clone.querySelector('li').setAttribute('playlist-id', lesson.playlistItemId_ - 1)
+        clone.querySelector('li').addEventListener('click', event => {
+            player.playlist.currentItem(Number(event.target.getAttribute('playlist-id')))
+        })
+        document.querySelector('.video-player-items').append(clone)
+    })
+    
+    if (currentSectionIndex < firstLessonInEachSection.length - 1) {
+        document.querySelector('#video-player-ui-next-section').classList.remove('invisible')
+        document.querySelector('#video-player-ui-next-section').addEventListener('click', event => {
+            player.playlist.currentItem(firstLessonInEachSection[currentSectionIndex + 1])
+        })
+    }   else {
+        document.querySelector('#video-player-ui-next-section').classList.add('invisible')
+    }
+
+    if (currentSectionIndex > 0) {
+        document.querySelector('#video-player-ui-previous-section').classList.remove('invisible')
+        document.querySelector('#video-player-ui-previous-section').addEventListener('click', event => {
+            player.playlist.currentItem(firstLessonInEachSection[currentSectionIndex - 1])
+        })
+    }   else {
+        document.querySelector('#video-player-ui-previous-section').classList.add('invisible')
+    }
+
+}
 
 function getCourseData() {
     fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
@@ -51,10 +81,26 @@ function initializePage(data) {
     })
 
     let lessonCounter = 0
+    let lessonPlaylist = []
     data.sections.forEach(section => {
         lessonArr = section.items.filter(item => item.type === 'lesson')
-        lessonCounter += lessonArr.length
+        if (lessonArr.length) {
+            firstLessonInEachSection.push(lessonCounter)
+        }
+        lessonArr.forEach(lesson => {
+            playlistElement = {
+                name: lesson.name,
+                sources: [{
+                    src: lesson.file,
+                    type: 'video/mp4'
+                }]
+            }
+            lessonPlaylist.push(playlistElement)
+            lessonCounter++
+        })
     })
+    initializePlayer(lessonPlaylist)
+    
     document.getElementById('course-content-info').textContent = `${data.sections.length} секций - ${lessonCounter} видеоуроков`
     
     data.sections.forEach(section => createSection(section))
