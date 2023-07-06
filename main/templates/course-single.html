@@ -23,6 +23,23 @@
     <svg id="icon-test" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
     <svg id="icon-homework" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
 </div>
+<dialog id="dialog-video-player">
+    <div id="dialog-video-player-title">
+        <h2 id="video-player-course-title"></h2>
+    </div>
+    <div id="video-player" >
+        <video class="video-js" class="vjs-fluid" width="800" controls>
+        </video>
+    </div>
+    <template id="template-video-player-ui-element">
+        <li class="video-player-ui-item"></li>
+    </template>
+    <div id="video-player-ui">
+        <div id="video-player-ui-previous-section" class="invisible">Предыдущая секция</div>
+        <ul class="video-player-items"></ul>
+        <div id="video-player-ui-next-section" class="invisible">Следущая секция</div>
+    </div>
+</dialog>
 <div id="course-header">
     <div id="course-header-content">
         <h1 id="course-name"></h1>
@@ -76,20 +93,7 @@
     </div>
 </template>
 <div id="course-body">
-    <div id="video-player" >
-        <video class="video-js" class="vjs-fluid" width="800" controls>
-        </video>
-    </div>
-    <template id="template-video-player-ui-element">
-        <li class="video-player-ui-item"></li>
-    </template>
-    <div id="video-player-ui">
-        <div id="video-player-ui-previous-section" class="invisible">Предыдущая секция</div>
-        <ul class="video-player-items">
-        </ul>
-        <div id="video-player-ui-next-section" class="invisible">Следущая секция</div>
-    </div>
-    <div class="vjs-playlist"></div>
+
     <div id="course-what_will_learn">
         <h2>Чему вы научитесь:</h2>
         <div id="what_will_learn-items"></div>

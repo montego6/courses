@@ -9,11 +9,7 @@ const addSectionForm = document.getElementById('section-add')
 const addSectionBtn = document.getElementById('btn-add-section')
 addSectionBtn.addEventListener('click', (event) => addSectionForm.classList.remove('invisible'))
 
-const backdrop = document.querySelector('#backdrop')
-backdrop.addEventListener('click', event => {
-    backdrop.classList.add('invisible')
-    document.querySelector('dialog[open]').close()
-})
+
 
 const optionsTabLinks = document.querySelectorAll('.course-option-link')
 optionsTabLinks.forEach(link => link.addEventListener('click', event => {

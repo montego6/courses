@@ -6,10 +6,8 @@ getCourseData()
 let player = videojs(document.querySelector('.video-js'))
 let firstLessonInEachSection = []
 
-
-// player.playlist.autoadvance(0)
-// player.on('playlistitem', () => {})
-// document.getElementById('ui-next-video').addEventListener('click', event => player.playlist.currentItem(2))
+document.querySelector('#backdrop').classList.remove('invisible')
+document.querySelector('#dialog-video-player').show()
 
 
 function initializePlayer(lessonPlaylist) {
@@ -18,7 +16,6 @@ function initializePlayer(lessonPlaylist) {
     player.on('playlistitem', () => {
         updatePlayerUI()
     })
-
 }
 
 function updatePlayerUI() {
@@ -31,8 +28,6 @@ function updatePlayerUI() {
     lessonsSectionPlaylist =  lessonPlaylist.filter(lesson => (lesson.playlistItemId_ - 1 < nextSectionLesson) &&
                                                               (lesson.playlistItemId_ - 1 > prevSectionLesson))
     
-    // console.log(currentLesson)
-    // console.log(currentSectionIndex)
     lessonsSectionPlaylist.forEach(lesson => {
         const clone = document.getElementById('template-video-player-ui-element').content.cloneNode(true)
         clone.querySelector('li').textContent = lesson.name
@@ -40,6 +35,9 @@ function updatePlayerUI() {
         clone.querySelector('li').addEventListener('click', event => {
             player.playlist.currentItem(Number(event.target.getAttribute('playlist-id')))
         })
+        if (lesson.playlistItemId_ - 1 === currentLesson) {
+            clone.querySelector('li').classList.add('active')
+        }
         document.querySelector('.video-player-items').append(clone)
     })
     
@@ -68,6 +66,9 @@ function getCourseData() {
 }
 
 function initializePage(data) {
+
+    document.getElementById('video-player-course-title').textContent = data.name
+
     document.getElementById('course-sections').innerHTML = ''
     document.getElementById('course-name').textContent = data.name
     document.getElementById('course-short_description').textContent = data.short_description

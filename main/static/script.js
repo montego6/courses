@@ -12,6 +12,12 @@ fetch('http://localhost:8000/api/categories/').then(response => response.json())
     createMenuElements(categories, popoverMenu)
 })
 
+const backdrop = document.querySelector('#backdrop')
+backdrop.addEventListener('click', event => {
+    backdrop.classList.add('invisible')
+    document.querySelector('dialog[open]').close()
+})
+
 getChildMenu = (menu) => (menu === popoverMenu ? popoverSubMenu : popoverSubjects) 
 getChildElements = (menu, element) => (menu === popoverMenu ? element.subcategories: element.subjects)
 
