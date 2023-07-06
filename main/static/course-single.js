@@ -2,9 +2,59 @@ const courseId = document.getElementById('course-id').textContent
 
 getCourseData()
 
+class Lesson {
+    constructor(id, data, sectionIndex) {
+        this.id = id
+        this.name = data.name
+        this.file = data.file
+        this.section = sectionIndex
+    }
+
+    get playlistElement() {
+        return {
+            name: this.name,
+            sources: [{
+                src: this.file,
+                type: 'video/mp4'
+            }]
+        }
+    }
+}
+
+class LessonManager {
+    static lessons = []
+    
+    static addLesson(lesson) {
+        this.lessons.push(lesson)
+    }
+
+    static get lessonsPlaylist() {
+        return Array.from(this.lessons, lesson => lesson.playlistElement)
+    }
+
+    static findLessonById(lessonId) {
+        return this.lessons.find(lesson => lesson.id === lessonId)
+    }
+    
+    static getSectionLessons(lessonId) {
+        const currentLesson = this.findLessonById(lessonId)
+        return this.lessons.filter(lesson => lesson.section === currentLesson.section)
+    }
+
+    static getNextSectionLesson(lessonId) {
+        const currentLesson = this.findLessonById(lessonId)
+        return this.lessons.find(lesson => lesson.section === currentLesson.section + 1)
+    }
+
+    static getPreviousSectionLesson(lessonId) {
+        const currentLesson = this.findLessonById(lessonId)
+        return this.lessons.findLast(lesson => lesson.section === currentLesson.section - 1)
+    }
+}
+
 
 let player = videojs(document.querySelector('.video-js'))
-let firstLessonInEachSection = []
+
 
 const videoDialog = document.querySelector('#dialog-video-player')
 backdrop.addEventListener('click', event => {
@@ -25,44 +75,37 @@ function initializePlayer(lessonPlaylist) {
 function updatePlayerUI() {
     document.querySelector('.video-player-items').innerHTML = ''
     currentLesson = player.playlist.currentItem()
-    currentSectionIndex = firstLessonInEachSection.findLastIndex(lessonIndex => lessonIndex <= currentLesson)
-    lessonPlaylist = player.playlist()
-    nextSectionLesson = firstLessonInEachSection[currentSectionIndex + 1] || firstLessonInEachSection[currentSectionIndex] + 1
-    prevSectionLesson = firstLessonInEachSection[currentSectionIndex - 1] || firstLessonInEachSection[currentSectionIndex] - 1
-    lessonsSectionPlaylist =  lessonPlaylist.filter(lesson => (lesson.playlistItemId_ - 1 < nextSectionLesson) &&
-                                                              (lesson.playlistItemId_ - 1 > prevSectionLesson))
-    
-    lessonsSectionPlaylist.forEach(lesson => {
+    sectionlessonsPlaylist = LessonManager.getSectionLessons(currentLesson)
+
+    sectionlessonsPlaylist.forEach(lesson => {
         const clone = document.getElementById('template-video-player-ui-element').content.cloneNode(true)
         clone.querySelector('li').textContent = lesson.name
-        clone.querySelector('li').setAttribute('playlist-id', lesson.playlistItemId_ - 1)
-        clone.querySelector('li').addEventListener('click', event => {
-            player.playlist.currentItem(Number(event.target.getAttribute('playlist-id')))
-        })
-        if (lesson.playlistItemId_ - 1 === currentLesson) {
+        clone.querySelector('li').addEventListener('click', event => player.playlist.currentItem(lesson.id))
+        if (lesson.id === currentLesson) {
             clone.querySelector('li').classList.add('active')
         }
         document.querySelector('.video-player-items').append(clone)
     })
     
-    if (currentSectionIndex < firstLessonInEachSection.length - 1) {
-        document.querySelector('#video-player-ui-next-section').classList.remove('invisible')
-        document.querySelector('#video-player-ui-next-section').addEventListener('click', event => {
-            player.playlist.currentItem(firstLessonInEachSection[currentSectionIndex + 1])
-        })
-    }   else {
-        document.querySelector('#video-player-ui-next-section').classList.add('invisible')
+    const nextSectionBtn = document.querySelector('#video-player-ui-next-section')
+    if (LessonManager.getNextSectionLesson(currentLesson) != undefined) {
+        nextSectionBtn.classList.remove('invisible')
+        nextSectionBtn.addEventListener('click', event => {
+            player.playlist.currentItem(LessonManager.getNextSectionLesson(currentLesson).id)
+    })}
+    else {
+        nextSectionBtn.classList.add('invisible')
     }
 
-    if (currentSectionIndex > 0) {
-        document.querySelector('#video-player-ui-previous-section').classList.remove('invisible')
-        document.querySelector('#video-player-ui-previous-section').addEventListener('click', event => {
-            player.playlist.currentItem(firstLessonInEachSection[currentSectionIndex - 1])
-        })
-    }   else {
-        document.querySelector('#video-player-ui-previous-section').classList.add('invisible')
+    const previousSectionBtn = document.querySelector('#video-player-ui-previous-section')
+    if (LessonManager.getPreviousSectionLesson(currentLesson) != undefined) {
+        previousSectionBtn.classList.remove('invisible')
+        previousSectionBtn.addEventListener('click', event => {
+            player.playlist.currentItem(LessonManager.getPreviousSectionLesson(currentLesson).id)
+    })}
+    else {
+        previousSectionBtn.classList.add('invisible')
     }
-
 }
 
 function getCourseData() {
@@ -87,24 +130,33 @@ function initializePage(data) {
 
     let lessonCounter = 0
     let lessonPlaylist = []
-    data.sections.forEach(section => {
+    // data.sections.forEach(section => {
+    //     lessonArr = section.items.filter(item => item.type === 'lesson')
+    //     if (lessonArr.length) {
+    //         firstLessonInEachSection.push(lessonCounter)
+    //     }
+    //     lessonArr.forEach(lesson => {
+    //         playlistElement = {
+    //             name: lesson.name,
+    //             sources: [{
+    //                 src: lesson.file,
+    //                 type: 'video/mp4'
+    //             }]
+    //         }
+    //         lessonPlaylist.push(playlistElement)
+    //         lessonCounter++
+    //     })
+    // })
+    data.sections.forEach((section, index) => {
         lessonArr = section.items.filter(item => item.type === 'lesson')
-        if (lessonArr.length) {
-            firstLessonInEachSection.push(lessonCounter)
-        }
         lessonArr.forEach(lesson => {
-            playlistElement = {
-                name: lesson.name,
-                sources: [{
-                    src: lesson.file,
-                    type: 'video/mp4'
-                }]
-            }
-            lessonPlaylist.push(playlistElement)
-            lessonCounter++
-        })
-    })
-    initializePlayer(lessonPlaylist)
+                    lessonObj = new Lesson(lessonCounter, lesson, index)
+                    LessonManager.addLesson(lessonObj)
+                    lessonCounter++
+                }
+    )})
+
+    initializePlayer(LessonManager.lessonsPlaylist)
     
     document.getElementById('course-content-info').textContent = `${data.sections.length} секций - ${lessonCounter} видеоуроков`
     
