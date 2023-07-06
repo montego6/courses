@@ -6,8 +6,12 @@ getCourseData()
 let player = videojs(document.querySelector('.video-js'))
 let firstLessonInEachSection = []
 
-document.querySelector('#backdrop').classList.remove('invisible')
-document.querySelector('#dialog-video-player').show()
+const videoDialog = document.querySelector('#dialog-video-player')
+backdrop.addEventListener('click', event => {
+    backdrop.classList.add('invisible')
+    document.querySelector('dialog[open]').close()
+    player.pause()
+})
 
 
 function initializePlayer(lessonPlaylist) {
@@ -105,6 +109,16 @@ function initializePage(data) {
     document.getElementById('course-content-info').textContent = `${data.sections.length} секций - ${lessonCounter} видеоуроков`
     
     data.sections.forEach(section => createSection(section))
+    
+    allLessonLinks = document.querySelectorAll('.lesson-link')
+    allLessonLinks.forEach((lessonLink, index) => {
+        lessonLink.addEventListener('click', event => {
+            player.playlist.currentItem(index)
+            backdrop.classList.remove('invisible')
+            videoDialog.show()
+            player.play()
+        })
+    })
 
     data.requirements.forEach(requierement => {
         const clone = document.getElementById('template-requirements').content.cloneNode(true)
@@ -144,5 +158,8 @@ function createItem(section, item) {
     clone.querySelector('.section-item').setAttribute('item-id', item.id)
     clone.querySelector('.section-item').setAttribute('item-type', item.type)
     clone.querySelector('svg use').setAttribute('href', `#icon-${item.type}`)
+    if (item.type === 'lesson') {
+        clone.querySelector('.item-name').classList.add('lesson-link')
+    }
     section.querySelector('.section-items').append(clone)
 }

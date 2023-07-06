@@ -161,3 +161,9 @@
 #video-player-ui li.active {
     background-color: var(--video-ui-active-color);
 }
+
+.lesson-link {
+    text-decoration: underline;
+    color:rgb(29, 153, 255);
+    cursor: pointer;
+}
