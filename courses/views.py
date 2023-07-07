@@ -1,17 +1,36 @@
 from django.shortcuts import render
+from django.urls import reverse
 from rest_framework import viewsets
 from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework
 from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
-from .serializers import TestSerializer, TestQuestionSerializer
+from .serializers import TestSerializer, TestQuestionSerializer, CoursePaymentSerializer
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import action
+import stripe
+from decouple import config
+
+stripe.api_key = config('STRIPE_KEY')
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     authentication_classes = [SessionAuthentication]
+
+    @action(methods=['get'], detail=True)
+    def buy(self, request, pk=None):
+        course = Course.objects.get(id=pk)
+        line_items = CoursePaymentSerializer(course).data
+        session = stripe.checkout.Session.create(
+            success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
+            client_reference_id=request.user.id,
+            line_items=[line_items],
+            currency='rub',
+            mode="payment",
+        )
+        return Response({'id': session['id']})
 
 
 class SectionViewSet(viewsets.ModelViewSet):

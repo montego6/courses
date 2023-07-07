@@ -98,4 +98,13 @@ class CourseSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
     
 
+class CoursePaymentSerializer(serializers.ModelSerializer):
+    price = serializers.CharField(source='stripe.price')
+    quantity = serializers.IntegerField(default=1, initial=1)
+
+    class Meta:
+        model = Course
+        fields = ('price', 'quantity')
+    
+
 

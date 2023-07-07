@@ -4,6 +4,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 
+
 User = get_user_model()
 
 COURSE_OPTION_CHOICES = [
@@ -28,6 +29,12 @@ class Course(models.Model):
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     is_published = models.BooleanField(default=False)
+
+
+class StripeCourse(models.Model):
+    course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='stripe')
+    product = models.CharField(max_length=300)
+    price = models.CharField(max_length=300)
 
 
 class Section(models.Model):

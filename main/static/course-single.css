@@ -167,3 +167,10 @@
     color:rgb(29, 153, 255);
     cursor: pointer;
 }
+
+#buy-course {
+    width: 300px;
+    height: 100px;
+    background-color: aquamarine;
+    font-size: 3rem;
+}
