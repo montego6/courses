@@ -7,8 +7,6 @@ from .payment import fullfill_order
 
 stripe.api_key = config('STRIPE_KEY')
 
-
-
 endpoint_secret = config('STRIPE_WEBHOOK_SECRET')
 
 # Create your views here.

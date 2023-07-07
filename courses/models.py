@@ -3,7 +3,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
-
+import courses.consts as consts
 
 User = get_user_model()
 
@@ -11,6 +11,13 @@ COURSE_OPTION_CHOICES = [
     ('basic', 'All the basic content'),
     ('extra', 'Some additional files'),
     ('premium', 'All the content you need'),
+]
+
+COURSE_PAYMENT_CHOICES = [
+    (consts.COURSE_PAYMENT_PAID, 'Course is paid'),
+    (consts.COURSE_PAYMENT_NOT_PAID, 'Course is not paid'),
+    (consts.COURSE_PAYMENT_ERROR, 'Course is not paid due to error'),
+    (consts.COURSE_PAYMENT_REFUND, 'Course is refunded'),
 ]
 
 
@@ -35,6 +42,14 @@ class StripeCourse(models.Model):
     course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='stripe')
     product = models.CharField(max_length=300)
     price = models.CharField(max_length=300)
+
+
+class CoursePayment(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='payments')
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
+    status = models.CharField(max_length=20, choices=COURSE_PAYMENT_CHOICES, default=consts.COURSE_PAYMENT_NOT_PAID)
+    payment_datetime = models.DateTimeField(auto_now_add=True)
+    update_datetime = models.DateTimeField(auto_now=True)
 
 
 class Section(models.Model):
