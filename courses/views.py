@@ -31,6 +31,10 @@ class CourseViewSet(viewsets.ModelViewSet):
             mode="payment",
         )
         return Response({'id': session['id']})
+    
+    # @action(methods=['get'], detail=True)
+    # def is_paid(self, request, pk=None):
+    #     course = Course.objects.get(id=pk)
 
 
 class SectionViewSet(viewsets.ModelViewSet):

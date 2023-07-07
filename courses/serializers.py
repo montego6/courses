@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework
+from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment
 
 
 # class SectionItemCreation:
@@ -13,8 +13,16 @@ from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, 
 # class ItemOptionSerializer(serializers.Serializer):
 #     option = serializers.CharField(default='basic')
 
+class SectionItemFreeSerializer(serializers.Serializer):
+    def get_field_names(self, *args):
+        payment_option = self.context.get('payment')
+        if payment_option == 'free':
+            return ['name', 'description', 'option', 'type']
+        else:
+            return super().get_field_names(*args)
 
-class LessonSerializer(serializers.ModelSerializer):
+
+class LessonSerializer(SectionItemFreeSerializer, serializers.ModelSerializer):
     type = serializers.CharField(default='lesson', read_only=True)
     
     class Meta:
@@ -22,7 +30,7 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AdditionalFileSerializer(serializers.ModelSerializer):
+class AdditionalFileSerializer(SectionItemFreeSerializer, serializers.ModelSerializer):
     type = serializers.CharField(default='extra_file', read_only=True)
 
     class Meta:
@@ -37,7 +45,7 @@ class TestQuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TestSerializer(serializers.ModelSerializer):
+class TestSerializer(SectionItemFreeSerializer, serializers.ModelSerializer):
     type = serializers.CharField(default='test', read_only=True)
     questions = TestQuestionSerializer(many=True, read_only=True)
 
@@ -47,7 +55,7 @@ class TestSerializer(serializers.ModelSerializer):
         # fields = ['name', 'description', 'section', 'option', 'type', 'questions']
 
 
-class HomeworkSerializer(serializers.ModelSerializer):
+class HomeworkSerializer(SectionItemFreeSerializer, serializers.ModelSerializer):
     type = serializers.CharField(default='homework', read_only=True)
 
     class Meta:
@@ -55,19 +63,25 @@ class HomeworkSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-
 class SectionItemSerializer(serializers.Serializer):
     def to_representation(self, value):
+        user = None
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            user = request.user
+        course = value.section.course
+        is_paid = CoursePayment.objects.filter(course=course, student=user).exists()
         item = value.content_object
+        context = {}
+        context['payment'] = 'paid' if is_paid else 'free'
         if isinstance(item, Lesson):
-            serializer = LessonSerializer(item)
+            serializer = LessonSerializer(item, context=context)
         elif isinstance(item, AdditionalFile):
-            serializer = AdditionalFileSerializer(item)
+            serializer = AdditionalFileSerializer(item, context=context)
         elif isinstance(item, Test):
-            serializer = TestSerializer(item)
+            serializer = TestSerializer(item, context=context)
         elif isinstance(item, Homework):
-            serializer = HomeworkSerializer(item)        
+            serializer = HomeworkSerializer(item, context=context)        
         else:
             raise Exception('Unexpected type of section item')
         return serializer.data
