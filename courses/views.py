@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework import viewsets
 from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework
 from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
-from .serializers import TestSerializer, TestQuestionSerializer, CoursePaymentSerializer
+from .serializers import TestSerializer, TestQuestionSerializer, CourseItemPaymentSerializer
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -22,7 +22,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=True)
     def buy(self, request, pk=None):
         course = Course.objects.get(id=pk)
-        line_items = CoursePaymentSerializer(course).data
+        line_items = CourseItemPaymentSerializer(course).data
         session = stripe.checkout.Session.create(
             success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
             client_reference_id=request.user.id,
