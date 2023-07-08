@@ -52,6 +52,79 @@ class LessonManager {
     }
 }
 
+class Section {
+    constructor(sectionData) {
+        this.name = sectionData.name
+        this.items = sectionData.items
+        this.element = this.renderElement(this.createElement())
+    }
+
+    createElement() {
+        const clone = document.getElementById('template-course-section').content.cloneNode(true)
+        clone.querySelector('span.section-name').textContent = this.name
+        clone.querySelector('svg.section-header-icon-expand').addEventListener('click', this.expandSection.bind(this))
+        return clone
+    }
+
+    renderElement(element) {
+        document.getElementById('course-sections').append(element)
+        return document.getElementById('course-sections').lastElementChild
+    }
+
+    createItems() {
+        this.items.forEach(item => {
+            switch (item.type) {
+                case 'lesson':
+                    new SectionLesson(this, item)
+                    break
+                default:
+                    new SectionItem(this, item)
+            }
+        })
+    }
+
+    expandSection() {
+        this.element.querySelector('div.course-section-body').classList.toggle('invisible')
+    }
+}
+
+
+class SectionItem {
+    constructor(section, itemData) {
+        this.section = section
+        this.data = itemData
+        this.name = itemData.name
+        this.type = itemData.type
+        this.element = this.renderElement(this.createElement())
+        this.extra()
+    }
+
+    createElement() {
+        const itemTemplate = document.getElementById('template-section-item')
+        const clone = itemTemplate.content.cloneNode(true)
+        clone.querySelector('.item-name').textContent = this.name
+        clone.querySelector('svg use').setAttribute('href', `#icon-${this.type}`)
+        return clone
+    }
+
+    renderElement(clone) {
+        this.section.element.querySelector('.section-items').append(clone)
+        return this.section.element.querySelector('.section-items').lastElementChild
+    }
+
+    extra() {
+
+    }
+}
+
+class SectionLesson extends SectionItem {
+    extra() {
+        if (this.data.file) {
+            this.element.querySelector('.item-name').classList.add('lesson-link')
+        }
+    }
+}
+
 
 let player = videojs(document.querySelector('.video-js'))
 
@@ -142,26 +215,10 @@ function initializePage(data) {
     })
 
     let lessonCounter = 0
-    let lessonPlaylist = []
-    // data.sections.forEach(section => {
-    //     lessonArr = section.items.filter(item => item.type === 'lesson')
-    //     if (lessonArr.length) {
-    //         firstLessonInEachSection.push(lessonCounter)
-    //     }
-    //     lessonArr.forEach(lesson => {
-    //         playlistElement = {
-    //             name: lesson.name,
-    //             sources: [{
-    //                 src: lesson.file,
-    //                 type: 'video/mp4'
-    //             }]
-    //         }
-    //         lessonPlaylist.push(playlistElement)
-    //         lessonCounter++
-    //     })
-    // })
+    // let lessonPlaylist = []
+
     data.sections.forEach((section, index) => {
-        lessonArr = section.items.filter(item => item.type === 'lesson')
+        lessonArr = section.items.filter(item => item.type === 'lesson' && item.file)
         lessonArr.forEach(lesson => {
                     lessonObj = new Lesson(lessonCounter, lesson, index)
                     LessonManager.addLesson(lessonObj)
@@ -173,7 +230,11 @@ function initializePage(data) {
     
     document.getElementById('course-content-info').textContent = `${data.sections.length} секций - ${lessonCounter} видеоуроков`
     
-    data.sections.forEach(section => createSection(section))
+    // data.sections.forEach(section => createSection(section))
+    data.sections.forEach(sectionData => {
+        section = new Section(sectionData)
+        section.createItems()
+    })
     
     allLessonLinks = document.querySelectorAll('.lesson-link')
     allLessonLinks.forEach((lessonLink, index) => {
@@ -195,36 +256,41 @@ function initializePage(data) {
 
 }
 
-function expandSection(event) {
-    this.classList.toggle('invisible')
-}
+// function expandSection(event) {
+//     this.classList.toggle('invisible')
+// }
 
-function createSection(section) {
-    const clone = document.getElementById('template-course-section').content.cloneNode(true)
-    const sectionDiv = clone.querySelector('div.course-section')
-    clone.querySelector('span.section-name').textContent = section.name
-    sectionDiv.setAttribute('section-id', section.id)
-    clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
+
+
+// function createSection(section) {
+//     const clone = document.getElementById('template-course-section').content.cloneNode(true)
+//     // const sectionDiv = clone.querySelector('div.course-section')
+//     clone.querySelector('span.section-name').textContent = section.name
+//     // sectionDiv.setAttribute('section-id', section.id)
+//     clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
     
-    // const filteredItems = section.items.filter(item => {
-    //     const optionIndex = courseOptions.findIndex(el => el === courseOption)
-    //     const slicedArr = courseOptions.slice(0, optionIndex + 1)
-    //     return slicedArr.includes(item.option)
-    // })
-    section.items.forEach(item => createItem(clone.querySelector('div.course-section'), item))
-    document.getElementById('course-sections').append(clone)
-}
+//     // const filteredItems = section.items.filter(item => {
+//     //     const optionIndex = courseOptions.findIndex(el => el === courseOption)
+//     //     const slicedArr = courseOptions.slice(0, optionIndex + 1)
+//     //     return slicedArr.includes(item.option)
+//     // })
+//     section.items.forEach(item => createItem(clone.querySelector('div.course-section'), item))
+//     document.getElementById('course-sections').append(clone)
+// }
 
 
-function createItem(section, item) {
-    const itemTemplate = document.getElementById('template-section-item')
-    const clone = itemTemplate.content.cloneNode(true)
-    clone.querySelector('.item-name').textContent = item.name
-    clone.querySelector('.section-item').setAttribute('item-id', item.id)
-    clone.querySelector('.section-item').setAttribute('item-type', item.type)
-    clone.querySelector('svg use').setAttribute('href', `#icon-${item.type}`)
-    if (item.type === 'lesson') {
-        clone.querySelector('.item-name').classList.add('lesson-link')
-    }
-    section.querySelector('.section-items').append(clone)
-}
+
+
+
+// function createItem(section, item) {
+//     const itemTemplate = document.getElementById('template-section-item')
+//     const clone = itemTemplate.content.cloneNode(true)
+//     clone.querySelector('.item-name').textContent = item.name
+//     // clone.querySelector('.section-item').setAttribute('item-id', item.id)
+//     // clone.querySelector('.section-item').setAttribute('item-type', item.type)
+//     clone.querySelector('svg use').setAttribute('href', `#icon-${item.type}`)
+//     if (item.type === 'lesson') {
+//         clone.querySelector('.item-name').classList.add('lesson-link')
+//     }
+//     section.querySelector('.section-items').append(clone)
+// }

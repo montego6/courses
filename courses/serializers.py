@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.fields import empty
 from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment
-
+from .consts import COURSE_OPTIONS
 
 # class SectionItemCreation:
 #     def create(self, validated_data):
@@ -17,7 +17,7 @@ from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, 
 class SectionItemFreeSerializer(serializers.Serializer):
     def get_field_names(self, *args):
         payment_option = self.context.get('payment')
-        if payment_option == 'free':
+        if payment_option and (COURSE_OPTIONS.index(payment_option) < COURSE_OPTIONS.index(self.instance.option)):
             return ['name', 'description', 'option', 'type']
         else:
             return super().get_field_names(*args)
@@ -130,9 +130,15 @@ class CourseSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
             user = request.user.id
-        is_paid = CoursePayment.objects.filter(course=obj, student=user).exists()
+        # is_paid = CoursePayment.objects.filter(course=obj, student=user).exists()
         context = {}
-        context['payment'] = 'paid' if is_paid else 'free'
+        try:
+            payment = CoursePayment.objects.get(course=obj, student=user)
+        except CoursePayment.DoesNotExist:
+            context['payment'] = 'free'
+        else:
+            context['payment'] = payment.option
+        # context['payment'] = payment.option if payment.exists() else 'free'
         serializer = SectionSerializer(sections, many=True, read_only=True, context=context)
         return serializer.data
 
