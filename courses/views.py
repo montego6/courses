@@ -25,12 +25,14 @@ class CourseViewSet(viewsets.ModelViewSet):
         price = course.stripe.price if not option else course.stripe.option_prices[option]
         line_items = {'price': price, 'quantity': 1}
         # line_items = CourseItemPaymentSerializer(course).data
+        metadata = {'option': option} if option else {'option': 'basic'}
         session = stripe.checkout.Session.create(
             success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
             client_reference_id=request.user.id,
             line_items=[line_items],
             currency='rub',
             mode="payment",
+            metadata=metadata
         )
         return Response({'id': session['id']})
     

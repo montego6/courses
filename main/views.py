@@ -41,7 +41,7 @@ def my_webhook_view(request):
     print(line_items)
     print(session)
     # Fulfill the purchase...
-    fullfill_order(line_items['data'][0], session['client_reference_id'])
+    fullfill_order(line_items['data'][0], session['client_reference_id'], session['metadata'])
 
   # Passed signature verification
   return HttpResponse(status=200)
