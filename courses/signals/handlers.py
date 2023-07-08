@@ -26,4 +26,12 @@ def create_stripe_course_item(sender, instance, created, **kwargs):
         currency='rub',
         product=product['id']
     )
-    StripeCourse.objects.create(course=instance, product=product['id'], price=price['id'])
+    option_prices = {}
+    for option in instance.options:
+        price = stripe.Price.create(
+        unit_amount=int(option['price'] * 100),
+        currency='rub',
+        product=product['id']
+        )
+        option_prices[option['option']] = price['id']
+    StripeCourse.objects.create(course=instance, product=product['id'], price=price['id'], option_prices=option_prices)

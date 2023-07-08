@@ -57,12 +57,16 @@ let player = videojs(document.querySelector('.video-js'))
 
 let stripe = Stripe('pk_test_51McWQcDlPs5u4HwiXU90HVvWjuDJjOPFOoQV35sWS44HHELoefCrjSoHdRN4hRfoLfmsZkxSARDuRF4Q412znY0d00t6YkA4M7')
 
-buyBtn = document.querySelector('#buy-course')
-buyBtn.addEventListener('click', event => {
-    fetch(`http://127.0.0.1:8000/api/courses/${courseId}/buy/`)
-        .then(response => response.json())
-        .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
+buyBtns = document.querySelectorAll('.buy-course')
+buyBtns.forEach(buyBtn => {
+    let option = buyBtn.id.split('-')[1]
+    buyBtn.addEventListener('click', event => {
+        fetch(`http://127.0.0.1:8000/api/courses/${courseId}/buy/${option}/`)
+            .then(response => response.json())
+            .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
+    })
 })
+
 
 
 const videoDialog = document.querySelector('#dialog-video-player')

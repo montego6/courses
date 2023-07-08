@@ -8,9 +8,10 @@ import courses.consts as consts
 User = get_user_model()
 
 COURSE_OPTION_CHOICES = [
-    ('basic', 'All the basic content'),
-    ('extra', 'Some additional files'),
-    ('premium', 'All the content you need'),
+    (consts.COURSE_OPTION_FREE, 'It is a free content'),
+    (consts.COURSE_OPTION_BASIC, 'All the basic content'),
+    (consts.COURSE_OPTION_EXTRA, 'Some additional files'),
+    (consts.COURSE_OPTION_PREMIUM, 'All the content you need'),
 ]
 
 COURSE_PAYMENT_CHOICES = [
@@ -42,12 +43,15 @@ class StripeCourse(models.Model):
     course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='stripe')
     product = models.CharField(max_length=300)
     price = models.CharField(max_length=300)
+    option_prices = models.JSONField()
 
 
 class CoursePayment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='payments')
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
     status = models.CharField(max_length=20, choices=COURSE_PAYMENT_CHOICES, default=consts.COURSE_PAYMENT_NOT_PAID)
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
+    amount = models.DecimalField(max_digits=8, decimal_places=2)
     payment_datetime = models.DateTimeField(auto_now_add=True)
     update_datetime = models.DateTimeField(auto_now=True)
 
@@ -71,7 +75,7 @@ class Lesson(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons')
     file = models.FileField(upload_to='media/courses/lessons/')
     section_items = GenericRelation(SectionItem)
-    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=COURSE_OPTION_CHOICES[0][0])
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
     
 
 class AdditionalFile(models.Model):
@@ -80,7 +84,7 @@ class AdditionalFile(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='extra_files')
     file = models.FileField(upload_to='media/courses/extra_files/')
     section_items = GenericRelation(SectionItem)
-    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=COURSE_OPTION_CHOICES[0][0])
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
 
 
 class Test(models.Model):
@@ -88,7 +92,7 @@ class Test(models.Model):
     description = models.CharField(max_length=200, null=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='tests')
     section_items = GenericRelation(SectionItem)
-    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=COURSE_OPTION_CHOICES[0][0])
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
 
 
 class TestQuestion(models.Model):
@@ -104,5 +108,5 @@ class Homework(models.Model):
     task = models.CharField(max_length=1000)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='homeworks')
     section_items = GenericRelation(SectionItem)
-    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=COURSE_OPTION_CHOICES[0][0])
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
 

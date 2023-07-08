@@ -13,16 +13,18 @@ from decouple import config
 
 stripe.api_key = config('STRIPE_KEY')
 
-
+# (?P<course_pk>[^/.]+)/
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
     authentication_classes = [SessionAuthentication]
 
-    @action(methods=['get'], detail=True)
-    def buy(self, request, pk=None):
+    @action(methods=['get'], detail=True, url_path=r'buy/(?P<option>[^/.]+)')
+    def buy(self, request, option, pk=None):
         course = Course.objects.get(id=pk)
-        line_items = CourseItemPaymentSerializer(course).data
+        price = course.stripe.price if not option else course.stripe.option_prices[option]
+        line_items = {'price': price, 'quantity': 1}
+        # line_items = CourseItemPaymentSerializer(course).data
         session = stripe.checkout.Session.create(
             success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
             client_reference_id=request.user.id,
