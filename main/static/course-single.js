@@ -95,8 +95,10 @@ class SectionItem {
         this.data = itemData
         this.name = itemData.name
         this.type = itemData.type
+        this.option = itemData.option
         this.element = this.renderElement(this.createElement())
         this.extra()
+        ContentManager.addToManager(this)
     }
 
     createElement() {
@@ -124,6 +126,46 @@ class SectionLesson extends SectionItem {
         }
     }
 }
+
+class ContentManager {
+    static content = []
+    static str_mappings = {
+        'lesson': 'уроков',
+        'test': 'тестов',
+        'homework': 'дом. заданий', 
+        'extra-file': 'доп. файлов'
+    }
+    static item_options = ['basic', 'extra', 'premium']
+
+    static addToManager(item) {
+        this.content.push(item)
+    }
+
+    static getItemsCount(type, option) {
+        const slicedArr = this.item_options.slice(0, this.item_options.findIndex(el => el === option) + 1)
+        let counter = 0
+        slicedArr.forEach(option => counter += this.content.filter(item => item.type === type && item.option === option).length)
+        return counter
+    }
+
+    static getElement(type, option) {
+        return this.getItemsCount(type, option) ? `<span>${this.getItemsCount(type, option)} ${this.str_mappings[type]}</span>` : '' 
+    }
+
+    static renderBuyElement(option) {
+        let content = ''
+        Object.keys(this.str_mappings).forEach(key => {
+            content += this.getElement(key, option)
+        })
+        document.querySelector(`#buy-${option}-content`).innerHTML = content
+
+    }
+
+    static renderBuyElements() {
+        this.item_options.forEach(type => this.renderBuyElement(type))
+    }
+}
+
 
 
 let player = videojs(document.querySelector('.video-js'))
@@ -198,25 +240,23 @@ function getCourseData() {
     fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
 }
 
-function initializePage(data) {
-
-    document.getElementById('video-player-course-title').textContent = data.name
-
-    document.getElementById('course-sections').innerHTML = ''
+function initializeHeader(data) {
     document.getElementById('course-name').textContent = data.name
     document.getElementById('course-short_description').textContent = data.short_description
     document.getElementById('course-date_updated').textContent = data.date_updated
     document.getElementById('course-language').textContent = data.language
-    
+}
+
+function initializeWhatWillLearn(data) {
     data.what_will_learn.forEach(item => {
         const clone = document.getElementById('template-what_will_learn').content.cloneNode(true)
         clone.querySelector('span').textContent = item
         document.getElementById('what_will_learn-items').append(clone)
     })
+}
 
+function initializeVideoLessons(data) {
     let lessonCounter = 0
-    // let lessonPlaylist = []
-
     data.sections.forEach((section, index) => {
         lessonArr = section.items.filter(item => item.type === 'lesson' && item.file)
         lessonArr.forEach(lesson => {
@@ -225,17 +265,10 @@ function initializePage(data) {
                     lessonCounter++
                 }
     )})
-
-    initializePlayer(LessonManager.lessonsPlaylist)
-    
     document.getElementById('course-content-info').textContent = `${data.sections.length} секций - ${lessonCounter} видеоуроков`
-    
-    // data.sections.forEach(section => createSection(section))
-    data.sections.forEach(sectionData => {
-        section = new Section(sectionData)
-        section.createItems()
-    })
-    
+}
+
+function initializeVideoLessonsLinks() {
     allLessonLinks = document.querySelectorAll('.lesson-link')
     allLessonLinks.forEach((lessonLink, index) => {
         lessonLink.addEventListener('click', event => {
@@ -245,15 +278,37 @@ function initializePage(data) {
             player.play()
         })
     })
+}
 
+function initizlizeRequirements(data) {
     data.requirements.forEach(requierement => {
         const clone = document.getElementById('template-requirements').content.cloneNode(true)
         clone.querySelector('li').textContent = requierement
         document.querySelector('#course-requirements ul').append(clone)
     })
+}
+
+
+
+function initializePage(data) {
+    document.getElementById('video-player-course-title').textContent = data.name
+    document.getElementById('course-sections').innerHTML = ''
+    initializeHeader(data)
+    initializeWhatWillLearn(data)
+    initializeVideoLessons(data)
+    initializePlayer(LessonManager.lessonsPlaylist)
+
+    data.sections.forEach(sectionData => {
+        section = new Section(sectionData)
+        section.createItems()
+    })
+    
+    initializeVideoLessonsLinks()
+    initizlizeRequirements(data)
 
     document.getElementById('course-full_description').innerHTML = data.full_description
-
+    
+    ContentManager.renderBuyElements()
 }
 
 // function expandSection(event) {

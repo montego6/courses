@@ -168,9 +168,12 @@
     cursor: pointer;
 }
 
-.buy-course {
-    width: 300px;
-    height: 100px;
-    background-color: aquamarine;
-    font-size: 3rem;
+#buy-course {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }
+
+#buy-course > div {
+    border: 1px solid black;
+}
+
