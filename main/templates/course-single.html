@@ -92,48 +92,66 @@
         <span class="what_will_learn-text"></span>
     </div>
 </template>
-<div id="course-body">
-    <!-- <div id="buy-basic" class="buy-course">Купить basic</div>
-    <div id="buy-extra" class="buy-course">Купить extra</div>
-    <div id="buy-premium" class="buy-course">Купить premium</div> -->
-    <div id="course-what_will_learn">
-        <h2>Чему вы научитесь:</h2>
-        <div id="what_will_learn-items"></div>
-    </div>
-    <div id="buy-course">
-        <div id="buy-basic">
-            <h2>Basic</h2>
-            <span>Все необходимые материалы</span>
-            <div id="buy-basic-content"></div>
-        </div>
-        <div id="buy-extra">
-            <h2>Extra</h2>
-            <span>Дополнительные опции</span>
-            <div id="buy-extra-content"></div>
-        </div>
-        <div id="buy-premium">
-            <h2>Premuim</h2>
-            <span>Максимальные возможности</span>
-            <div id="buy-premium-content"></div>
+<div id="body-wrapper">
+    <div id="side-menu">
+        <img id="side-menu-cover" src="" alt="">
+        <div id="side-menu-content">
+            <h2 id="side-menu-price"></h2>
+            <div class="form-button">Купить</div>
+            <div id="side-menu-options-header">
+            </div>
+            <div id="side-menu-options">
+                <span>Курс включает:</span>
+                <div id="side-menu-options-content">
+                    
+                </div>
+            </div>
         </div>
     </div>
-    <div id="content-title">
-        <h2>Материалы курсы</h2>
-    </div>
-    <div id="content-info">
-        <span id="course-content-info"></span>
-    </div>  
-    <div id="course-sections"></div>
-    <template id="template-requirements">
-        <li class="course-requirement"></li>
-    </template>
-    <div id="course-requirements">
-        <h2>Необходимые требования</h2>
-        <ul></ul>
-    </div>
-    <div id="course-description">
-        <h2>Подробное описание</h2>
-        <div id="course-full_description"></div>
+    <div id="course-body">
+        <!-- <div id="buy-basic" class="buy-course">Купить basic</div>
+        <div id="buy-extra" class="buy-course">Купить extra</div>
+        <div id="buy-premium" class="buy-course">Купить premium</div> -->
+        
+        <div id="course-what_will_learn">
+            <h2>Чему вы научитесь:</h2>
+            <div id="what_will_learn-items"></div>
+        </div>
+        <div id="buy-course">
+            <div id="buy-basic">
+                <h2>Basic</h2>
+                <span>Все необходимые материалы</span>
+                <div id="buy-basic-content"></div>
+            </div>
+            <div id="buy-extra">
+                <h2>Extra</h2>
+                <span>Дополнительные опции</span>
+                <div id="buy-extra-content"></div>
+            </div>
+            <div id="buy-premium">
+                <h2>Premuim</h2>
+                <span>Максимальные возможности</span>
+                <div id="buy-premium-content"></div>
+            </div>
+        </div>
+        <div id="content-title">
+            <h2>Материалы курсы</h2>
+        </div>
+        <div id="content-info">
+            <span id="course-content-info"></span>
+        </div>  
+        <div id="course-sections"></div>
+        <template id="template-requirements">
+            <li class="course-requirement"></li>
+        </template>
+        <div id="course-requirements">
+            <h2>Необходимые требования</h2>
+            <ul></ul>
+        </div>
+        <div id="course-description">
+            <h2>Подробное описание</h2>
+            <div id="course-full_description"></div>
+        </div>
     </div>
 </div>
 {% endblock %}

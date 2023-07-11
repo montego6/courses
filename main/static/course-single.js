@@ -149,7 +149,18 @@ class ContentManager {
     }
 
     static getElement(type, option) {
-        return this.getItemsCount(type, option) ? `<span>${this.getItemsCount(type, option)} ${this.str_mappings[type]}</span>` : '' 
+        let div = document.createElement('div')
+        let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        svg.classList.add('course-header-icon')
+        let use = document.createElementNS('http://www.w3.org/2000/svg', 'use')
+        use.setAttributeNS('http://www.w3.org/1999/xlink','href',`#icon-${type}`)
+        svg.append(use)
+        div.append(svg)
+        let span = document.createElement('span')
+        span.textContent = `${this.getItemsCount(type, option)} ${this.str_mappings[type]}`
+        div.append(span)
+        return div 
+            // return this.getItemsCount(type, option) ? `<span>${this.getItemsCount(type, option)} ${this.str_mappings[type]}</span>` : '' 
     }
 
     static renderBuyElement(option) {
@@ -163,6 +174,14 @@ class ContentManager {
 
     static renderBuyElements() {
         this.item_options.forEach(type => this.renderBuyElement(type))
+    }
+
+    static renderSidemenuContent(option) {
+        Object.keys(this.str_mappings).forEach(type => {
+            if (this.getItemsCount(type, option)) {
+                document.querySelector('#side-menu-options-content').append(this.getElement(type, option))
+            }
+        })
     }
 }
 
@@ -288,7 +307,18 @@ function initizlizeRequirements(data) {
     })
 }
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
+function initializeSidebar(data) {
+    document.getElementById('side-menu-cover').src = data.cover
+    document.getElementById('side-menu-price').textContent = data.price + '. руб.'
+    data.options.forEach(element => {
+        spanEl = `<span id="buy-${element.option}">${capitalizeFirstLetter(element.option)}</span>`
+        document.getElementById('side-menu-options-header').innerHTML += spanEl
+    })
+}
 
 function initializePage(data) {
     document.getElementById('video-player-course-title').textContent = data.name
@@ -308,7 +338,9 @@ function initializePage(data) {
 
     document.getElementById('course-full_description').innerHTML = data.full_description
     
-    ContentManager.renderBuyElements()
+    initializeSidebar(data)
+    ContentManager.renderSidemenuContent('basic')
+    // ContentManager.renderBuyElements()
 }
 
 // function expandSection(event) {

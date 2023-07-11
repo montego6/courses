@@ -25,7 +25,8 @@
 
 #course-body {
     margin: 20px 300px;
-    width: 800px;
+    max-width: 800px;
+    width: calc(100% - 650px - max(50px, calc(100% - 1431px)));
 }
 
 .course-header-icon {
@@ -36,7 +37,7 @@
 
 #course-what_will_learn {
     border: 1px solid black;
-    width: 800px;
+    width: 100%;
     padding: 24px;
     margin-bottom: 20px;
 }
@@ -177,3 +178,30 @@
     border: 1px solid black;
 }
 
+#side-menu {
+    background-color: rgb(70, 70, 70);
+    width: 320px;
+    height: 600px;
+    position: fixed;
+    right: max(50px, calc(100% - 1431px));
+    top: 100px;
+}
+
+#side-menu-cover {
+    width: inherit;
+}
+
+#side-menu-content {
+    padding: 20px;
+}
+
+#side-menu-price {
+    color: white;
+}
+
+#side-menu-options-header {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    color: white;
+}
