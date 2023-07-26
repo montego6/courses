@@ -61,3 +61,32 @@ categoriesLink.addEventListener('mouseleave', (event) =>
 }
 )
 popoverMenu.addEventListener('mouseleave', hideMenu.bind(popoverMenu))
+
+const searchInput = document.getElementById('header-search-input')
+searchInput.addEventListener('input', event => {
+    element = event.target
+    if (element.value.length > 1) {
+        document.getElementById('header-search-body').classList.remove('invisible')
+        fetch(`http://127.0.0.1:8000/api/courses/barsearch/${element.value}`).then(response => response.json())
+        .then(data => renderSearchResults(data))
+    } else {
+        document.getElementById('header-search-body').classList.add('invisible')
+    }
+})
+
+function renderSearchResults(data) {
+    document.querySelector('.search-elements').innerHTML = ''
+    data.forEach(course => {
+        const clone = document.getElementById('header-search-template').content.cloneNode(true)
+        clone.querySelector('img').setAttribute('src', course.cover)
+        clone.querySelector('.search-element-name').textContent = course.name
+        clone.querySelector('.search-element-price').textContent = course.price + ' руб.'
+        document.querySelector('.search-elements').append(clone)
+    })
+}
+
+document.addEventListener('click', event => {
+    if (event.target != document.getElementById('header-search-body')) {
+        document.getElementById('header-search-body').classList.add('invisible')
+    }
+})

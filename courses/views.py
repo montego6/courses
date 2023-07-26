@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse
+from django.db.models import Q
 from rest_framework import viewsets
 from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework
 from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
@@ -8,6 +9,8 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework import generics
+
 import stripe
 from decouple import config
 
@@ -35,6 +38,13 @@ class CourseViewSet(viewsets.ModelViewSet):
             metadata=metadata
         )
         return Response({'id': session['id']})
+    
+
+    @action(methods=['get'], detail=False, url_path=r'barsearch/(?P<query>[^/.]+)')
+    def bar_search(self, request, query):
+        courses = Course.objects.filter(Q(name__icontains=query) | Q(short_description__icontains=query) | Q(full_description__icontains=query))
+        serializer = self.serializer_class(courses, many=True)
+        return Response(serializer.data)
     
     # @action(methods=['get'], detail=True)
     # def is_paid(self, request, pk=None):
@@ -69,6 +79,7 @@ class TestQuestionViewSet(viewsets.ModelViewSet):
 class HomeworkViewSet(viewsets.ModelViewSet):
     queryset = Homework.objects.all()
     serializer_class = HomeworkSerializer
+
     
 
 class GetUser(APIView):

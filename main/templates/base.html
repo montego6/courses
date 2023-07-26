@@ -14,6 +14,13 @@
     {% block imports %}{% endblock %}
 </head>
 <div id="backdrop" class="invisible"></div>
+<template id="header-search-template">
+    <li class="header-search-element">
+        <img class="search-element-cover" alt="">
+        <span class="search-element-name"></span>
+        <span class="search-element-price"></span>
+    </li>
+</template>
 <nav>
     <div class="header">
         <ul class="header-items">
@@ -36,6 +43,11 @@
                     <form action="/">
                         <input type="text" id="header-search-input">
                     </form>
+                    <div id="header-search-body" class="invisible">
+                        <ul class="search-elements">
+
+                        </ul>
+                    </div>
                 </div>
             </li>
             <li class="header-item">
