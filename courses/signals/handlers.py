@@ -1,8 +1,9 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from courses.models import SectionItem, Lesson, AdditionalFile, Test, Homework, Course, StripeCourse
 import stripe
 from decouple import config
+from moviepy.editor import VideoFileClip
 
 stripe.api_key = config('STRIPE_KEY')
 
@@ -35,3 +36,9 @@ def create_stripe_course_item(sender, instance, created, **kwargs):
         )
         option_prices[option['option']] = price['id']
     StripeCourse.objects.create(course=instance, product=product['id'], price=price['id'], option_prices=option_prices)
+
+
+@receiver(pre_save, sender=Lesson)
+def calculate_video_length(sender, instance, *args, **kwargs):
+    video = VideoFileClip(instance.file.path)
+    instance.duration = video.duration

@@ -115,14 +115,30 @@ class SectionItem {
     }
 
     extra() {
-
+        
     }
 }
+
+
+function formatVideoLessonDuration(duration) {
+    const hours = Math.floor(duration / 3600)
+    const minutes = Math.floor(duration % 3600 / 60)
+    const seconds = Math.floor(duration % 3600 % 60)
+
+    const hoursDisplay = hours > 0 ? hours < 10 ? "0" + hours + ":" : hours + ":" : ""
+    const minutesDisplay = minutes > 0 ? minutes < 10 ? "0" + minutes + ":" : minutes + ":" : ""
+    const secondsDisplay = seconds > 0 ? seconds < 10 ? "0" + seconds : seconds : ""
+    return hoursDisplay + minutesDisplay + secondsDisplay 
+}
+
 
 class SectionLesson extends SectionItem {
     extra() {
         if (this.data.file) {
             this.element.querySelector('.item-name').classList.add('lesson-link')
+        }
+        if (this.data.duration) {
+            this.element.querySelector('.item-right span').textContent = formatVideoLessonDuration(this.data.duration)
         }
     }
 }

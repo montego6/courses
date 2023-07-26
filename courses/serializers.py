@@ -18,7 +18,10 @@ class SectionItemFreeSerializer(serializers.Serializer):
     def get_field_names(self, *args):
         payment_option = self.context.get('payment')
         if payment_option and (COURSE_OPTIONS.index(payment_option) < COURSE_OPTIONS.index(self.instance.option)):
-            return ['name', 'description', 'option', 'type']
+            if isinstance(self.instance, Lesson):
+                return ['name', 'description', 'duration', 'option', 'type']
+            else:
+                return ['name', 'description', 'option', 'type']
         else:
             return super().get_field_names(*args)
 

@@ -74,6 +74,7 @@ class Lesson(models.Model):
     description = models.CharField(max_length=200, null=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons')
     file = models.FileField(upload_to='media/courses/lessons/')
+    duration = models.PositiveIntegerField(null=True)
     section_items = GenericRelation(SectionItem)
     option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
     

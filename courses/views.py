@@ -17,7 +17,7 @@ stripe.api_key = config('STRIPE_KEY')
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    authentication_classes = [SessionAuthentication]
+    # authentication_classes = [SessionAuthentication]
 
     @action(methods=['get'], detail=True, url_path=r'buy/(?P<option>[^/.]+)')
     def buy(self, request, option, pk=None):
