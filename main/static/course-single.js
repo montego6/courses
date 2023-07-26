@@ -193,6 +193,7 @@ class ContentManager {
     }
 
     static renderSidemenuContent(option) {
+        document.querySelector('#side-menu-options-content').innerHTML = ''
         Object.keys(this.str_mappings).forEach(type => {
             if (this.getItemsCount(type, option)) {
                 document.querySelector('#side-menu-options-content').append(this.getElement(type, option))
@@ -331,9 +332,12 @@ function initializeSidebar(data) {
     document.getElementById('side-menu-cover').src = data.cover
     document.getElementById('side-menu-price').textContent = data.price + '. руб.'
     data.options.forEach(element => {
-        spanEl = `<span id="buy-${element.option}">${capitalizeFirstLetter(element.option)}</span>`
+        spanEl = `<span id="buy-${element.option}" data-option="${element.option}">${capitalizeFirstLetter(element.option)}</span>`
         document.getElementById('side-menu-options-header').innerHTML += spanEl
     })
+    document.querySelectorAll('#side-menu-options-header span').forEach(option => option.addEventListener('click', event => {
+        ContentManager.renderSidemenuContent(event.target.getAttribute('data-option'))
+    }))
 }
 
 function initializePage(data) {
@@ -356,6 +360,7 @@ function initializePage(data) {
     
     initializeSidebar(data)
     ContentManager.renderSidemenuContent('basic')
+
     // ContentManager.renderBuyElements()
 }
 
