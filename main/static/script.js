@@ -67,7 +67,7 @@ searchInput.addEventListener('input', event => {
     element = event.target
     if (element.value.length > 1) {
         document.getElementById('header-search-body').classList.remove('invisible')
-        fetch(`http://127.0.0.1:8000/api/courses/barsearch/${element.value}`).then(response => response.json())
+        fetch(`http://127.0.0.1:8000/api/courses/barsearch/${element.value}/`).then(response => response.json())
         .then(data => renderSearchResults(data))
     } else {
         document.getElementById('header-search-body').classList.add('invisible')
@@ -90,3 +90,4 @@ document.addEventListener('click', event => {
         document.getElementById('header-search-body').classList.add('invisible')
     }
 })
+

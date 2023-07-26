@@ -21,7 +21,7 @@ class Lesson {
     }
 }
 
-class LessonManager {
+class VideoLessonManager {
     static lessons = []
     
     static addLesson(lesson) {
@@ -239,7 +239,7 @@ function initializePlayer(lessonPlaylist) {
 function updatePlayerUI() {
     document.querySelector('.video-player-items').innerHTML = ''
     currentLesson = player.playlist.currentItem()
-    sectionlessonsPlaylist = LessonManager.getSectionLessons(currentLesson)
+    sectionlessonsPlaylist = VideoLessonManager.getSectionLessons(currentLesson)
 
     sectionlessonsPlaylist.forEach(lesson => {
         const clone = document.getElementById('template-video-player-ui-element').content.cloneNode(true)
@@ -252,20 +252,20 @@ function updatePlayerUI() {
     })
     
     const nextSectionBtn = document.querySelector('#video-player-ui-next-section')
-    if (LessonManager.getNextSectionLesson(currentLesson) != undefined) {
+    if (VideoLessonManager.getNextSectionLesson(currentLesson) != undefined) {
         nextSectionBtn.classList.remove('invisible')
         nextSectionBtn.addEventListener('click', event => {
-            player.playlist.currentItem(LessonManager.getNextSectionLesson(currentLesson).id)
+            player.playlist.currentItem(VideoLessonManager.getNextSectionLesson(currentLesson).id)
     })}
     else {
         nextSectionBtn.classList.add('invisible')
     }
 
     const previousSectionBtn = document.querySelector('#video-player-ui-previous-section')
-    if (LessonManager.getPreviousSectionLesson(currentLesson) != undefined) {
+    if (VideoLessonManager.getPreviousSectionLesson(currentLesson) != undefined) {
         previousSectionBtn.classList.remove('invisible')
         previousSectionBtn.addEventListener('click', event => {
-            player.playlist.currentItem(LessonManager.getPreviousSectionLesson(currentLesson).id)
+            player.playlist.currentItem(VideoLessonManager.getPreviousSectionLesson(currentLesson).id)
     })}
     else {
         previousSectionBtn.classList.add('invisible')
@@ -293,15 +293,18 @@ function initializeWhatWillLearn(data) {
 
 function initializeVideoLessons(data) {
     let lessonCounter = 0
+    let totalLessons = 0
     data.sections.forEach((section, index) => {
-        lessonArr = section.items.filter(item => item.type === 'lesson' && item.file)
-        lessonArr.forEach(lesson => {
+        let lessonAccessibleArr = section.items.filter(item => item.type === 'lesson' && item.file)
+        lessonAccessibleArr.forEach(lesson => {
                     lessonObj = new Lesson(lessonCounter, lesson, index)
-                    LessonManager.addLesson(lessonObj)
+                    VideoLessonManager.addLesson(lessonObj)
                     lessonCounter++
-                }
-    )})
-    document.getElementById('course-content-info').textContent = `${data.sections.length} секций - ${lessonCounter} видеоуроков`
+                })
+        let sectionLessons = section.items.filter(item => item.type === 'lesson')
+        totalLessons += sectionLessons.length
+            })
+    document.getElementById('course-content-info').textContent = `${data.sections.length} секций - ${totalLessons} видеоуроков`
 }
 
 function initializeVideoLessonsLinks() {
@@ -346,7 +349,7 @@ function initializePage(data) {
     initializeHeader(data)
     initializeWhatWillLearn(data)
     initializeVideoLessons(data)
-    initializePlayer(LessonManager.lessonsPlaylist)
+    initializePlayer(VideoLessonManager.lessonsPlaylist)
 
     data.sections.forEach(sectionData => {
         section = new Section(sectionData)

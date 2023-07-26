@@ -7,5 +7,6 @@ urlpatterns = [
     path('mycourses/create/', TemplateView.as_view(template_name='course-add.html'), name='course-add'),
     path('mycourses/<int:id>/', TemplateView.as_view(template_name='course-content.html'), name='course-content'),
     path('course/<int:id>/', TemplateView.as_view(template_name='course-single.html'), name='course-single'),
+    path('search', TemplateView.as_view(template_name='search.html'), name='course-search'),
     path('webhook/', views.my_webhook_view)
 ]
