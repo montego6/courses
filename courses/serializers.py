@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.fields import empty
 from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment
 from .consts import COURSE_OPTIONS
+from functools import reduce
 
 # class SectionItemCreation:
 #     def create(self, validated_data):
@@ -144,6 +145,19 @@ class CourseSerializer(serializers.ModelSerializer):
         # context['payment'] = payment.option if payment.exists() else 'free'
         serializer = SectionSerializer(sections, many=True, read_only=True, context=context)
         return serializer.data
+    
+
+class CourseSearchSerializer(serializers.ModelSerializer):
+    duration = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Course
+        fields = ['name', 'cover', 'short_description', 'author', 'price', 'language', 'duration']
+
+    def get_duration(self, obj):
+        lessons = Lesson.objects.filter(section__course=obj)
+        duration = reduce(lambda x,y: x+y.duration, lessons, lessons[0].duration)
+        return duration
 
     # def __init__(self, instance=None, *args, **kwargs):
     #     super().__init__(instance, *args, **kwargs)

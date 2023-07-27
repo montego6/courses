@@ -4,7 +4,7 @@ from django.db.models import Q
 from rest_framework import viewsets
 from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework
 from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
-from .serializers import TestSerializer, TestQuestionSerializer, CourseItemPaymentSerializer
+from .serializers import TestSerializer, TestQuestionSerializer, CourseItemPaymentSerializer, CourseSearchSerializer
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -49,6 +49,16 @@ class CourseViewSet(viewsets.ModelViewSet):
     # @action(methods=['get'], detail=True)
     # def is_paid(self, request, pk=None):
     #     course = Course.objects.get(id=pk)
+
+
+class CourseSearchView(generics.ListAPIView):
+    serializer_class = CourseSearchSerializer
+
+    def get_queryset(self):
+        queryset = Course.objects.all()
+        query = self.request.query_params.get('query')
+        queryset = queryset.filter(Q(name__icontains=query) | Q(short_description__icontains=query) | Q(full_description__icontains=query))
+        return queryset
 
 
 class SectionViewSet(viewsets.ModelViewSet):

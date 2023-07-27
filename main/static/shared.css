@@ -123,6 +123,7 @@ input#header-search-input {
 
 .main-body {
     margin: 50px 200px;
+    overflow: hidden;
 }
 
 #backdrop {
