@@ -6,7 +6,7 @@
     display: flex;
 }
 
-#test1 {
+#filters {
     background-color: red;
     width: 300px;
     height: 600px;
@@ -14,7 +14,7 @@
     transition: transform 1s ease-out;
 }
 
-#test2 {
+#courses {
     background-color: rgb(214, 214, 214);
     width: calc(100% - 300px);
     height: 1200px;
@@ -22,11 +22,11 @@
     transition: all 1s ease-out;
 }
 
-.test1-move {
+.filters-move {
     transform: translate(-300px);
 }
 
-.test2-expand {
+.courses-expand {
     width: 100% !important; 
     transform: translate(-300px);
 }

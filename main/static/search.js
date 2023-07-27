@@ -3,10 +3,29 @@ let params = url.searchParams;
 // params.append('lang', 'eng')
 // window.history.pushState({path: url.href}, '', url.href)
 
+const DURATION_FILTER = {
+    'duration-1': {low: 0, high: 60*60},
+    'duration-2': {low: 60*60, high: 3*60*60},
+    'duration-3': {low: 3*60*60, high: 6*60*60},
+    'duration-4': {low: 6*60*60, high: 17*60*60},
+    'duration-5': {low: 17*60*60, high: 5000*60*60},
+}
+
 document.querySelector('p').addEventListener('click', event => {
-    document.getElementById('test1').classList.toggle('test1-move')
-    document.getElementById('test2').classList.toggle('test2-expand')
+    document.getElementById('filters').classList.toggle('filters-move')
+    document.getElementById('courses').classList.toggle('courses-expand')
 })
+
+document.querySelectorAll('.filter-choice input').forEach(filter => filter.addEventListener('change', event => {
+    if (event.target.checked) {
+        CourseManager.filters.duration.push(DURATION_FILTER[event.target.id])
+    } else {
+        let idx = CourseManager.filters.duration.findIndex(el => el === DURATION_FILTER[event.target.id])
+        CourseManager.filters.duration.splice(idx, 1)
+    }
+    CourseManager.renderCourses()
+}))
+
 
 fetch('http://127.0.0.1:8000/api/courses/search/?' + params).then(response => response.json())
         .then(data => {
@@ -38,7 +57,7 @@ class Course {
     }
 
     renderElement() {
-        const section = document.getElementById('test2')
+        const section = document.getElementById('courses')
         section.append(this.createElement())
         return section.lastElementChild
     }
@@ -48,8 +67,41 @@ class Course {
 class CourseManager {
     static courses = []
 
+    static filters = {
+        duration: []
+    }
+
     static addCourse(course) {
         this.courses.push(course)
+    }
+
+    static filterCourses() {
+        return DurationFilter.filter(this.courses, this.filters.duration)
+    }
+
+    static renderCourses() {
+       let empty_filters = Object.values(this.filters).filter(arr => arr.length != 0)
+        if (empty_filters.length) {
+            document.getElementById('courses').innerHTML = ''
+            this.filterCourses().forEach(course => course.renderElement())
+        } else {
+            document.getElementById('courses').innerHTML = ''
+            this.courses.forEach(course => course.renderElement())
+        }
+    }
+}
+
+class DurationFilter {
+    static filter(courses, filters) {
+        if (filters) {
+            let filteredArr = []
+            filters.forEach(filter => {
+                filteredArr.push(...courses.filter(course => filter.low < course.duration && course.duration < filter.high))
+            })
+            return filteredArr 
+        } else {
+            return courses
+       }
     }
 }
 
