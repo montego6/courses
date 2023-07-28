@@ -27,11 +27,6 @@ document.querySelectorAll('#filter-duration .filter-choice input').forEach(filte
 }))
 
 
-
-
-
-
-
 fetch('http://127.0.0.1:8000/api/courses/search/?' + params).then(response => response.json())
         .then(data => {
             console.log(data)
@@ -52,6 +47,7 @@ class Course {
         this.language = data.language
         this.price = data.price
         this.duration = data.duration
+        this.options = data.options
         this.element = this.renderElement()
     }
 
@@ -188,10 +184,31 @@ class LanguageManager {
 }
 
 
+class OptionsManager {
+    static getDistinctOptions() {
+        let optionsArr = Array.from(CourseManager.courses, course => course.options)
+        console.log(optionsArr)
+        optionsArr = optionsArr.flat()
+        let optionsSet = new Set(optionsArr)
+        console.log(optionsSet)
+        return optionsSet
+    }
+
+    static getOptionElement(option) {
+        const clone = document.getElementById('template-filter-language').content.cloneNode(true)
+        clone.querySelector('input').id = 'language-' + language
+        clone.querySelector('label').setAttribute('for', 'language-' + language)
+        clone.querySelector('label').textContent = allLanguages[language]
+        return clone
+    }
+}
+
+
+
 function renderCourses(data) {
     data.forEach(element => {
         let course = new Course(element)
         CourseManager.addCourse(course)
     });
-    console.log(CourseManager.courses)
+    OptionsManager.getDistinctOptions()
 }

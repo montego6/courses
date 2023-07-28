@@ -149,16 +149,23 @@ class CourseSerializer(serializers.ModelSerializer):
 
 class CourseSearchSerializer(serializers.ModelSerializer):
     duration = serializers.SerializerMethodField()
+    options = serializers.SerializerMethodField()
     
     class Meta:
         model = Course
-        fields = ['name', 'cover', 'short_description', 'author', 'price', 'language', 'duration']
+        fields = ['name', 'cover', 'short_description', 'author', 'price', 'language', 'duration', 'options']
 
     def get_duration(self, obj):
         lessons = Lesson.objects.filter(section__course=obj)
         duration = reduce(lambda x,y: x+y.duration, lessons, lessons[0].duration)
         return duration
-
+    
+    def get_options(self, obj):
+        options_set = set()
+        for course_option in obj.options:
+            content = course_option.get("content", [])
+            options_set.update(content)
+        return list(options_set)
     # def __init__(self, instance=None, *args, **kwargs):
     #     super().__init__(instance, *args, **kwargs)
     #     user = None
