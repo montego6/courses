@@ -16,7 +16,7 @@ document.querySelector('p').addEventListener('click', event => {
     document.getElementById('courses').classList.toggle('courses-expand')
 })
 
-document.querySelectorAll('.filter-choice input').forEach(filter => filter.addEventListener('change', event => {
+document.querySelectorAll('#filter-duration .filter-choice input').forEach(filter => filter.addEventListener('change', event => {
     if (event.target.checked) {
         CourseManager.filters.duration.push(DURATION_FILTER[event.target.id])
     } else {
@@ -27,11 +27,20 @@ document.querySelectorAll('.filter-choice input').forEach(filter => filter.addEv
 }))
 
 
+
+
+
+
+
 fetch('http://127.0.0.1:8000/api/courses/search/?' + params).then(response => response.json())
         .then(data => {
             console.log(data)
             renderCourses(data)
+            LanguageManager.renderAllLanguages()
         })
+
+let allLanguages
+fetch('static/langmap.json').then(response => response.json()).then(data => allLanguages = data)
 
 
 class Course {
@@ -68,7 +77,8 @@ class CourseManager {
     static courses = []
 
     static filters = {
-        duration: []
+        duration: [],
+        language: []
     }
 
     static addCourse(course) {
@@ -76,12 +86,18 @@ class CourseManager {
     }
 
     static filterCourses() {
-        return DurationFilter.filter(this.courses, this.filters.duration)
+        let filter = DurationFilter
+        let courses = this.courses
+        while (filter) {
+            courses = filter.filter(courses, this.filters) 
+            filter = filter.next()
+        }
+        return courses
     }
 
     static renderCourses() {
-       let empty_filters = Object.values(this.filters).filter(arr => arr.length != 0)
-        if (empty_filters.length) {
+       let filtersContent = Object.values(this.filters).filter(arr => arr.length != 0)
+        if (filtersContent.length) {
             document.getElementById('courses').innerHTML = ''
             this.filterCourses().forEach(course => course.renderElement())
         } else {
@@ -92,8 +108,9 @@ class CourseManager {
 }
 
 class DurationFilter {
-    static filter(courses, filters) {
-        if (filters) {
+    static filter(courses, filtersArr) {
+        let filters = filtersArr.duration
+        if (filters.length) {
             let filteredArr = []
             filters.forEach(filter => {
                 filteredArr.push(...courses.filter(course => filter.low < course.duration && course.duration < filter.high))
@@ -102,6 +119,71 @@ class DurationFilter {
         } else {
             return courses
        }
+    }
+
+    static next() {
+        return LanguageFilter
+    }
+}
+
+class LanguageFilter {
+    static filter(courses, filtersArr) {
+        let filters = filtersArr.language
+        if (filters.length) {
+            let filteredArr = []
+            filters.forEach(filter => {
+                filteredArr.push(...courses.filter(course => filter.includes(course.language)))
+            })
+            return filteredArr 
+        } else {
+            return courses
+        }
+    }
+
+    static next() {
+        return null
+    }
+}
+
+
+class LanguageManager {
+    static getDistinctLanguages() {
+        let languagesArr = Array.from(CourseManager.courses, course => course.language)
+        let languagesSet = new Set(languagesArr)
+        return languagesSet
+    }
+
+    static getLanguageElement(language) {
+        const clone = document.getElementById('template-filter-language').content.cloneNode(true)
+        clone.querySelector('input').id = 'language-' + language
+        clone.querySelector('label').setAttribute('for', 'language-' + language)
+        clone.querySelector('label').textContent = allLanguages[language]
+        return clone
+    }
+
+    static renderLanguageElement(element) {
+        document.querySelector('#filter-language .filter-body').append(element)
+    }
+
+    static renderAllLanguages() {
+        let allLanguages = this.getDistinctLanguages()
+        allLanguages.forEach(language => {
+            const element = this.getLanguageElement(language)
+            this.renderLanguageElement(element)
+        })
+        this.setEventListeners()
+    }
+
+    static setEventListeners() {
+        document.querySelectorAll('#filter-language .filter-choice input').forEach(filter => filter.addEventListener('change', event => {
+            if (event.target.checked) {
+                CourseManager.filters.language.push(event.target.id.split('-')[1])
+            } else {
+                let idx = CourseManager.filters.language.findIndex(el => el === event.target.id.split('-')[1])
+                CourseManager.filters.language.splice(idx, 1)
+            }
+            CourseManager.renderCourses()
+        }))
     }
 }
 
