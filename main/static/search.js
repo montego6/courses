@@ -265,5 +265,4 @@ function renderCourses(data) {
         let course = new Course(element)
         CourseManager.addCourse(course)
     });
-    OptionsManager.getDistinctOptions()
 }
