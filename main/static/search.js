@@ -11,6 +11,11 @@ const DURATION_FILTER = {
     'duration-5': {low: 17*60*60, high: 5000*60*60},
 }
 
+const optionsMap = {
+    'lesson': 'Уроки',
+    'test': 'Тесты',
+}
+
 document.querySelector('p').addEventListener('click', event => {
     document.getElementById('filters').classList.toggle('filters-move')
     document.getElementById('courses').classList.toggle('courses-expand')
@@ -32,6 +37,7 @@ fetch('http://127.0.0.1:8000/api/courses/search/?' + params).then(response => re
             console.log(data)
             renderCourses(data)
             LanguageManager.renderAllLanguages()
+            OptionsManager.renderAllOptions()
         })
 
 let allLanguages
@@ -74,7 +80,8 @@ class CourseManager {
 
     static filters = {
         duration: [],
-        language: []
+        language: [],
+        options: [],
     }
 
     static addCourse(course) {
@@ -86,6 +93,7 @@ class CourseManager {
         let courses = this.courses
         while (filter) {
             courses = filter.filter(courses, this.filters) 
+            console.log(courses)
             filter = filter.next()
         }
         return courses
@@ -131,6 +139,30 @@ class LanguageFilter {
                 filteredArr.push(...courses.filter(course => filter.includes(course.language)))
             })
             return filteredArr 
+        } else {
+            return courses
+        }
+    }
+
+    static next() {
+        return OptionsFilter
+    }
+}
+
+class OptionsFilter {
+    static filter(courses, filtersArr) {
+        let filters = filtersArr.options
+        if (filters.length) {
+            let filteredArr = []
+            filters.forEach(filter => {
+                let filteredCourses = courses.filter(course => course.options.includes(filter))
+                filteredCourses.forEach(course => {
+                    if (!filteredArr.includes(course)) {
+                        filteredArr.push(course)
+                    }
+                })
+            })
+            return filteredArr
         } else {
             return courses
         }
@@ -187,21 +219,44 @@ class LanguageManager {
 class OptionsManager {
     static getDistinctOptions() {
         let optionsArr = Array.from(CourseManager.courses, course => course.options)
-        console.log(optionsArr)
         optionsArr = optionsArr.flat()
         let optionsSet = new Set(optionsArr)
-        console.log(optionsSet)
         return optionsSet
     }
 
     static getOptionElement(option) {
-        const clone = document.getElementById('template-filter-language').content.cloneNode(true)
-        clone.querySelector('input').id = 'language-' + language
-        clone.querySelector('label').setAttribute('for', 'language-' + language)
-        clone.querySelector('label').textContent = allLanguages[language]
+        const clone = document.getElementById('template-filter-option').content.cloneNode(true)
+        clone.querySelector('input').id = 'option-' + option
+        clone.querySelector('label').setAttribute('for', 'option-' + option)
+        clone.querySelector('label').textContent = optionsMap[option]
         return clone
     }
+
+    static renderOptionElement(element) {
+        document.querySelector('#filter-options .filter-body').append(element)
+    }
+
+    static renderAllOptions() {
+        let options = this.getDistinctOptions() 
+        document.querySelector('#filter-options .filter-body').innerHTML = ''
+        options.forEach(option => this.renderOptionElement(this.getOptionElement(option)))
+        this.setEventListeners()
+    }
+
+    static setEventListeners() {
+        document.querySelectorAll('#filter-options input').forEach(input => input.addEventListener('change', event => {
+            let element = event.target
+            if (element.checked) {
+                CourseManager.filters.options.push(element.id.split('-')[1])
+            } else {
+                let idx = CourseManager.filters.options.findIndex(el => el === element.id.split('-')[1])
+                CourseManager.filters.options.splice(idx, 1)
+            }
+            CourseManager.renderCourses()
+        }))
+    }
 }
+
 
 
 
