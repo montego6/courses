@@ -166,16 +166,13 @@ class CourseSearchSerializer(serializers.ModelSerializer):
             content = course_option.get("content", [])
             options_set.update(content)
         return list(options_set)
-    # def __init__(self, instance=None, *args, **kwargs):
-    #     super().__init__(instance, *args, **kwargs)
-    #     user = None
-    #     request = self.context.get('request')
-    #     if request and hasattr(request, 'user'):
-    #         user = request.user
-    #     is_paid = CoursePayment.objects.filter(course=instance, student=user).exists()
-    #     context = {}
-    #     context['payment'] = 'paid' if is_paid else 'free'
-    #     self.fields['sections'].context.update(context)
+
+
+class CourseProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = ['name', 'cover', 'short_description', 'price']
+
 
 class CourseItemPaymentSerializer(serializers.ModelSerializer):
     price = serializers.CharField(source='stripe.price')

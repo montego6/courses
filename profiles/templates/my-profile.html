@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block imports %}
-<!-- <link href="{% static 'my-profile.css' %}" rel="stylesheet"> -->
+<link href="{% static 'my-profile.css' %}" rel="stylesheet">
 <script src="{% static 'my-profile.js' %}" defer></script>
 {% endblock %}
 {% block title %}My profile{% endblock %}
@@ -24,5 +24,19 @@
             <button class="form-button" type="submit">Создать профиль</button>
         </form>
     </div>
+    <div id="profile">
+        <img id="profile-avatar">
+        <p id="profile-bio"></p>
+    </div>
+    <template id="template-course">
+        <div class="course-wrapper">
+            <img class="course-cover">
+            <div class="course-info">
+                <h3 class="course-title"></h3>
+                <p class="course-description"></p>
+            </div>
+        </div>
+    </template>
+    <div id="my-courses"></div>
 </div>
 {% endblock %}
