@@ -9,3 +9,4 @@ class TeacherProfile(models.Model):
     avatar = models.ImageField(upload_to='media/profiles/avatars/')
     bio = models.CharField(max_length=2000)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    balance = models.PositiveIntegerField(default=0)

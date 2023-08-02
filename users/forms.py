@@ -17,6 +17,7 @@ class UserRegistrationForm(UserCreationForm):
     widget=forms.PasswordInput,
     help_text=password_validation.password_validators_help_text_html(),
 )
+    is_teacher = forms.BooleanField(label='Зарегистрироваться как учитель')
 
     class Meta:
         model = User
