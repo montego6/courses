@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block imports %}
+<!-- <link href="{% static 'my-profile.css' %}" rel="stylesheet"> -->
+<script src="{% static 'my-profile.js' %}" defer></script>
+{% endblock %}
+{% block title %}My profile{% endblock %}
+{% block content %}
+<div class="main-body">
+    <p>Profile works</p>
+    <div id="profile-create" class="invisible">
+        <form name="profile-form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-wrapper">
+                <div class="form-field">
+                    <label for="cover">Аватарка</label>
+                    <input type="file" name="avatar">
+                </div>
+                <div class="form-field">
+                    <label for="bio">Подробное био</label>
+                    <textarea name="bio" cols="50" rows="8"></textarea>
+                </div>  
+            </div>
+            <button class="form-button" type="submit">Создать профиль</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
