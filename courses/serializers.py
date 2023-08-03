@@ -19,8 +19,7 @@ class SectionItemGetFieldsMixin(serializers.Serializer):
     def get_field_names(self, *args):
         payment_option = self.context.get('payment')
         is_author = self.context.get('is_author')
-        payment_include = COURSE_OPTIONS.index(payment_option) < COURSE_OPTIONS.index(self.instance.option)
-        if is_author or not (payment_option and payment_include):
+        if is_author or not (payment_option and COURSE_OPTIONS.index(payment_option) < COURSE_OPTIONS.index(self.instance.option)):
             return super().get_field_names(*args)
         else:
             if isinstance(self.instance, Lesson):

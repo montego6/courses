@@ -180,7 +180,6 @@ class Item {
         this.type = data.type
         this.name = data.name
         this.div = undefined
-        console.log(data)
     }
 
     createElement() {
@@ -229,34 +228,34 @@ class Test extends Item {
         element.querySelector('.item-option').addEventListener('click', event => {
             document.querySelector('#dialog-questions').show()
             backdrop.classList.remove('invisible')
-            initializeTestQuestions(item.id)
+            initializeTestQuestions(this.id)
             const questionForm = document.querySelector('#dialog-questions form')
-            questionForm.addEventListener('submit', postQuestion.bind(questionForm, item.id))
+            questionForm.addEventListener('submit', postQuestion.bind(questionForm, this.id))
         })
     }
 }
 
 
-function createItem(section, item) {
-    const lessonTemplate = document.getElementById('template-section-item')
-    const clone = lessonTemplate.content.cloneNode(true)
-    clone.querySelector('.item-name').textContent = item.name
-    clone.querySelector('.section-item').setAttribute('item-id', item.id)
-    clone.querySelector('.section-item').setAttribute('item-type', item.type)
-    clone.querySelector('svg use').setAttribute('href', `#icon-${item.type}`)
-    if (item.type === 'test') {
-        clone.querySelector('.item-option').textContent = 'Добавить вопросы'
-        clone.querySelector('.item-option').addEventListener('click', event => {
-            document.querySelector('#dialog-questions').show()
-            backdrop.classList.remove('invisible')
-            initializeTestQuestions(item.id)
-            const questionForm = document.querySelector('#dialog-questions form')
-            questionForm.addEventListener('submit', postQuestion.bind(questionForm, item.id))
-        })
-    }
-    clone.querySelector('.item-delete').addEventListener('click', deleteItem.bind(clone.querySelector('.section-item')))
-    section.querySelector('.section-items').append(clone)
-}
+// function createItem(section, item) {
+//     const lessonTemplate = document.getElementById('template-section-item')
+//     const clone = lessonTemplate.content.cloneNode(true)
+//     clone.querySelector('.item-name').textContent = item.name
+//     clone.querySelector('.section-item').setAttribute('item-id', item.id)
+//     clone.querySelector('.section-item').setAttribute('item-type', item.type)
+//     clone.querySelector('svg use').setAttribute('href', `#icon-${item.type}`)
+//     if (item.type === 'test') {
+//         clone.querySelector('.item-option').textContent = 'Добавить вопросы'
+//         clone.querySelector('.item-option').addEventListener('click', event => {
+//             document.querySelector('#dialog-questions').show()
+//             backdrop.classList.remove('invisible')
+//             initializeTestQuestions(item.id)
+//             const questionForm = document.querySelector('#dialog-questions form')
+//             questionForm.addEventListener('submit', postQuestion.bind(questionForm, item.id))
+//         })
+//     }
+//     clone.querySelector('.item-delete').addEventListener('click', deleteItem.bind(clone.querySelector('.section-item')))
+//     section.querySelector('.section-items').append(clone)
+// }
 
 function deleteItem(event) {
     this.remove()
@@ -307,22 +306,61 @@ function postQuestion(testId, event) {
     .then(data => {
         console.log(data)
         if (data.id) {
-            createQuestion(data)
+            // createQuestion(data)
+            let newQuestion = new Question(data)
+            newQuestion.renderElement()
         }
     })
     event.preventDefault()
 }
 
+class Question {
+    constructor(data) {
+        this.id = data.id
+        this.div = undefined
+        this.name = data.question
+    }
 
-function createQuestion(data) {
-    const clone = document.getElementById('template-test-question').content.cloneNode(true)
-    clone.querySelector('.test-question-name').textContent = data.question
-    const questionElement = clone.querySelector('.test-question')
-    questionElement.setAttribute('item-type', 'question')
-    questionElement.setAttribute('item-id', data.id)
-    clone.querySelector('.test-question-delete').addEventListener('click', deleteItem.bind(questionElement))
-    document.getElementById('test-questions').append(clone)
+    createElement() {
+        const clone = document.getElementById('template-test-question').content.cloneNode(true)
+        clone.querySelector('.test-question-name').textContent = this.name
+        this.div = clone.querySelector('.test-question')
+        return clone
+    }
+
+    addListeners(element) {
+        element.querySelector('.test-question-delete').addEventListener('click', this.delete.bind(this))
+    }
+
+    renderElement() {
+        let element = this.createElement()
+        this.addListeners(element)
+        document.getElementById('test-questions').append(element)
+    }
+
+    delete() {
+        this.div.remove()
+        fetch(`http://127.0.0.1:8000/api/questions/${this.id}/`, {
+            method: 'delete', 
+            headers: {
+                'X-CSRFToken': csrf_token,
+            }
+        })
+        .then(response => response.json())
+        .then(data => {console.log(data)})
+    }
 }
+
+
+// function createQuestion(data) {
+//     const clone = document.getElementById('template-test-question').content.cloneNode(true)
+//     clone.querySelector('.test-question-name').textContent = data.question
+//     const questionElement = clone.querySelector('.test-question')
+//     questionElement.setAttribute('item-type', 'question')
+//     questionElement.setAttribute('item-id', data.id)
+//     clone.querySelector('.test-question-delete').addEventListener('click', deleteItem.bind(questionElement))
+//     document.getElementById('test-questions').append(clone)
+// }
 
 function initializeTestQuestions(testId) {
     fetch(`http://127.0.0.1:8000/api/tests/${testId}`)
@@ -330,7 +368,11 @@ function initializeTestQuestions(testId) {
     .then(data => {
         if (data.id) {
             document.getElementById('test-questions').innerHTML = ''
-            data.questions.forEach(question => createQuestion(question))
+            data.questions.forEach(question => {
+                // createQuestion(question)
+                let newQuestion = new Question(question)
+                newQuestion.renderElement()
+            })
         }
         console.log(data)
     })
