@@ -31,13 +31,17 @@ function getCourseData() {
 function initializePage(data) {
     document.getElementById('course-sections').innerHTML = ''
     document.getElementById('course-name').textContent = data.name
-    data.sections.forEach(section => createSection(section))
+    data.sections.forEach(section => {
+        // createSection(section)
+        let newSection = new Section(section)
+        newSection.renderSection()
+    })
 }
 
 
-function expandSection(event) {
-    this.classList.toggle('invisible')
-}
+// function expandSection(event) {
+//     this.classList.toggle('invisible')
+// }
 
 
 function deleteSection(event) {
@@ -54,36 +58,107 @@ function deleteSection(event) {
     })
 }
 
-function createSection(section) {
-    const clone = document.getElementById('template-course-section').content.cloneNode(true)
-    const sectionDiv = clone.querySelector('div.course-section')
-    clone.querySelector('span.section-name').textContent = section.name
-    sectionDiv.setAttribute('section-id', section.id)
-    clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
-    clone.querySelector('span.section-delete').addEventListener('click', deleteSection.bind(sectionDiv))
+// function createSection(section) {
+//     const clone = document.getElementById('template-course-section').content.cloneNode(true)
+//     const sectionDiv = clone.querySelector('div.course-section')
+//     clone.querySelector('span.section-name').textContent = section.name
+//     sectionDiv.setAttribute('section-id', section.id)
+//     clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
+//     clone.querySelector('span.section-delete').addEventListener('click', deleteSection.bind(sectionDiv))
     
-    const dropdownAdd = clone.querySelector('.dropdown-add')
-    clone.querySelector('.btn-add-item').addEventListener('click', event => dropdownAdd.classList.toggle('invisible'))
-    clone.querySelectorAll('.dropdown-add-item').forEach(dropdownLink => {
+//     const dropdownAdd = clone.querySelector('.dropdown-add')
+//     clone.querySelector('.btn-add-item').addEventListener('click', event => dropdownAdd.classList.toggle('invisible'))
+//     clone.querySelectorAll('.dropdown-add-item').forEach(dropdownLink => {
+//         const itemType = dropdownLink.getAttribute('item-type')
+//         const addForm = clone.querySelector(`.${itemType}-add-form`)
+//         const allForms = clone.querySelectorAll('.section-forms')
+//         dropdownLink.addEventListener('click', event => {
+//             allForms.forEach(sectionForm => sectionForm.classList.add('invisible'))
+//             addForm.classList.remove('invisible')
+//         })
+//         const itemForm = clone.querySelector(`form[name=${itemType}-add]`)
+//         itemForm.addEventListener('submit', postItem.bind(itemForm, itemType))
+//     })
+
+//     const filteredItems = section.items.filter(item => {
+//         const optionIndex = courseOptions.findIndex(el => el === courseOption)
+//         const slicedArr = courseOptions.slice(0, optionIndex + 1)
+//         return slicedArr.includes(item.option)
+//     })
+//     filteredItems.forEach(item => createItem(clone.querySelector('div.course-section'), item))
+//     document.getElementById('course-sections').append(clone)
+
+// }
+
+class Section {
+    constructor(data) {
+        this.id = data.id
+        this.name = data.name
+        this.items = data.items
+        this.div = undefined
+        this.bodyDiv = undefined
+    }
+
+    createElement() {
+        const clone = document.getElementById('template-course-section').content.cloneNode(true)
+        this.div = clone.querySelector('div.course-section')
+        this.bodyDiv = clone.querySelector('div.course-section-body')
+        clone.querySelector('span.section-name').textContent = this.name
+        this.div.setAttribute('section-id', this.id)
+        return clone
+    }
+
+    addListeners(element) {
+        element.querySelector('svg.section-header-icon-expand').addEventListener('click', this.expand.bind(this))
+        element.querySelector('span.section-delete').addEventListener('click', this.delete.bind(this))
+    } 
+
+    addDropdown(element) {
+        const dropdownAdd = element.querySelector('.dropdown-add')
+        element.querySelector('.btn-add-item').addEventListener('click', event => dropdownAdd.classList.toggle('invisible'))
+        element.querySelectorAll('.dropdown-add-item').forEach(dropdownLink => {
         const itemType = dropdownLink.getAttribute('item-type')
-        const addForm = clone.querySelector(`.${itemType}-add-form`)
-        const allForms = clone.querySelectorAll('.section-forms')
+        const addForm = element.querySelector(`.${itemType}-add-form`)
+        const allForms = element.querySelectorAll('.section-forms')
         dropdownLink.addEventListener('click', event => {
             allForms.forEach(sectionForm => sectionForm.classList.add('invisible'))
             addForm.classList.remove('invisible')
         })
-        const itemForm = clone.querySelector(`form[name=${itemType}-add]`)
+        const itemForm = element.querySelector(`form[name=${itemType}-add]`)
         itemForm.addEventListener('submit', postItem.bind(itemForm, itemType))
     })
+    }
 
-    const filteredItems = section.items.filter(item => {
-        const optionIndex = courseOptions.findIndex(el => el === courseOption)
-        const slicedArr = courseOptions.slice(0, optionIndex + 1)
-        return slicedArr.includes(item.option)
+    renderSection() {
+        const filteredItems = this.items.filter(item => {
+            const optionIndex = courseOptions.findIndex(el => el === courseOption)
+            const slicedArr = courseOptions.slice(0, optionIndex + 1)
+            return slicedArr.includes(item.option)
+        })
+        let element = this.createElement()
+        this.addDropdown(element)
+        this.addListeners(element)
+        filteredItems.forEach(item => createItem(this.div, item))
+        document.getElementById('course-sections').append(element)
+    }
+
+    expand() {
+        console.log(this)
+        this.bodyDiv.classList.toggle('invisible')
+    }
+
+    delete() {
+        this.div.remove()
+        const id = this.div.getAttribute('section-id')
+        fetch(`http://127.0.0.1:8000/api/sections/${id}/`, {
+        method: 'delete', 
+        headers: {
+            'X-CSRFToken': csrf_token,
+        }
     })
-    filteredItems.forEach(item => createItem(clone.querySelector('div.course-section'), item))
-    document.getElementById('course-sections').append(clone)
-
+    .then(response => response.json())
+    .then(data => {console.log(data)})
+    }
 }
 
 
@@ -197,7 +272,9 @@ formSection.addEventListener('submit', (event) =>
     }).then(response => response.json())
     .then(data => {
         if (data.id) {
-            createSection(data)
+            // createSection(data)
+            let section = new Section(data)
+            section.renderSection()
         }
         console.log(data)
     })
