@@ -15,19 +15,22 @@ from functools import reduce
 # class ItemOptionSerializer(serializers.Serializer):
 #     option = serializers.CharField(default='basic')
 
-class SectionItemFreeSerializer(serializers.Serializer):
+class SectionItemGetFieldsMixin(serializers.Serializer):
     def get_field_names(self, *args):
         payment_option = self.context.get('payment')
-        if payment_option and (COURSE_OPTIONS.index(payment_option) < COURSE_OPTIONS.index(self.instance.option)):
-            if isinstance(self.instance, Lesson):
-                return ['name', 'description', 'duration', 'option', 'type']
-            else:
-                return ['name', 'description', 'option', 'type']
-        else:
+        is_author = self.context.get('is_author')
+        payment_include = COURSE_OPTIONS.index(payment_option) < COURSE_OPTIONS.index(self.instance.option)
+        if is_author or not (payment_option and payment_include):
             return super().get_field_names(*args)
+        else:
+            if isinstance(self.instance, Lesson):
+                return ['id', 'name', 'description', 'duration', 'option', 'type']
+            else:
+                return ['id', 'name', 'description', 'option', 'type']
 
 
-class LessonSerializer(SectionItemFreeSerializer, serializers.ModelSerializer):
+
+class LessonSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
     type = serializers.CharField(default='lesson', read_only=True)
     
     class Meta:
@@ -35,7 +38,7 @@ class LessonSerializer(SectionItemFreeSerializer, serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AdditionalFileSerializer(SectionItemFreeSerializer, serializers.ModelSerializer):
+class AdditionalFileSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
     type = serializers.CharField(default='extra_file', read_only=True)
 
     class Meta:
@@ -50,7 +53,7 @@ class TestQuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TestSerializer(SectionItemFreeSerializer, serializers.ModelSerializer):
+class TestSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
     type = serializers.CharField(default='test', read_only=True)
     questions = TestQuestionSerializer(many=True, read_only=True)
 
@@ -60,7 +63,7 @@ class TestSerializer(SectionItemFreeSerializer, serializers.ModelSerializer):
         # fields = ['name', 'description', 'section', 'option', 'type', 'questions']
 
 
-class HomeworkSerializer(SectionItemFreeSerializer, serializers.ModelSerializer):
+class HomeworkSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
     type = serializers.CharField(default='homework', read_only=True)
 
     class Meta:
@@ -133,7 +136,7 @@ class CourseSerializer(serializers.ModelSerializer):
         user = None
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
-            user = request.user.id
+            user = request.user
         # is_paid = CoursePayment.objects.filter(course=obj, student=user).exists()
         context = {}
         try:
@@ -142,6 +145,7 @@ class CourseSerializer(serializers.ModelSerializer):
             context['payment'] = 'free'
         else:
             context['payment'] = payment.option
+        context['is_author'] = user == obj.author
         # context['payment'] = payment.option if payment.exists() else 'free'
         serializer = SectionSerializer(sections, many=True, read_only=True, context=context)
         return serializer.data

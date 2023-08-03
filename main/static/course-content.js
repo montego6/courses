@@ -44,19 +44,19 @@ function initializePage(data) {
 // }
 
 
-function deleteSection(event) {
-    this.remove()
-    const id = this.getAttribute('section-id')
-    fetch(`http://127.0.0.1:8000/api/sections/${id}/`, {
-        method: 'delete', 
-        headers: {
-            'X-CSRFToken': csrf_token,
-        }
-    })
-    .then(response => response.json())
-    .then(data => {console.log(data)
-    })
-}
+// function deleteSection(event) {
+//     this.remove()
+//     const id = this.getAttribute('section-id')
+//     fetch(`http://127.0.0.1:8000/api/sections/${id}/`, {
+//         method: 'delete', 
+//         headers: {
+//             'X-CSRFToken': csrf_token,
+//         }
+//     })
+//     .then(response => response.json())
+//     .then(data => {console.log(data)
+//     })
+// }
 
 // function createSection(section) {
 //     const clone = document.getElementById('template-course-section').content.cloneNode(true)
@@ -138,7 +138,18 @@ class Section {
         let element = this.createElement()
         this.addDropdown(element)
         this.addListeners(element)
-        filteredItems.forEach(item => createItem(this.div, item))
+        filteredItems.forEach(item => {
+            // createItem(this.div, item)
+            let newItem
+            switch (item.type) {
+                case 'test':
+                    newItem = new Test(this.bodyDiv, item)
+                    break
+                default:
+                    newItem = new Item(this.bodyDiv, item)
+                }
+            newItem.renderItem()
+        })
         document.getElementById('course-sections').append(element)
     }
 
@@ -158,6 +169,70 @@ class Section {
     })
     .then(response => response.json())
     .then(data => {console.log(data)})
+    }
+}
+
+
+class Item {
+    constructor(section, data) {
+        this.section = section
+        this.id = data.id
+        this.type = data.type
+        this.name = data.name
+        this.div = undefined
+        console.log(data)
+    }
+
+    createElement() {
+        const lessonTemplate = document.getElementById('template-section-item')
+        const clone = lessonTemplate.content.cloneNode(true)
+        clone.querySelector('.item-name').textContent = this.name
+        this.div = clone.querySelector('.section-item')
+        this.div.setAttribute('item-id', this.id)
+        this.div.setAttribute('item-type', this.type)
+        clone.querySelector('svg use').setAttribute('href', `#icon-${this.type}`)
+        return clone
+    }
+
+    extra(element) {
+
+    }
+
+    addListeners(element) {
+        element.querySelector('.item-delete').addEventListener('click', this.delete.bind(this))
+    }
+
+    renderItem() {
+        let element = this.createElement()
+        this.addListeners(element)
+        this.extra(element)
+        this.section.append(element) 
+    }
+
+    delete() {
+        this.div.remove()
+        fetch(`http://127.0.0.1:8000/api/${this.type}s/${this.id}/`, {
+            method: 'delete', 
+            headers: {
+                'X-CSRFToken': csrf_token,
+            }
+        })
+        .then(response => response.json())
+        .then(data => {console.log(data)})
+    }
+}
+
+
+class Test extends Item {
+    extra(element) {
+        element.querySelector('.item-option').textContent = 'Добавить вопросы'
+        element.querySelector('.item-option').addEventListener('click', event => {
+            document.querySelector('#dialog-questions').show()
+            backdrop.classList.remove('invisible')
+            initializeTestQuestions(item.id)
+            const questionForm = document.querySelector('#dialog-questions form')
+            questionForm.addEventListener('submit', postQuestion.bind(questionForm, item.id))
+        })
     }
 }
 
