@@ -2,59 +2,80 @@
 {% load static %}
 {% block title %}Войти на сайт{% endblock %}
 {% block imports %}
+<link href="{% static 'course-add.css' %}" rel="stylesheet">
 <script src="{% static 'course-add.js' %}" defer></script>
 {% endblock %}  
 {% block content %}
 <div class="main-body">
-	<h1>Форма</h1>
-    <div id="course-add-first-step">
-        <form name="course-add" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-wrapper">
-                <div class="form-field">
-                    <label for="cover">Обложка курса</label>
-                    <input type="file" name="cover">
+    <div class="main-content">
+        <h1>Создание нового курса</h1>
+        
+        <div id="course-add-first-step">
+            <p>Для создания нового курса заполните все необходимые поля формы, а затем перейдите к следующему этапу, на котором будет 
+                необходимо ввести оставшиеся данные. 
+            </p>
+            <form name="course-add" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-wrapper">
+                    <div class="form-field">
+                        <label for="cover">Обложка курса</label>
+                        <input type="file" name="cover">
+                    </div>
+                    <div class="form-field">
+                        <label for="name">Название курса</label>
+                        <input type="text" name="name" placeholder="Введите название...">
+                    </div>
+                    <div class="form-field">
+                        <label for="short_description">Короткое описание</label>
+                        <input type="text" name="short_description" placeholder="Введите краткое описание курса...">
+                    </div>
+                    <div class="form-field">
+                        <label for="full_description">Подробное описание</label>
+                        <!-- <input type="text" id="form-full-description" name="full_description" placeholder="Введите подробное описание курса..."> -->
+                        <textarea name="full_description" cols="50" rows="8"></textarea>
+                    </div>  
+                    <div class="form-field-half">
+                        <label for="price">Стоимость</label>
+                        <label for="language">Язык</label>
+                    </div>
+                    <div class="form-field-half">
+                        <input type="number" name="price" placeholder="Стоимость курса в рублях...">
+                        <!-- <input type="text" name="language" placeholder="Введите язык курса..."> -->
+                        <select name="language" id="select-language">
+                            
+                        </select>
+                    </div>
                 </div>
-                <div class="form-field">
-                    <label for="name">Название курса</label>
-                    <input type="text" name="name" placeholder="Введите название...">
+                <button class="form-button" type="submit">Следующий шаг</button>
+            </form>
+        </div>
+        <div id="course-add-second-step" class="invisible">
+            <p>Добавьте пункты, чему обучатся студенты в процессе и начальные навыки, необходимые для начала обучения</p>
+            <div id="what-will-learn">
+                <div id="div-btn-what-will-learn">
+                    <div class="tooltip">Нажмите для добавления нового пункта и введите значение,при необходимости повторите.</div>
+                    <button class="form-button" id="btn-what-will-learn">Добавить what will learn</button>
                 </div>
-                <div class="form-field">
-                    <label for="short_description">Короткое описание</label>
-                    <input type="text" name="short_description" placeholder="Введите краткое описание курса...">
-                </div>
-                <div class="form-field">
-                    <label for="full_description">Подробное описание</label>
-                    <!-- <input type="text" id="form-full-description" name="full_description" placeholder="Введите подробное описание курса..."> -->
-                    <textarea name="full_description" cols="50" rows="8"></textarea>
-                </div>  
-                <div class="form-field-half">
-                    <label for="price">Стоимость</label>
-                    <label for="language">Язык</label>
-                </div>
-                <div class="form-field-half">
-                    <input type="number" name="price" placeholder="Введите стоимость курса...">
-                    <input type="text" name="language" placeholder="Введите язык курса...">
-                </div>
+                    <template id="template-what-will-learn">
+                        <div class="form-wrapper form-field-half">
+                            <input type="text" class="what-will-learn-option">
+                        </div>
+                    </template>
             </div>
-            <button class="form-button" type="submit">Следующий шаг</button>
-        </form>
-    </div>
-    <div id="course-add-second-step" class="invisible">
-        <div id="what-will-learn">
-            <button class="form-button" id="btn-what-will-learn">Добавить what will learn</button>
-                <template id="template-what-will-learn">
-                    <input type="text" class="what-will-learn-option">
-                </template>
+            <div id="requirements">
+                <div id="div-btn-requirements">
+                    <div class="tooltip">Нажмите для добавления нового пункта и введите значение,при необходимости повторите.</div>
+                    <button class="form-button" id="btn-requirements">Добавить requirements</button>
+                </div>
+                    <template id="template-requirements">
+                        <div class="form-wrapper form-field-half">
+                            <input type="text" class="requirements-option">
+                        </div>
+                    </template>
+            </div>
+        <button class="form-button" id="course-backwards-btn">Назад</button>
+        <button class="form-button" id="course-confirm-btn">Подтвердить</button>
         </div>
-        <div id="requirements">
-            <button class="form-button" id="btn-requirements">Добавить requirements</button>
-                <template id="template-requirements">
-                    <input type="text" class="requirements-option">
-                </template>
-        </div>
-    <button class="form-button" id="course-backwards-btn">Назад</button>
-    <button class="form-button" id="course-confirm-btn">Подтвердить</button>
     </div>
 </div>
 {% endblock %}

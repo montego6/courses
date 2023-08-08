@@ -24,9 +24,9 @@ backwardsBtn.addEventListener('click', (event) => {
 
 confirmBtn.addEventListener('click', (event) => {
     learnOptions = document.querySelectorAll('.what-will-learn-option')
-    const learnList = Array.from(learnOptions, option => option.value)
+    const learnList = Array.from(learnOptions, option => option.value).filter(option => option.value != '')
     requirementsOptions = document.querySelectorAll('.requirements-option')
-    const requirementsList = Array.from(requirementsOptions, option => option.value)
+    const requirementsList = Array.from(requirementsOptions, option => option.value).filter(option => option.value != '')
     const options = {option: "value"}
     learnList.forEach(learn => formData.append('what_will_learn', learn))
     requirementsList.forEach(requirement => formData.append('requirements', requirement))
@@ -45,4 +45,16 @@ form.addEventListener('submit', (event) =>
     courseAddFirstStep.classList.add('invisible')
     courseAddSecondStep.classList.remove('invisible')
     event.preventDefault()
+})
+
+fetch('http://127.0.0.1:8000/static/langmap.json').then(response => response.json()).then(data => {
+    for (const key in data) {
+        let selectEL = document.createElement('option')
+        selectEL.setAttribute('value', key)
+        selectEL.textContent = data[key]
+        if (key === 'en') {
+            selectEL.setAttribute('selected', true)
+        }
+        document.querySelector('#select-language').append(selectEL)
+    }
 })

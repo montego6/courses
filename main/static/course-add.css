@@ -1,0 +1,24 @@
+p {
+    width: 80%;
+    margin-bottom: 20px;
+}
+
+#div-btn-what-will-learn,
+#div-btn-requirements {
+    position: relative;
+}
+
+
+.tooltip {
+    visibility: hidden;
+    position: absolute;
+    left: 220px;
+    border-radius: 12px;
+    border: 1px solid black;
+    padding: 8px;
+}
+
+#div-btn-requirements:hover .tooltip,
+#div-btn-what-will-learn:hover .tooltip {
+    visibility: visible; 
+}
