@@ -30,6 +30,13 @@
     color: var(--forms-text-color)
 }
 
+.form-wrapper input[type=checkbox] {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--forms-border-color);
+    border-radius: 4px;
+}
+
 .form-wrapper input[type=file] {
     border: none;
 }

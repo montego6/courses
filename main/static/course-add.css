@@ -22,3 +22,31 @@ p {
 #div-btn-what-will-learn:hover .tooltip {
     visibility: visible; 
 }
+
+fieldset {
+    padding: 16px;
+}
+
+#options-checkboxes {
+    display: flex;
+    flex-direction: column;
+    row-gap: 24px;
+}
+
+.options-input input {
+    width: 8rem;
+}
+
+.options-row {
+    display: grid;
+    grid-template-columns: 0.75fr 2fr 4fr;
+    align-items: center;
+}
+
+.options-row .options-input {
+    margin-left: 16px;
+}
+
+.hidden {
+    visibility:hidden;
+}

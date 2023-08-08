@@ -73,8 +73,63 @@
                         </div>
                     </template>
             </div>
-        <button class="form-button" id="course-backwards-btn">Назад</button>
-        <button class="form-button" id="course-confirm-btn">Подтвердить</button>
+            <button class="form-button" id="course-backwards-btn">Назад</button>
+            <button class="form-button" id="course-third-step-btn">Следующий шаг</button>
+        </div>
+        <div id="course-add-third-step" class="invisible">
+            <p>Выберите уровень сложности вашего курса, а также укажите опции, которые будут доступны для студентов</p>
+            <div class="form-wrapper">
+                <div>
+                    <label for="level">Уровень</label>
+                    <select name="level" id="select-level">
+                        <option value="beginner">Начинающий</option>
+                        <option value="intermediate">Средний уровень</option>
+                        <option value="expert">Эксперт</option>
+                    </select>
+                </div>
+                <div>
+                    <fieldset>
+                        <legend>Выберите опции и укажите цену:</legend>
+                      
+                        <div id="options-checkboxes">
+                            <div class="options-row">
+                                <div>
+                                    <input type="checkbox" id="checkbox-basic" name="basic" checked>
+                                    <label for="basic">Basic</label>
+                                </div>
+                                <div class="options-input" id="price-basic">
+                                    <label for="basic-price">Стоимость</label>
+                                    <input type="number" name="basic-price">
+                                </div>
+                            </div>
+                        
+                            <div class="options-row">
+                                <div>
+                                    <input type="checkbox" id="checkbox-extra" name="extra">
+                                    <label for="extra">Extra</label>
+                                </div>
+                                <div class="options-input hidden" id="price-extra">
+                                    <label for="basic-price">Стоимость</label>
+                                    <input type="number" name="extra-price">
+                                </div>
+                            </div>
+
+                            <div class="options-row">
+                                <div>
+                                    <input type="checkbox" id="checkbox-premium" name="premium">
+                                    <label for="premium">Premium</label>
+                                </div>
+                                <div class="options-input hidden" id="price-premium">
+                                    <label for="basic-price">Стоимость</label>
+                                    <input type="number" name="premium-price">
+                                </div>
+                            </div>
+                        </div>
+                      </fieldset>
+                </div>
+            </div>
+            <button class="form-button" id="course-back-to-2step-btn">Назад</button>
+            <button class="form-button" id="course-confirm-btn">Подтвердить</button>
         </div>
     </div>
 </div>
