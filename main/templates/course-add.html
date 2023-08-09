@@ -92,7 +92,7 @@
                         <legend>Выберите опции и укажите цену:</legend>
                       
                         <div id="options-checkboxes">
-                            <div class="options-row">
+                            <div class="options-row" id="options-basic">
                                 <div>
                                     <input type="checkbox" id="checkbox-basic" name="basic" checked>
                                     <label for="basic">Basic</label>
@@ -103,7 +103,7 @@
                                 </div>
                             </div>
                         
-                            <div class="options-row">
+                            <div class="options-row" id="options-extra">
                                 <div>
                                     <input type="checkbox" id="checkbox-extra" name="extra">
                                     <label for="extra">Extra</label>
@@ -112,9 +112,12 @@
                                     <label for="basic-price">Стоимость</label>
                                     <input type="number" name="extra-price">
                                 </div>
+                                <div class="options-error hidden">
+                                    <span>Вы не можете добавить эту опцию, пока не будет выбрана предыдущая</span>
+                                </div>
                             </div>
 
-                            <div class="options-row">
+                            <div class="options-row" id="options-premium">
                                 <div>
                                     <input type="checkbox" id="checkbox-premium" name="premium">
                                     <label for="premium">Premium</label>
@@ -122,6 +125,9 @@
                                 <div class="options-input hidden" id="price-premium">
                                     <label for="basic-price">Стоимость</label>
                                     <input type="number" name="premium-price">
+                                </div>
+                                <div class="options-error hidden">
+                                    <span>Вы не можете добавить эту опцию, пока не будет выбрана предыдущая</span>
                                 </div>
                             </div>
                         </div>

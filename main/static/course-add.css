@@ -50,3 +50,9 @@ fieldset {
 .hidden {
     visibility:hidden;
 }
+
+.options-error {
+    margin-left: 16px;
+    color: red;
+    font-weight: 400;
+}
