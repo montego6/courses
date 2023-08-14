@@ -118,7 +118,7 @@ input#header-search-input {
 }
 
 .invisible {
-    display: none;
+    display: none !important;
 }
 
 .main-body {

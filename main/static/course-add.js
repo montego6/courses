@@ -1,5 +1,6 @@
 const form = document.forms.namedItem('course-add')
 let formData
+let categoriesData
 const courseAddFirstStep = document.getElementById('course-add-first-step')
 const courseAddSecondStep = document.getElementById('course-add-second-step')
 const courseAddThirdStep = document.getElementById('course-add-third-step')
@@ -19,6 +20,33 @@ const optionRreverseDependencies = {
     'extra': ['premium'],
     'premium': []
 }
+
+function initializeCategoriesSelect(mode, data) {
+    const select = document.querySelector(`#select-${mode}`)
+    select.querySelectorAll('option:not(:disabled)').forEach(option => option.remove())
+    select.value = ''
+    data.forEach(category => {
+        let categoryEl = document.createElement('option')
+        categoryEl.setAttribute('value', category.id)
+        categoryEl.textContent = category.name
+        select.append(categoryEl)
+    })
+}
+
+document.querySelector('#select-category').addEventListener('change', event => {
+    document.querySelector('#div-subcategory').classList.remove('invisible')
+    document.querySelector('#div-subject').classList.add('invisible')
+    const chosenCategory = categoriesData.find(category => category.id == event.target.value)
+    initializeCategoriesSelect('subcategory', chosenCategory.subcategories)
+})
+
+document.querySelector('#select-subcategory').addEventListener('change', event => {
+    document.querySelector('#div-subject').classList.remove('invisible')
+    const chosenCategoryId = document.querySelector('#div-category select').value
+    const chosenCategory = categoriesData.find(category => category.id == chosenCategoryId)
+    const chosenSubCategory = chosenCategory.subcategories.find(subcategory => subcategory.id == event.target.value)
+    initializeCategoriesSelect('subject', chosenSubCategory.subjects)
+})
 
 
 document.querySelectorAll('#options-checkboxes input[type=checkbox]').forEach(checkBox => checkBox.addEventListener('change', event => {
@@ -49,6 +77,15 @@ document.querySelector('#course-back-to-2step-btn').addEventListener('click', ev
     courseAddThirdStep.classList.add('invisible')
 })
 
+document.querySelector('#is_free-checkbox').addEventListener('change', event => {
+    if (event.target.checked) {
+        document.querySelector('input[name=price]').value = 0
+        document.querySelector('input[name=price]').disabled = true
+    } else {
+        document.querySelector('input[name=price]').disabled = false
+    }
+})
+
 
 whatWillLearnBtn.addEventListener('click', (event) => {
     const clone = document.getElementById('template-what-will-learn').content.cloneNode(true)
@@ -70,7 +107,6 @@ confirmBtn.addEventListener('click', (event) => {
     const learnList = Array.from(learnOptions, option => option.value).filter(option => option.value != '')
     requirementsOptions = document.querySelectorAll('.requirements-option')
     const requirementsList = Array.from(requirementsOptions, option => option.value).filter(option => option.value != '')
-    const options = {option: "value"}
     learnList.forEach(learn => formData.append('what_will_learn', learn))
     requirementsList.forEach(requirement => formData.append('requirements', requirement))
     const level = document.getElementById('select-level').value
@@ -119,4 +155,10 @@ fetch('http://127.0.0.1:8000/static/langmap.json').then(response => response.jso
         }
         document.querySelector('#select-language').append(selectEL)
     }
+})
+
+fetch('http://localhost:8000/api/categories/').then(response => response.json()).
+then(data => {
+    categoriesData = data
+    initializeCategoriesSelect('category', categoriesData)
 })

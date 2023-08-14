@@ -45,6 +45,10 @@
                             
                         </select>
                     </div>
+                    <div class="form-field">
+                        <label for="is_free">Сделать курс бесплатным</label>
+                        <input type="checkbox" name="is_free" id="is_free-checkbox">
+                    </div>  
                 </div>
                 <button class="form-button" type="submit">Следующий шаг</button>
             </form>
@@ -79,6 +83,24 @@
         <div id="course-add-third-step" class="invisible">
             <p>Выберите уровень сложности вашего курса, а также укажите опции, которые будут доступны для студентов</p>
             <div class="form-wrapper">
+                <div id="div-category" class="form-field">
+                    <label for="category">Категория</label>
+                    <select name="category" id="select-category">
+                        <option disabled selected value>-- Выберите категорию --</option>
+                    </select>
+                </div>
+                <div id="div-subcategory" class="form-field invisible">
+                    <label for="subcategory">Подкатегория</label>
+                    <select name="subcategory" id="select-subcategory">
+                        <option disabled selected value>-- Выберите подкатегорию --</option>
+                    </select>
+                </div>
+                <div id="div-subject" class="form-field invisible">
+                    <label for="subject">Тема</label>
+                    <select name="subject" id="select-subject">
+                        <option disabled selected value>-- Выберите тему --</option>
+                    </select>
+                </div>
                 <div>
                     <label for="level">Уровень</label>
                     <select name="level" id="select-level">
