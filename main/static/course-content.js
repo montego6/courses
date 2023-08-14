@@ -14,25 +14,51 @@ backdrop.addEventListener('click', event => {
     document.querySelector('dialog[open]').close()
 })
 
-const optionsTabLinks = document.querySelectorAll('.course-option-link')
-optionsTabLinks.forEach(link => link.addEventListener('click', event => {
-    optionsTabLinks.forEach(link => link.classList.remove('course-option-link-selected'))
-    courseOption = event.target.getAttribute('course-option')
-    event.target.classList.add('course-option-link-selected')
-    getCourseData()
-}))
+// const optionsTabLinks = document.querySelectorAll('.course-option-link')
+// optionsTabLinks.forEach(link => link.addEventListener('click', event => {
+//     optionsTabLinks.forEach(link => link.classList.remove('course-option-link-selected'))
+//     courseOption = event.target.getAttribute('course-option')
+//     event.target.classList.add('course-option-link-selected')
+//     getCourseData()
+// }))
 
-optionsTabLinks[0].click()
+// optionsTabLinks[0].click()
 
 function getCourseData() {
-    fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
+    fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => {
+        courseData = data
+        initializePage(courseData)
+    })
+}
+
+getCourseData()
+
+function initializeOptionsTab(data) {
+    const tab = document.querySelector('#course-options-tab')
+    data.forEach(option => {
+        const element = document.createElement('span')
+        element.setAttribute('course-option', option.option)
+        element.textContent = option.option
+        element.classList.add('course-option-link')
+        element.addEventListener('click', event => {
+            document.querySelector('.course-option-link-selected').classList.remove('course-option-link-selected')
+            event.target.classList.add('course-option-link-selected')
+            courseOption = event.target.getAttribute('course-option')
+            initializePage(courseData)
+        })
+        tab.append(element)
+    })
+    tab.querySelector('span').classList.add('course-option-link-selected')
+    courseOption = tab.querySelector('span').getAttribute('course-option')
 }
 
 function initializePage(data) {
+    if (data.options.length && !document.querySelectorAll('#course-options-tab span').length) {
+        initializeOptionsTab(data.options)
+    }
     document.getElementById('course-sections').innerHTML = ''
     document.getElementById('course-name').textContent = data.name
     data.sections.forEach(section => {
-        // createSection(section)
         let newSection = new Section(section)
         newSection.renderSection()
     })
@@ -102,9 +128,10 @@ class Section {
     }
 
     expand() {
-        document.querySelectorAll('.course-section-body').forEach(sectionBody => {
+        document.querySelectorAll('.course-section-body:not(.invisible)').forEach(sectionBody => {
             if (sectionBody != this.bodyDiv) {
                 sectionBody.classList.add('invisible')
+                sectionBody.closest('.course-section').querySelector('.section-header-icon-expand').classList.toggle('icon-expand-animated')
             }
         })
         this.bodyDiv.classList.toggle('invisible')
@@ -191,27 +218,6 @@ class Test extends Item {
 }
 
 
-// function createItem(section, item) {
-//     const lessonTemplate = document.getElementById('template-section-item')
-//     const clone = lessonTemplate.content.cloneNode(true)
-//     clone.querySelector('.item-name').textContent = item.name
-//     clone.querySelector('.section-item').setAttribute('item-id', item.id)
-//     clone.querySelector('.section-item').setAttribute('item-type', item.type)
-//     clone.querySelector('svg use').setAttribute('href', `#icon-${item.type}`)
-//     if (item.type === 'test') {
-//         clone.querySelector('.item-option').textContent = 'Добавить вопросы'
-//         clone.querySelector('.item-option').addEventListener('click', event => {
-//             document.querySelector('#dialog-questions').show()
-//             backdrop.classList.remove('invisible')
-//             initializeTestQuestions(item.id)
-//             const questionForm = document.querySelector('#dialog-questions form')
-//             questionForm.addEventListener('submit', postQuestion.bind(questionForm, item.id))
-//         })
-//     }
-//     clone.querySelector('.item-delete').addEventListener('click', deleteItem.bind(clone.querySelector('.section-item')))
-//     section.querySelector('.section-items').append(clone)
-// }
-
 function deleteItem(event) {
     this.remove()
     const id = this.getAttribute('item-id')
@@ -261,7 +267,6 @@ function postQuestion(testId, event) {
     .then(data => {
         console.log(data)
         if (data.id) {
-            // createQuestion(data)
             let newQuestion = new Question(data)
             newQuestion.renderElement()
         }
@@ -307,15 +312,6 @@ class Question {
 }
 
 
-// function createQuestion(data) {
-//     const clone = document.getElementById('template-test-question').content.cloneNode(true)
-//     clone.querySelector('.test-question-name').textContent = data.question
-//     const questionElement = clone.querySelector('.test-question')
-//     questionElement.setAttribute('item-type', 'question')
-//     questionElement.setAttribute('item-id', data.id)
-//     clone.querySelector('.test-question-delete').addEventListener('click', deleteItem.bind(questionElement))
-//     document.getElementById('test-questions').append(clone)
-// }
 
 function initializeTestQuestions(testId) {
     fetch(`http://127.0.0.1:8000/api/tests/${testId}`)
