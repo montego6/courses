@@ -4,6 +4,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 import courses.consts as consts
+from categories.models import Subject
 
 User = get_user_model()
 
@@ -27,7 +28,7 @@ class Course(models.Model):
     short_description = models.CharField(max_length=200, db_index=True)
     full_description = models.CharField(max_length=3000)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='teacher_courses')
-    price = models.PositiveIntegerField()
+    price = models.PositiveIntegerField(default=0)
     cover = models.ImageField(upload_to='media/courses/covers/')
     language = models.CharField(max_length=40)
     what_will_learn = ArrayField(models.CharField(max_length=120), size=20)
@@ -37,6 +38,8 @@ class Course(models.Model):
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
     is_published = models.BooleanField(default=False)
+    is_free = models.BooleanField(default=False)
+    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, related_name='courses')
 
 
 class StripeCourse(models.Model):

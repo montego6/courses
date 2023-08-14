@@ -103,18 +103,21 @@ backwardsBtn.addEventListener('click', (event) => {
 })
 
 confirmBtn.addEventListener('click', (event) => {
+    formData.set('is_free', document.querySelector('input[name=is_free]').checked)
     learnOptions = document.querySelectorAll('.what-will-learn-option')
     const learnList = Array.from(learnOptions, option => option.value).filter(option => option.value != '')
     requirementsOptions = document.querySelectorAll('.requirements-option')
     const requirementsList = Array.from(requirementsOptions, option => option.value).filter(option => option.value != '')
     learnList.forEach(learn => formData.append('what_will_learn', learn))
     requirementsList.forEach(requirement => formData.append('requirements', requirement))
+    const subject = document.querySelector('#select-subject').value
+    formData.append('subject', subject)
     const level = document.getElementById('select-level').value
     formData.append('level', level)
     let optionsArr = []
     document.querySelectorAll('.options-row input:checked').forEach(optionCheckbox => {
         const option = optionCheckbox.getAttribute('name')
-        const price = document.querySelector(`input[name=${option}-price]`).value
+        const price = Number(document.querySelector(`input[name=${option}-price]`).value)
         const optionData = {
             option: option,
             price: price
@@ -123,10 +126,10 @@ confirmBtn.addEventListener('click', (event) => {
     })
     formData.append('options', JSON.stringify(optionsArr))
     console.log(formData)
-    // fetch('http://127.0.0.1:8000/api/courses/', {
-    //     method: 'post',
-    //     body: formData
-    // }).then(response => response.json()).then(data => console.log(data))
+    fetch('http://127.0.0.1:8000/api/courses/', {
+        method: 'post',
+        body: formData
+    }).then(response => response.json()).then(data => console.log(data))
 
 })
 

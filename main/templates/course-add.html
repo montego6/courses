@@ -47,7 +47,7 @@
                     </div>
                     <div class="form-field">
                         <label for="is_free">Сделать курс бесплатным</label>
-                        <input type="checkbox" name="is_free" id="is_free-checkbox">
+                        <input type="checkbox" name="is_free"  id="is_free-checkbox">
                     </div>  
                 </div>
                 <button class="form-button" type="submit">Следующий шаг</button>
@@ -101,7 +101,7 @@
                         <option disabled selected value>-- Выберите тему --</option>
                     </select>
                 </div>
-                <div>
+                <div class="form-field">
                     <label for="level">Уровень</label>
                     <select name="level" id="select-level">
                         <option value="beginner">Начинающий</option>
@@ -116,10 +116,10 @@
                         <div id="options-checkboxes">
                             <div class="options-row" id="options-basic">
                                 <div>
-                                    <input type="checkbox" id="checkbox-basic" name="basic" checked>
+                                    <input type="checkbox" id="checkbox-basic" name="basic">
                                     <label for="basic">Basic</label>
                                 </div>
-                                <div class="options-input" id="price-basic">
+                                <div class="options-input hidden" id="price-basic">
                                     <label for="basic-price">Стоимость</label>
                                     <input type="number" name="basic-price">
                                 </div>
