@@ -24,14 +24,16 @@ backdrop.addEventListener('click', event => {
 
 // optionsTabLinks[0].click()
 
-function getCourseData() {
-    fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => {
-        courseData = data
-        initializePage(courseData)
-    })
-}
 
-getCourseData()
+fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => {
+    courseData = data
+    console.log(courseData)
+    if (data.options.length) {
+        initializeOptionsTab(data.options)
+    }
+    initializePage(courseData)
+})
+
 
 function initializeOptionsTab(data) {
     const tab = document.querySelector('#course-options-tab')
@@ -53,9 +55,7 @@ function initializeOptionsTab(data) {
 }
 
 function initializePage(data) {
-    if (data.options.length && !document.querySelectorAll('#course-options-tab span').length) {
-        initializeOptionsTab(data.options)
-    }
+   
     document.getElementById('course-sections').innerHTML = ''
     document.getElementById('course-name').textContent = data.name
     data.sections.forEach(section => {
@@ -100,7 +100,7 @@ class Section {
             addForm.classList.remove('invisible')
         })
         const itemForm = element.querySelector(`form[name=${itemType}-add]`)
-        itemForm.addEventListener('submit', postItem.bind(itemForm, itemType))
+        itemForm.addEventListener('submit', postItem.bind(this, itemForm, itemType))
     })
     }
 
@@ -117,10 +117,10 @@ class Section {
             let newItem
             switch (item.type) {
                 case 'test':
-                    newItem = new Test(this.bodyDiv, item)
+                    newItem = new Test(this, item)
                     break
                 default:
-                    newItem = new Item(this.bodyDiv, item)
+                    newItem = new Item(this, item)
                 }
             newItem.renderItem()
         })
@@ -187,11 +187,14 @@ class Item {
         let element = this.createElement()
         this.addListeners(element)
         this.extra(element)
-        this.section.append(element) 
+        this.section.bodyDiv.append(element) 
     }
 
     delete() {
         this.div.remove()
+        let courseDataSection = courseData.sections.find(section => section.id == this.section.id)
+        let index = courseDataSection.items.findIndex(item => item.id = this.id)
+        courseDataSection.items.splice(index, 1)
         fetch(`http://127.0.0.1:8000/api/${this.type}s/${this.id}/`, {
             method: 'delete', 
             headers: {
@@ -232,11 +235,9 @@ function deleteItem(event) {
     .then(data => {console.log(data)})
 }
 
-function postItem(itemType, event) {
-    const formData = new FormData(this)
-    const section = this.closest('div.course-section')
-    const sectionId = section.getAttribute('section-id')
-    formData.append('section', sectionId)
+function postItem(itemForm, itemType, event) {
+    const formData = new FormData(itemForm)
+    formData.append('section', this.id)
     formData.append('option', courseOption)
     fetch(`http://127.0.0.1:8000/api/${itemType}s/`, {
         method: 'post',
@@ -244,7 +245,9 @@ function postItem(itemType, event) {
     }).then(response => response.json())
     .then(data => {
         if (data.id) {
-            createItem(section, data)
+            let newItem = new Item(this, data)
+            newItem.renderItem()
+            courseData.sections.find(section => section.id == this.id).items.push(data)
         }
         console.log(data)
     })
