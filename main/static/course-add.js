@@ -105,9 +105,9 @@ backwardsBtn.addEventListener('click', (event) => {
 confirmBtn.addEventListener('click', (event) => {
     formData.set('is_free', document.querySelector('input[name=is_free]').checked)
     learnOptions = document.querySelectorAll('.what-will-learn-option')
-    const learnList = Array.from(learnOptions, option => option.value).filter(option => option.value != '')
+    const learnList = Array.from(learnOptions, option => option.value).filter(value => value != '')
     requirementsOptions = document.querySelectorAll('.requirements-option')
-    const requirementsList = Array.from(requirementsOptions, option => option.value).filter(option => option.value != '')
+    const requirementsList = Array.from(requirementsOptions, option => option.value).filter(value => value != '')
     learnList.forEach(learn => formData.append('what_will_learn', learn))
     requirementsList.forEach(requirement => formData.append('requirements', requirement))
     const subject = document.querySelector('#select-subject').value

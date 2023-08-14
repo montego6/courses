@@ -8,6 +8,10 @@
     width: 800px;
 }
 
+#course-sections {
+    margin-bottom: 18px;
+}
+
 .course-section-header {
     background-color: var(--section-color);
     display: flex;
@@ -36,6 +40,11 @@
 .section-header-icon-expand {
     width: 20px;
     height: 20px;
+    transition: transform 0.25s ease-in-out;
+}
+
+.icon-expand-animated {
+    transform: rotate(180deg);
 }
 
 .text-underline {
@@ -94,6 +103,7 @@
     font-weight: 100;
     top: 40px;
     width: 140px;
+    z-index: 3;
 }
 
 .dropdown-add ul {
@@ -151,6 +161,9 @@
 }
 
 #course-options-tab {
+    display: flex;
+    justify-content:center;
+    column-gap: 18px;
     margin-bottom: 20px;
 }
 
@@ -166,7 +179,7 @@ hr {
     border-top: 1px solid #ccc;
     margin: 1em 0;
     padding: 0;
-    width: 400px;
+    width: 100%;
 }
 
 .course-option-link-selected::after {

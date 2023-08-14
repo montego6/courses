@@ -4,16 +4,7 @@ from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, 
 from .consts import COURSE_OPTIONS
 from functools import reduce
 
-# class SectionItemCreation:
-#     def create(self, validated_data):
-#         option = validated_data.pop('option', 'basic')
-#         instance = self.Meta.model.objects.create(**validated_data)
-#         SectionItem.objects.create(content_object=instance, section=instance.section, option=option)
-#         return instance
-    
 
-# class ItemOptionSerializer(serializers.Serializer):
-#     option = serializers.CharField(default='basic')
 
 class SectionItemGetFieldsMixin(serializers.Serializer):
     def get_field_names(self, *args):
@@ -72,15 +63,7 @@ class HomeworkSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer)
 
 class SectionItemSerializer(serializers.Serializer):
     def to_representation(self, value):
-        # user = None
-        # request = self.context.get('request')
-        # if request and hasattr(request, 'user'):
-        #     user = request.user
-        # course = value.section.course
         item = value.content_object
-        # is_paid = CoursePayment.objects.filter(course=course, student=user).exists()
-        # context = {}
-        # context['payment'] = 'paid' if is_paid else 'free'
         context = self.context
         if isinstance(item, Lesson):
             serializer = LessonSerializer(item, context=context)
@@ -96,7 +79,6 @@ class SectionItemSerializer(serializers.Serializer):
 
 
 class SectionSerializer(serializers.ModelSerializer):
-    # items = SectionItemSerializer(many=True, read_only=True)
     items = serializers.SerializerMethodField()
     
     class Meta:
@@ -108,13 +90,9 @@ class SectionSerializer(serializers.ModelSerializer):
         serializer = SectionItemSerializer(items, many=True, read_only=True, context=self.context)
         return serializer.data
 
-    # def __init__(self, instance=None, *args, **kwargs):
-    #     super().__init__(instance, *args, **kwargs)
-    #     self.fields['items'].context.update(self.context)
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    # sections = SectionSerializer(many=True, read_only=True)
     sections = serializers.SerializerMethodField()
 
     class Meta:
@@ -136,7 +114,6 @@ class CourseSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
             user = request.user
-        # is_paid = CoursePayment.objects.filter(course=obj, student=user).exists()
         context = {}
         try:
             payment = CoursePayment.objects.get(course=obj, student=user)
@@ -145,7 +122,6 @@ class CourseSerializer(serializers.ModelSerializer):
         else:
             context['payment'] = payment.option
         context['is_author'] = user == obj.author
-        # context['payment'] = payment.option if payment.exists() else 'free'
         serializer = SectionSerializer(sections, many=True, read_only=True, context=context)
         return serializer.data
     
