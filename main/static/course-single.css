@@ -136,6 +136,7 @@
     color: white;
     font-weight: 400;
     padding: 24px;
+    z-index: 100;
 }
 
 #dialog-video-player-title {

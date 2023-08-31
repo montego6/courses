@@ -176,7 +176,6 @@ class ContentManager {
         span.textContent = `${this.getItemsCount(type, option)} ${this.str_mappings[type]}`
         div.append(span)
         return div 
-            // return this.getItemsCount(type, option) ? `<span>${this.getItemsCount(type, option)} ${this.str_mappings[type]}</span>` : '' 
     }
 
     static renderBuyElement(option) {
@@ -193,10 +192,13 @@ class ContentManager {
     }
 
     static renderSidemenuContent(option) {
+        this.option = option
         document.querySelector('#side-menu-options-content').innerHTML = ''
+        let optionPrice = optionPrices.find(option => option.option === this.option)
+        document.querySelector('#side-menu-price').textContent = `${optionPrice.price} руб.`
         Object.keys(this.str_mappings).forEach(type => {
-            if (this.getItemsCount(type, option)) {
-                document.querySelector('#side-menu-options-content').append(this.getElement(type, option))
+            if (this.getItemsCount(type, this.option)) {
+                document.querySelector('#side-menu-options-content').append(this.getElement(type, this.option))
             }
         })
     }
@@ -208,15 +210,21 @@ let player = videojs(document.querySelector('.video-js'))
 
 let stripe = Stripe('pk_test_51McWQcDlPs5u4HwiXU90HVvWjuDJjOPFOoQV35sWS44HHELoefCrjSoHdRN4hRfoLfmsZkxSARDuRF4Q412znY0d00t6YkA4M7')
 
-buyBtns = document.querySelectorAll('.buy-course')
-buyBtns.forEach(buyBtn => {
-    let option = buyBtn.id.split('-')[1]
-    buyBtn.addEventListener('click', event => {
-        fetch(`http://127.0.0.1:8000/api/courses/${courseId}/buy/${option}/`)
+const buyBtn = document.querySelector('#buy-btn')
+buyBtn.addEventListener('click', event => {
+    fetch(`http://127.0.0.1:8000/api/courses/${courseId}/buy/${ContentManager.option}/`)
             .then(response => response.json())
             .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
-    })
-})
+}) 
+
+// buyBtns.forEach(buyBtn => {
+//     let option = buyBtn.id.split('-')[1]
+//     buyBtn.addEventListener('click', event => {
+//         fetch(`http://127.0.0.1:8000/api/courses/${courseId}/buy/${option}/`)
+//             .then(response => response.json())
+//             .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
+//     })
+// })
 
 
 
@@ -343,6 +351,8 @@ function initializeSidebar(data) {
     }))
 }
 
+let optionPrices 
+
 function initializePage(data) {
     document.getElementById('video-player-course-title').textContent = data.name
     document.getElementById('course-sections').innerHTML = ''
@@ -361,11 +371,14 @@ function initializePage(data) {
 
     document.getElementById('course-full_description').innerHTML = data.full_description
     
+    optionPrices = data.options
+
     initializeSidebar(data)
     ContentManager.renderSidemenuContent('basic')
 
     // ContentManager.renderBuyElements()
 }
+
 
 // function expandSection(event) {
 //     this.classList.toggle('invisible')

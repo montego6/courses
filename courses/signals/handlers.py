@@ -38,7 +38,8 @@ def create_stripe_course_item(sender, instance, created, **kwargs):
     StripeCourse.objects.create(course=instance, product=product['id'], price=price['id'], option_prices=option_prices)
 
 
-@receiver(pre_save, sender=Lesson)
+@receiver(post_save, sender=Lesson)
 def calculate_video_length(sender, instance, *args, **kwargs):
     video = VideoFileClip(instance.file.path)
-    instance.duration = video.duration
+    Lesson.objects.filter(id=instance.id).update(duration=video.duration)
+
