@@ -245,7 +245,14 @@ function postItem(itemForm, itemType, event) {
     }).then(response => response.json())
     .then(data => {
         if (data.id) {
-            let newItem = new Item(this, data)
+            let newItem
+            switch (itemType) {
+                case 'test':
+                    newItem = new Test(this, data)
+                    break
+                default:
+                    newItem = new Item(this, data)
+                }
             newItem.renderItem()
             courseData.sections.find(section => section.id == this.id).items.push(data)
         }
@@ -272,6 +279,7 @@ function postQuestion(testId, event) {
         if (data.id) {
             let newQuestion = new Question(data)
             newQuestion.renderElement()
+            document.querySelectorAll('#dialog-questions input[type=text]').forEach(input => input.value = '')
         }
     })
     event.preventDefault()
