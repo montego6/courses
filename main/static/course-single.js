@@ -217,15 +217,6 @@ buyBtn.addEventListener('click', event => {
             .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
 }) 
 
-// buyBtns.forEach(buyBtn => {
-//     let option = buyBtn.id.split('-')[1]
-//     buyBtn.addEventListener('click', event => {
-//         fetch(`http://127.0.0.1:8000/api/courses/${courseId}/buy/${option}/`)
-//             .then(response => response.json())
-//             .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
-//     })
-// })
-
 
 
 const videoDialog = document.querySelector('#dialog-video-player')
@@ -339,16 +330,29 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function initializeSidebar(data) {
+
+function initializeSidebar(data, payment) {
     document.getElementById('side-menu-cover').src = data.cover
-    document.getElementById('side-menu-price').textContent = data.price + '. руб.'
-    data.options.forEach(element => {
+    let paidIndex = data.options.findIndex(element => element.option == payment.option) + 1
+    // console.log('payment', payment.option)
+    // paidIndex = paidIndex == -1 ? 0 : paidIndex
+    const filteredOptions = data.options.slice(paidIndex)
+    filteredOptions.forEach(element => {
         spanEl = `<span id="buy-${element.option}" data-option="${element.option}">${capitalizeFirstLetter(element.option)}</span>`
         document.getElementById('side-menu-options-header').innerHTML += spanEl
     })
     document.querySelectorAll('#side-menu-options-header span').forEach(option => option.addEventListener('click', event => {
         ContentManager.renderSidemenuContent(event.target.getAttribute('data-option'))
     }))
+    document.getElementById('side-menu-price').textContent = data.price + '. руб.'
+    ContentManager.renderSidemenuContent(payment.option)
+}
+
+function getPaymentInfo() {
+    return fetch(`http://127.0.0.1:8000/api/courses/${courseId}/payment_info/`).then(response => response.json()).then(data => {
+        console.log('INFO', data)
+        return data
+    })
 }
 
 let optionPrices 
@@ -373,8 +377,8 @@ function initializePage(data) {
     
     optionPrices = data.options
 
-    initializeSidebar(data)
-    ContentManager.renderSidemenuContent('basic')
+    getPaymentInfo().then(payment => initializeSidebar(data, payment))
+    // ContentManager.renderSidemenuContent('basic')
 
     // ContentManager.renderBuyElements()
 }

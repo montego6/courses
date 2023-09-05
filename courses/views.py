@@ -1,20 +1,25 @@
 from django.shortcuts import render
 from django.urls import reverse
 from django.db.models import Q
-from rest_framework import viewsets
-from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework
+from django.contrib.auth import get_user_model
+from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework, CoursePayment
 from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
 from .serializers import TestSerializer, TestQuestionSerializer, CourseItemPaymentSerializer, CourseSearchSerializer
+from . import consts
+from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import generics
+from rest_framework import status
 
 import stripe
 from decouple import config
 
 stripe.api_key = config('STRIPE_KEY')
+
+User = get_user_model()
 
 # (?P<course_pk>[^/.]+)/
 class CourseViewSet(viewsets.ModelViewSet):
@@ -45,6 +50,18 @@ class CourseViewSet(viewsets.ModelViewSet):
         courses = Course.objects.filter(Q(name__icontains=query) | Q(short_description__icontains=query) | Q(full_description__icontains=query))
         serializer = self.serializer_class(courses, many=True)
         return Response(serializer.data)
+    
+    @action(methods=['get'], detail=True)
+    def payment_info(self, request, pk=None):
+        user = request.user
+        if not isinstance(user, User):
+            return Response({'payment': consts.COURSE_PAYMENT_NOT_PAID}, status=status.HTTP_200_OK)
+        try:
+            payment = CoursePayment.objects.get(course_id=pk, student=user)
+        except CoursePayment.DoesNotExist:
+            return Response({'payment': consts.COURSE_PAYMENT_NOT_PAID}, status=status.HTTP_200_OK)
+        else:
+            return Response({'payment': consts.COURSE_PAYMENT_PAID, 'option': payment.option}, status=status.HTTP_200_OK)
     
     # @action(methods=['get'], detail=True)
     # def is_paid(self, request, pk=None):
