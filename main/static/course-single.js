@@ -375,6 +375,7 @@ class SideBar {
         document.getElementById('side-menu-price').classList.add('invisible')
         document.getElementById('buy-btn').classList.add('invisible')
         document.getElementById('side-menu-upgrade').classList.remove('invisible')
+        ContentManager.option = ContentManager.getNextOption(this.paymentOption)
     }
 
     static renderLast() {
@@ -383,6 +384,7 @@ class SideBar {
         ContentManager.renderSidemenuContent(this.paymentOption, true)
         document.getElementById('side-menu-price').classList.add('invisible')
         document.getElementById('buy-btn').classList.add('invisible')
+        document.getElementById('side-menu-options').classList.add('invisible')
     }
 }
 
@@ -396,7 +398,7 @@ function initializeSidebar(data, payment) {
         spanEl = `<span id="buy-${element.option}" data-option="${element.option}">${capitalizeFirstLetter(element.option)}</span>`
         document.getElementById('side-menu-options-header').innerHTML += spanEl
     })
-    if (paidIndex+1) {
+    if (paidIndex + 1 && paidIndex + 1 < data.options.length) {
         const upgradePrice = filteredOptions[0].price - data.options[paidIndex].price
         document.getElementById('side-menu-upgrade-price').textContent = `${upgradePrice} руб.`
     }
@@ -406,6 +408,11 @@ function initializeSidebar(data, payment) {
         const upgradePrice = filteredOptions.find(option => option.option == selectedOption).price - data.options[paidIndex].price
         document.getElementById('side-menu-upgrade-price').textContent = `${upgradePrice} руб.`
     }))
+    document.getElementById('upgrade-btn').addEventListener('click', event => {
+        fetch(`http://127.0.0.1:8000/api/courses/${courseId}/upgrade/${ContentManager.option}/`)
+            .then(response => response.json())
+            .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
+    })
     // document.getElementById('side-menu-price').textContent = data.price + '. руб.'
     // ContentManager.renderSidemenuContent(payment.option)
 }

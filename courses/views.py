@@ -44,6 +44,23 @@ class CourseViewSet(viewsets.ModelViewSet):
         )
         return Response({'id': session['id']})
     
+    @action(methods=['get'], detail=True, url_path=r'upgrade/(?P<option>[^/.]+)')
+    def upgrade(self, request, option, pk=None):
+        course = Course.objects.get(id=pk)
+        paid_option = CoursePayment.objects.get(course=course, student=request.user).option
+        price = course.stripe.option_prices[option]['upgrade'][paid_option]
+        line_items = {'price': price, 'quantity': 1}
+        metadata = {'option': option, 'upgrade': True, 'course': course.id} 
+        session = stripe.checkout.Session.create(
+            success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
+            client_reference_id=request.user.id,
+            line_items=[line_items],
+            currency='rub',
+            mode="payment",
+            metadata=metadata
+        )
+        return Response({'id': session['id']})
+    
 
     @action(methods=['get'], detail=False, url_path=r'barsearch/(?P<query>[^/.]+)')
     def bar_search(self, request, query):

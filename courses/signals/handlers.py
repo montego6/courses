@@ -36,19 +36,17 @@ def create_stripe_course_item(sender, instance, created, **kwargs):
         product=product['id']
         )['id']
         if idx > 0:
-            product = stripe.Product.create(name=instance.name + ' upgrade to option ' + option['option'])
+            upgrade = stripe.Product.create(name=instance.name + ' upgrade to option ' + option['option'])
             option_dict['upgrade'] = {}
             for upgradable_option in instance.options[:idx]:
-                upgrade_price = option['price'] - last_price
+                upgrade_price = option['price'] - upgradable_option['price']
                 price = stripe.Price.create(
                     unit_amount=int(upgrade_price * 100),
                     currency='rub',
-                    product=product['id']
+                    product=upgrade['id']
                 )
                 option_dict['upgrade'][upgradable_option['option']] = price['id']
-        last_price = option['price']
         option_prices[option['option']] = option_dict
-        # option_prices[option['option']] = price['id']
     StripeCourse.objects.create(course=instance, product=product['id'], option_prices=option_prices)
 
 
