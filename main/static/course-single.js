@@ -153,6 +153,12 @@ class ContentManager {
     }
     static item_options = ['basic', 'extra', 'premium']
 
+
+    static getNextOption(currentOption) {
+        let idx = this.item_options.findIndex(option => option === currentOption)
+        return this.item_options[idx+1]    
+    }
+
     static addToManager(item) {
         this.content.push(item)
     }
@@ -191,14 +197,22 @@ class ContentManager {
         this.item_options.forEach(type => this.renderBuyElement(type))
     }
 
-    static renderSidemenuContent(option) {
+    static renderSidemenuContent(option, paid) {
+        let element
+        if (paid) {
+            element = document.querySelector('#side-menu-paid-content')
+        } else {
+            element = document.querySelector('#side-menu-options-content')
+        }
         this.option = option
-        document.querySelector('#side-menu-options-content').innerHTML = ''
+        element.innerHTML = ''
         let optionPrice = optionPrices.find(option => option.option === this.option)
-        document.querySelector('#side-menu-price').textContent = `${optionPrice.price} руб.`
+        if (optionPrice) {
+            document.querySelector('#side-menu-price').textContent = `${optionPrice.price} руб.`
+        }
         Object.keys(this.str_mappings).forEach(type => {
             if (this.getItemsCount(type, this.option)) {
-                document.querySelector('#side-menu-options-content').append(this.getElement(type, this.option))
+                element.append(this.getElement(type, this.option))
             }
         })
     }
@@ -331,8 +345,40 @@ function capitalizeFirstLetter(string) {
 }
 
 
+class SideBar {
+    static render(paymentOption, data) {
+        this.paymentOption = paymentOption
+        this.data = data
+        switch (paymentOption) {
+            case 'free':
+                this.renderNotPaid()
+                break
+            case 'premium':
+                this.renderPremium()
+                break
+            default:
+                this.renderOther()
+        }
+    }
+    
+    static renderNotPaid() {
+        document.getElementById('side-menu-price').textContent = this.data.price + '. руб.'
+        ContentManager.renderSidemenuContent(this.paymentOption, false)
+    }
+
+    static renderOther() {
+        document.getElementById('side-menu-paid').classList.remove('invisible')
+        document.querySelector('#side-menu-paid span').textContent = `Вы оплатили курс. В рамках опции ${this.paymentOption} вам доступны:`
+        ContentManager.renderSidemenuContent(this.paymentOption, true)
+        document.querySelector('#side-menu-paid > span:last-child').textContent = `Вы можете проапгрейдиться до следующих опций:`
+        ContentManager.renderSidemenuContent(ContentManager.getNextOption(this.paymentOption), false)
+    }
+}
+
+
 function initializeSidebar(data, payment) {
     document.getElementById('side-menu-cover').src = data.cover
+    SideBar.render(payment.option, data)
     let paidIndex = data.options.findIndex(element => element.option == payment.option) + 1
     // console.log('payment', payment.option)
     // paidIndex = paidIndex == -1 ? 0 : paidIndex
@@ -342,10 +388,10 @@ function initializeSidebar(data, payment) {
         document.getElementById('side-menu-options-header').innerHTML += spanEl
     })
     document.querySelectorAll('#side-menu-options-header span').forEach(option => option.addEventListener('click', event => {
-        ContentManager.renderSidemenuContent(event.target.getAttribute('data-option'))
+        ContentManager.renderSidemenuContent(event.target.getAttribute('data-option'), false)
     }))
-    document.getElementById('side-menu-price').textContent = data.price + '. руб.'
-    ContentManager.renderSidemenuContent(payment.option)
+    // document.getElementById('side-menu-price').textContent = data.price + '. руб.'
+    // ContentManager.renderSidemenuContent(payment.option)
 }
 
 function getPaymentInfo() {
