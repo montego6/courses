@@ -33,7 +33,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         price = course.stripe.price if not option else course.stripe.option_prices[option]
         line_items = {'price': price, 'quantity': 1}
         # line_items = CourseItemPaymentSerializer(course).data
-        metadata = {'option': option} if option else {'option': 'basic'}
+        metadata = {'option': option} if option else {'option': consts.COURSE_OPTION_BASIC}
         session = stripe.checkout.Session.create(
             success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
             client_reference_id=request.user.id,
@@ -55,11 +55,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     def payment_info(self, request, pk=None):
         user = request.user
         if not isinstance(user, User):
-            return Response({'payment': consts.COURSE_PAYMENT_NOT_PAID}, status=status.HTTP_200_OK)
+            return Response({'payment': consts.COURSE_PAYMENT_NOT_PAID, 'option': consts.COURSE_OPTION_FREE}, status=status.HTTP_200_OK)
         try:
             payment = CoursePayment.objects.get(course_id=pk, student=user)
         except CoursePayment.DoesNotExist:
-            return Response({'payment': consts.COURSE_PAYMENT_NOT_PAID}, status=status.HTTP_200_OK)
+            return Response({'payment': consts.COURSE_PAYMENT_NOT_PAID, 'option': consts.COURSE_OPTION_FREE}, status=status.HTTP_200_OK)
         else:
             return Response({'payment': consts.COURSE_PAYMENT_PAID, 'option': payment.option}, status=status.HTTP_200_OK)
     

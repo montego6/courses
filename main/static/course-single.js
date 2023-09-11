@@ -354,7 +354,7 @@ class SideBar {
                 this.renderNotPaid()
                 break
             case 'premium':
-                this.renderPremium()
+                this.renderLast()
                 break
             default:
                 this.renderOther()
@@ -363,15 +363,26 @@ class SideBar {
     
     static renderNotPaid() {
         document.getElementById('side-menu-price').textContent = this.data.price + '. руб.'
-        ContentManager.renderSidemenuContent(this.paymentOption, false)
+        ContentManager.renderSidemenuContent(ContentManager.getNextOption(this.paymentOption), false)
     }
 
     static renderOther() {
         document.getElementById('side-menu-paid').classList.remove('invisible')
         document.querySelector('#side-menu-paid span').textContent = `Вы оплатили курс. В рамках опции ${this.paymentOption} вам доступны:`
         ContentManager.renderSidemenuContent(this.paymentOption, true)
-        document.querySelector('#side-menu-paid > span:last-child').textContent = `Вы можете проапгрейдиться до следующих опций:`
+        document.querySelector('#side-menu-paid > span:last-child').textContent = `Также доступны следующие опции:`
         ContentManager.renderSidemenuContent(ContentManager.getNextOption(this.paymentOption), false)
+        document.getElementById('side-menu-price').classList.add('invisible')
+        document.getElementById('buy-btn').classList.add('invisible')
+        document.getElementById('side-menu-upgrade').classList.remove('invisible')
+    }
+
+    static renderLast() {
+        document.getElementById('side-menu-paid').classList.remove('invisible')
+        document.querySelector('#side-menu-paid span').textContent = `Вы оплатили курс. В рамках опции ${this.paymentOption} вам доступны:`
+        ContentManager.renderSidemenuContent(this.paymentOption, true)
+        document.getElementById('side-menu-price').classList.add('invisible')
+        document.getElementById('buy-btn').classList.add('invisible')
     }
 }
 
@@ -379,16 +390,21 @@ class SideBar {
 function initializeSidebar(data, payment) {
     document.getElementById('side-menu-cover').src = data.cover
     SideBar.render(payment.option, data)
-    let paidIndex = data.options.findIndex(element => element.option == payment.option) + 1
-    // console.log('payment', payment.option)
-    // paidIndex = paidIndex == -1 ? 0 : paidIndex
-    const filteredOptions = data.options.slice(paidIndex)
+    let paidIndex = data.options.findIndex(element => element.option == payment.option)
+    const filteredOptions = data.options.slice(paidIndex + 1)
     filteredOptions.forEach(element => {
         spanEl = `<span id="buy-${element.option}" data-option="${element.option}">${capitalizeFirstLetter(element.option)}</span>`
         document.getElementById('side-menu-options-header').innerHTML += spanEl
     })
+    if (paidIndex+1) {
+        const upgradePrice = filteredOptions[0].price - data.options[paidIndex].price
+        document.getElementById('side-menu-upgrade-price').textContent = `${upgradePrice} руб.`
+    }
     document.querySelectorAll('#side-menu-options-header span').forEach(option => option.addEventListener('click', event => {
-        ContentManager.renderSidemenuContent(event.target.getAttribute('data-option'), false)
+        const selectedOption = event.target.getAttribute('data-option')
+        ContentManager.renderSidemenuContent(selectedOption, false)
+        const upgradePrice = filteredOptions.find(option => option.option == selectedOption).price - data.options[paidIndex].price
+        document.getElementById('side-menu-upgrade-price').textContent = `${upgradePrice} руб.`
     }))
     // document.getElementById('side-menu-price').textContent = data.price + '. руб.'
     // ContentManager.renderSidemenuContent(payment.option)
