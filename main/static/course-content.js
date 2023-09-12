@@ -269,7 +269,7 @@ function postQuestion(testId, event) {
     const formData = new FormData(this)
     const options = Array.from(this.querySelectorAll('input[name=option]'), element => element.value)
     formData.append('test', testId)
-    formData.append('options', options)
+    options.forEach(option => formData.append('options', option))
     fetch(`http://127.0.0.1:8000/api/questions/`, {
         method: 'post',
         body: formData

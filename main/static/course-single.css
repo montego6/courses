@@ -168,7 +168,8 @@
     background-color: var(--video-ui-active-color);
 }
 
-.lesson-link {
+.lesson-link,
+.test-link {
     text-decoration: underline;
     color:rgb(29, 153, 255);
     cursor: pointer;
@@ -238,4 +239,15 @@
     column-gap: 6px;
     color: white;
     padding: 4px 0; 
+}
+
+#dialog-questions {
+    position: absolute;
+    margin: auto;
+    width: 800px;
+    height: fit-content;
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
+    z-index: 100;
 }

@@ -77,6 +77,9 @@ class Section {
                 case 'lesson':
                     new SectionLesson(this, item)
                     break
+                case 'test':
+                    new SectionTest(this, item)
+                    break
                 default:
                     new SectionItem(this, item)
             }
@@ -144,6 +147,69 @@ class SectionLesson extends SectionItem {
             this.element.querySelector('.item-right span').textContent = formatVideoLessonDuration(this.data.duration)
         }
     }
+}
+
+class SectionTest extends SectionItem {
+    extra() {
+        console.log('test', this.data)
+        if (this.data.questions) {
+            this.element.querySelector('.item-name').classList.add('test-link')
+            this.element.querySelector('.item-name').addEventListener('click', invokeTest.bind(this.data.questions))
+        }
+    }
+}
+
+function invokeTest() {
+    backdrop.classList.remove('invisible')
+    console.log('this',this)
+    document.getElementById('side-menu').classList.add('invisible')
+    newTest = new TestInvokation(this)
+}
+
+class TestInvokation {
+    dialog = document.querySelector('#dialog-questions')
+    wrapper = document.querySelector('#test-questions')
+    
+    constructor(data) {
+        this.questions = data
+        this.currentQuestion = 0
+        this.initialize()
+    }
+
+    initialize() {
+        this.dialog.show()
+        this.wrapper.innerHTML = ''
+        this.renderElement(this.createElement())
+    }
+
+    NextQuestion() {
+        if (this.currentQuestion < this.questions.length - 1) {
+            this.currentQuestion++
+            return true
+        } else {
+            return false
+        }
+    }
+
+    createElement() {
+        const clone = document.getElementById('template-test-question').content.cloneNode(true)
+        clone.querySelector('.test-question-number').textContent = this.currentQuestion + 1
+        clone.querySelector('.test-question-name').textContent = this.questions[this.currentQuestion].question + '?'
+        const answers = this.questions[this.currentQuestion].options
+        for (let i = 0; i < answers.length; i++) {
+            let optionClone = document.getElementById('template-test-option').content.cloneNode(true)
+            optionClone.querySelector('span').textContent = answers[i]
+            optionClone.querySelector('span').classList.add('test-option-' + (i + 1))
+            clone.querySelector('.test-options').append(optionClone)
+        }
+        return clone
+    }
+
+    renderElement(element) {
+        document.querySelector('#test-questions').append(element)
+    }
+
+
 }
 
 class ContentManager {
