@@ -169,6 +169,10 @@ function invokeTest() {
 class TestInvokation {
     dialog = document.querySelector('#dialog-questions')
     wrapper = document.querySelector('#test-questions')
+    submitBtn = document.querySelector('#test-submit-btn')
+    nextBtn = document.querySelector('#test-next-btn')
+    correctDiv = document.querySelector('#answer-correct')
+    wrongDiv = document.querySelector('#answer-wrong')
     
     constructor(data) {
         this.questions = data
@@ -176,13 +180,35 @@ class TestInvokation {
         this.initialize()
     }
 
-    initialize() {
-        this.dialog.show()
+    clear() {
         this.wrapper.innerHTML = ''
-        this.renderElement(this.createElement())
     }
 
-    NextQuestion() {
+    initialize() {
+        this.dialog.show()
+        this.clear()
+        this.renderElement(this.createElement())
+        this.submitBtn.addEventListener('click', this.processQuestion.bind(this))
+    }
+
+    processQuestion() {
+        if (this.checkAnswer()) {
+            this.correctDiv.classList.remove('invisible')
+        } else {
+            this.wrongDiv.classList.remove('invisible')
+            this.wrongDiv.querySelector('#span-correct-answer').textContent = this.questions[this.currentQuestion].answer
+        }
+        this.submitBtn.classList.add('invisible')
+        this.nextBtn.classList.remove('invisible')
+    }
+
+    checkAnswer() {
+        let correctAnswer = this.questions[this.currentQuestion].answer
+        let answer = this.wrapper.querySelector('input:checked').nextElementSibling.textContent
+        return answer === correctAnswer
+    }
+
+    nextQuestion() {
         if (this.currentQuestion < this.questions.length - 1) {
             this.currentQuestion++
             return true

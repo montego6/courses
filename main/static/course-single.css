@@ -251,3 +251,35 @@
     padding: 20px;
     z-index: 100;
 }
+
+.test-btns {
+    display: flex;
+    align-items: center;
+    column-gap: 12px;
+}
+
+#test-questions {
+    margin: 12px 0;
+}
+
+.test-options {
+    margin-top: 6px;
+}
+
+.test-option {
+    padding: 3px 0;
+}
+
+#answer-correct {
+    background-color: aquamarine;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 12px;
+}
+
+#answer-wrong {
+    background-color: rgb(255, 127, 127);
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 12px;
+}

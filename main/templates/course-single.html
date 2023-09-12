@@ -42,8 +42,8 @@
 <dialog id="dialog-questions">
     <template id="template-test-option">
         <div class="test-option">
-            <span></span>
             <input type="radio" name="answer">
+            <span></span>
         </div>
     </template>
     <template id="template-test-question">
@@ -56,8 +56,18 @@
     </template>
     <div id="test-questions">
 
-    </div>      
-    <div class="form-button">Next question</div>  
+    </div>     
+    <div id="answer-correct" class="invisible">
+        <span>Правильный ответ! Переходите к следующему вопросу</span>
+    </div>
+    <div id="answer-wrong" class="invisible">
+        <span>Неправильный ответ. Правильный ответ: <span id="span-correct-answer"></span></span>
+    </div>
+    <div class="test-btns">
+        <div id='test-submit-btn' class="form-button">Submit</div>
+        <div id='test-next-btn' class="form-button invisible">Next question</div>  
+        <div id='test-finish-btn' class="form-button">Finish test</div>
+    </div> 
 </dialog>
 <div id="course-header">
     <div id="course-header-content">
