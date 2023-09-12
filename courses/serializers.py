@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.fields import empty
-from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment
+from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment, TestCompletion
 from .consts import COURSE_OPTIONS
 from functools import reduce
 
@@ -46,11 +46,36 @@ class TestQuestionSerializer(serializers.ModelSerializer):
 class TestSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
     type = serializers.CharField(default='test', read_only=True)
     questions = TestQuestionSerializer(many=True, read_only=True)
+    completed = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Test
         fields = '__all__'
-        # fields = ['name', 'description', 'section', 'option', 'type', 'questions']
+    
+    def get_completed(self, obj):
+        user = self.context.get('user')
+        try:
+            test_completion = TestCompletion.objects.get(test=obj, student=user)
+        except TestCompletion.DoesNotExist:
+            return False
+        else:
+            return test_completion.result
+        # return TestCompletion.objects.filter(test=obj, student=user).exists()
+    
+
+class TestCompletionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TestCompletion
+        fields = ['test', 'result']
+        read_only_fields = ['student']
+    
+    def create(self, validated_data):
+        user = None
+        request = self.context.get('request')
+        if request and hasattr(request, 'user'):
+            user = request.user
+        validated_data['student'] = user
+        return super().create(validated_data)
 
 
 class HomeworkSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
@@ -122,6 +147,7 @@ class CourseSerializer(serializers.ModelSerializer):
         else:
             context['payment'] = payment.option
         context['is_author'] = user == obj.author
+        context['user']  = user
         serializer = SectionSerializer(sections, many=True, read_only=True, context=context)
         return serializer.data
     

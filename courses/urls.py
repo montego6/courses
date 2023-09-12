@@ -1,6 +1,6 @@
 from rest_framework import routers
 from .views import CourseViewSet, SectionViewSet, LessonViewSet, AdditionalFileViewSet, GetUser
-from .views import TestViewSet, TestQuestionViewSet, HomeworkViewSet, CourseSearchView
+from .views import TestViewSet, TestQuestionViewSet, HomeworkViewSet, CourseSearchView, TestCompletionView
 from django.urls import path
 
 router = routers.SimpleRouter()
@@ -13,6 +13,7 @@ router.register(r'questions', TestQuestionViewSet)
 router.register(r'homeworks', HomeworkViewSet)
 urlpatterns = [
     path('user/', GetUser.as_view()),
-    path('courses/search/', CourseSearchView.as_view())
+    path('courses/search/', CourseSearchView.as_view()),
+    path('test-completions/', TestCompletionView.as_view()),
 ]
 urlpatterns += router.urls

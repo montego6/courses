@@ -242,7 +242,7 @@
 }
 
 #dialog-questions {
-    position: absolute;
+    position: fixed;
     margin: auto;
     width: 800px;
     height: fit-content;

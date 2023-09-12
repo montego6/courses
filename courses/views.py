@@ -3,8 +3,10 @@ from django.urls import reverse
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework, CoursePayment
+from .models import TestCompletion
 from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
 from .serializers import TestSerializer, TestQuestionSerializer, CourseItemPaymentSerializer, CourseSearchSerializer
+from .serializers import TestCompletionSerializer
 from . import consts
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
@@ -123,6 +125,11 @@ class TestQuestionViewSet(viewsets.ModelViewSet):
 class HomeworkViewSet(viewsets.ModelViewSet):
     queryset = Homework.objects.all()
     serializer_class = HomeworkSerializer
+
+
+class TestCompletionView(generics.CreateAPIView):
+    queryset = TestCompletion.objects.all()
+    serializer_class = TestCompletionSerializer
 
     
 

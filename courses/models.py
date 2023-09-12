@@ -106,6 +106,12 @@ class TestQuestion(models.Model):
     answer = models.CharField(max_length=100)
 
 
+class TestCompletion(models.Model):
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='test_completions')
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='test_completions')
+    result = models.PositiveIntegerField()
+
+
 class Homework(models.Model):
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=200, null=True)

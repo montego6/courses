@@ -1,4 +1,5 @@
 const courseId = document.getElementById('course-id').textContent
+const csrf_token = document.querySelector('#csrf-token input').value 
 
 getCourseData()
 
@@ -153,8 +154,13 @@ class SectionTest extends SectionItem {
     extra() {
         console.log('test', this.data)
         if (this.data.questions) {
-            this.element.querySelector('.item-name').classList.add('test-link')
-            this.element.querySelector('.item-name').addEventListener('click', invokeTest.bind(this.data.questions))
+            if (!this.data.completed) {
+                this.element.querySelector('.item-name').classList.add('test-link')
+                this.element.querySelector('.item-name').addEventListener('click', invokeTest.bind(this.data))
+            } else {
+                this.element.querySelector('.item-right span').textContent = this.data.completed + '%'
+            }
+                
         }
     }
 }
@@ -171,12 +177,15 @@ class TestInvokation {
     wrapper = document.querySelector('#test-questions')
     submitBtn = document.querySelector('#test-submit-btn')
     nextBtn = document.querySelector('#test-next-btn')
+    finishBtn = document.querySelector('#test-finish-btn')
     correctDiv = document.querySelector('#answer-correct')
     wrongDiv = document.querySelector('#answer-wrong')
     
     constructor(data) {
-        this.questions = data
+        this.id = data.id
+        this.questions = data.questions
         this.currentQuestion = 0
+        this.result = 0
         this.initialize()
     }
 
@@ -189,17 +198,54 @@ class TestInvokation {
         this.clear()
         this.renderElement(this.createElement())
         this.submitBtn.addEventListener('click', this.processQuestion.bind(this))
+        this.nextBtn.addEventListener('click', this.nextQuestion.bind(this))
+        this.finishBtn.addEventListener('click', this.postCompletion.bind(this))
+    }
+
+    formatResult() {
+        return Math.ceil(this.result * 100)
+    }
+
+    postCompletion() {
+        let completion = {
+            result: this.formatResult(),
+            test: this.id
+        }
+        fetch('http://127.0.0.1:8000/api/test-completions/', {
+            method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrf_token,
+              },
+            body: JSON.stringify(completion)
+        }).then(response => response.json()).then(data => console.log(data))
+        this.dialog.close()
+        backdrop.classList.add('invisible')
+    }
+
+    nextQuestion() {
+        this.currentQuestion++
+        this.clear()
+        this.correctDiv.classList.add('invisible')
+        this.wrongDiv.classList.add('invisible')
+        this.renderElement(this.createElement())
+        this.submitBtn.classList.remove('invisible')
+        this.nextBtn.classList.add('invisible')
     }
 
     processQuestion() {
         if (this.checkAnswer()) {
             this.correctDiv.classList.remove('invisible')
+            this.result += 1 / this.questions.length
         } else {
             this.wrongDiv.classList.remove('invisible')
             this.wrongDiv.querySelector('#span-correct-answer').textContent = this.questions[this.currentQuestion].answer
         }
         this.submitBtn.classList.add('invisible')
-        this.nextBtn.classList.remove('invisible')
+        if (this.hasNextQuestion()) { 
+            this.nextBtn.classList.remove('invisible')
+        }
     }
 
     checkAnswer() {
@@ -208,9 +254,8 @@ class TestInvokation {
         return answer === correctAnswer
     }
 
-    nextQuestion() {
+    hasNextQuestion() {
         if (this.currentQuestion < this.questions.length - 1) {
-            this.currentQuestion++
             return true
         } else {
             return false
