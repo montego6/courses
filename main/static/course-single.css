@@ -90,22 +90,26 @@
 .section-header-icon-expand {
     width: 20px;
     height: 20px;
+    transition: transform 0.25s ease-in-out;
+}
+
+.icon-expand-animated {
+    transform: rotate(180deg);
 }
 
 .section-icon {
     width: 12px;
     height: 12px;
+    stroke: black;
 }
 
 .section-item {
     display: flex;
     align-items: center;
     padding: 6px 0px;
+    column-gap: 8px;
 }
 
-.item-name {
-    padding-left: 6px;
-}
 
 .item-right {
     margin-left: auto;
@@ -206,4 +210,32 @@
     justify-content: center;
     gap: 20px;
     color: white;
+}
+
+.item-option {
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: white;
+    padding: 3px;
+    border-radius: 4px;
+}
+
+.item-option.basic {
+    background-color: rgb(56, 209, 255);
+}
+
+.item-option.extra {
+    background-color: rgb(196, 82, 231);
+}
+
+.item-option.premium {
+    background-color: rgb(45, 101, 204);
+}
+
+.sidemenu-content-div {
+    display: flex;
+    align-items: center;
+    column-gap: 6px;
+    color: white;
+    padding: 4px 0; 
 }

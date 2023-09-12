@@ -85,6 +85,7 @@ class Section {
 
     expandSection() {
         this.element.querySelector('div.course-section-body').classList.toggle('invisible')
+        this.element.querySelector('.section-header-icon-expand').classList.toggle('icon-expand-animated')
     }
 }
 
@@ -105,6 +106,8 @@ class SectionItem {
         const itemTemplate = document.getElementById('template-section-item')
         const clone = itemTemplate.content.cloneNode(true)
         clone.querySelector('.item-name').textContent = this.name
+        clone.querySelector('.item-option').textContent = this.option
+        clone.querySelector('.item-option').classList.add(this.option)
         clone.querySelector('svg use').setAttribute('href', `#icon-${this.type}`)
         return clone
     }
@@ -172,10 +175,12 @@ class ContentManager {
 
     static getElement(type, option) {
         let div = document.createElement('div')
+        div.classList.add('sidemenu-content-div')
         let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
         svg.classList.add('course-header-icon')
         let use = document.createElementNS('http://www.w3.org/2000/svg', 'use')
-        use.setAttributeNS('http://www.w3.org/1999/xlink','href',`#icon-${type}`)
+        // use.setAttributeNS('http://www.w3.org/1999/xlink','href',`#icon-${type}`)
+        use.setAttribute('href',`#icon-${type}`)
         svg.append(use)
         div.append(svg)
         let span = document.createElement('span')
@@ -238,6 +243,7 @@ backdrop.addEventListener('click', event => {
     backdrop.classList.add('invisible')
     document.querySelector('dialog[open]').close()
     player.pause()
+    document.getElementById('side-menu').classList.remove('invisible')
 })
 
 
@@ -328,6 +334,7 @@ function initializeVideoLessonsLinks() {
             backdrop.classList.remove('invisible')
             videoDialog.show()
             player.play()
+            document.getElementById('side-menu').classList.add('invisible')
         })
     })
 }
