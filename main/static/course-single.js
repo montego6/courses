@@ -592,7 +592,23 @@ function initializeReviewsAdd() {
     })
 
     document.querySelector('#submit-review').addEventListener('click', event => {
-        
+        let comment = document.querySelector('textarea[name=review]').value
+        console.log('comment', comment)
+        let rating = document.querySelectorAll('.star-selected').length
+        let body = {
+            comment: comment,
+            rating: rating,
+            course: courseId
+        }
+        fetch('http://127.0.0.1:8000/api/reviews/', {
+        method: 'post',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrf_token,
+          },
+        body: JSON.stringify(body)
+        }).then(response => response.json()).then(data => console.log(data))
     })
     
 }
