@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.contrib.auth import get_user_model
 from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework, CoursePayment
 from .models import TestCompletion
+from reviews.models import Review
 from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
 from .serializers import TestSerializer, TestQuestionSerializer, CourseItemPaymentSerializer, CourseSearchSerializer
 from .serializers import TestCompletionSerializer
@@ -81,6 +82,14 @@ class CourseViewSet(viewsets.ModelViewSet):
             return Response({'payment': consts.COURSE_PAYMENT_NOT_PAID, 'option': consts.COURSE_OPTION_FREE}, status=status.HTTP_200_OK)
         else:
             return Response({'payment': consts.COURSE_PAYMENT_PAID, 'option': payment.option}, status=status.HTTP_200_OK)
+    
+    @action(methods=['get'], detail=True)
+    def review_info(self, request, pk=None):
+        user = request.user
+        if isinstance(user, User) and Review.objects.filter(student=user, course__id=pk).exists():
+            return Response({'review': True})
+        return Response({'review': False})
+
     
     # @action(methods=['get'], detail=True)
     # def is_paid(self, request, pk=None):

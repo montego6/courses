@@ -510,6 +510,14 @@ class SideBar {
         ContentManager.renderSidemenuContent(ContentManager.getNextOption(this.paymentOption), false)
     }
 
+    static showReviewAddBtn() {
+        getReviewInfo().then(data => {
+            if (!data.review) {
+                document.getElementById('side-menu-review').classList.remove('invisible')
+            }
+        })
+    }
+
     static renderOther() {
         document.getElementById('side-menu-paid').classList.remove('invisible')
         document.querySelector('#side-menu-paid span').textContent = `Вы оплатили курс. В рамках опции ${this.paymentOption} вам доступны:`
@@ -520,7 +528,7 @@ class SideBar {
         document.getElementById('buy-btn').classList.add('invisible')
         document.getElementById('side-menu-upgrade').classList.remove('invisible')
         ContentManager.option = ContentManager.getNextOption(this.paymentOption)
-        document.getElementById('side-menu-review').classList.remove('invisible')
+        this.showReviewAddBtn()
     }
 
     static renderLast() {
@@ -530,7 +538,7 @@ class SideBar {
         document.getElementById('side-menu-price').classList.add('invisible')
         document.getElementById('buy-btn').classList.add('invisible')
         document.getElementById('side-menu-options').classList.add('invisible')
-        document.getElementById('side-menu-review').classList.remove('invisible')
+        this.showReviewAddBtn()
     }
 }
 
@@ -565,6 +573,13 @@ function initializeSidebar(data, payment) {
 
 function getPaymentInfo() {
     return fetch(`http://127.0.0.1:8000/api/courses/${courseId}/payment_info/`).then(response => response.json()).then(data => {
+        console.log('INFO', data)
+        return data
+    })
+}
+
+function getReviewInfo() {
+    return fetch(`http://127.0.0.1:8000/api/courses/${courseId}/review_info/`).then(response => response.json()).then(data => {
         console.log('INFO', data)
         return data
     })
