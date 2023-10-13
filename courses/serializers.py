@@ -1,8 +1,12 @@
 from rest_framework import serializers
 from rest_framework.fields import empty
+from django.contrib.auth import get_user_model
 from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment, TestCompletion
 from .consts import COURSE_OPTIONS
 from functools import reduce
+
+
+User = get_user_model()
 
 
 
@@ -135,10 +139,11 @@ class CourseSerializer(serializers.ModelSerializer):
     
     def get_sections(self, obj):
         sections = Section.objects.filter(course=obj)
-        user = None
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
             user = request.user
+        if not isinstance(user, User):
+            user = None
         context = {}
         try:
             payment = CoursePayment.objects.get(course=obj, student=user)

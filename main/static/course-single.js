@@ -520,6 +520,7 @@ class SideBar {
         document.getElementById('buy-btn').classList.add('invisible')
         document.getElementById('side-menu-upgrade').classList.remove('invisible')
         ContentManager.option = ContentManager.getNextOption(this.paymentOption)
+        document.getElementById('side-menu-review').classList.remove('invisible')
     }
 
     static renderLast() {
@@ -529,6 +530,7 @@ class SideBar {
         document.getElementById('side-menu-price').classList.add('invisible')
         document.getElementById('buy-btn').classList.add('invisible')
         document.getElementById('side-menu-options').classList.add('invisible')
+        document.getElementById('side-menu-review').classList.remove('invisible')
     }
 }
 
@@ -568,6 +570,34 @@ function getPaymentInfo() {
     })
 }
 
+function initializeReviewsAdd() {
+    document.querySelector('#review-btn').addEventListener('click', event => {
+        const dialog = document.querySelector('#dialog-add-review')
+        backdrop.classList.remove('invisible')
+        dialog.show()
+    })
+
+    document.querySelectorAll('.review-star-el').forEach(star => {
+        star.addEventListener('mouseenter', event => {
+            document.querySelectorAll('.review-star-el').forEach(star => {
+                star.querySelector('svg').classList.remove('star-selected')
+            })
+            let element = star
+            while (element.previousElementSibling) {
+                element.querySelector('svg').classList.add('star-selected')
+                element = element.previousElementSibling
+            }
+            element.querySelector('svg').classList.add('star-selected')
+        })
+    })
+
+    document.querySelector('#submit-review').addEventListener('click', event => {
+        
+    })
+    
+}
+
+
 let optionPrices 
 
 function initializePage(data) {
@@ -591,6 +621,8 @@ function initializePage(data) {
     optionPrices = data.options
 
     getPaymentInfo().then(payment => initializeSidebar(data, payment))
+
+    initializeReviewsAdd()
     // ContentManager.renderSidemenuContent('basic')
 
     // ContentManager.renderBuyElements()
