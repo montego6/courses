@@ -3,6 +3,7 @@ from rest_framework.fields import empty
 from django.contrib.auth import get_user_model
 from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment, TestCompletion
 from .consts import COURSE_OPTIONS
+from reviews.serializers import ReviewWithFullNameSerializer
 from functools import reduce
 
 
@@ -123,6 +124,7 @@ class SectionSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
+    reviews = ReviewWithFullNameSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
