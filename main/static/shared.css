@@ -129,7 +129,11 @@ input#header-search-input {
     justify-content: center;
 }
 
-
+.main-body-block {
+    width: 80%;
+    margin: 50px auto;
+    overflow: hidden;
+}
 
 .main-content {
     width: 70%;

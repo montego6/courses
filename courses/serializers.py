@@ -169,6 +169,7 @@ class CourseSearchSerializer(serializers.ModelSerializer):
 
     def get_duration(self, obj):
         lessons = Lesson.objects.filter(section__course=obj)
+        print(lessons)
         duration = reduce(lambda x,y: x+y.duration, lessons, lessons[0].duration)
         return duration
     
