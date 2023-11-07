@@ -628,6 +628,24 @@ function initializeReviewsAdd() {
     
 }
 
+function initializeReviews(data) {
+    let initialVal = 0
+    let ratingSum =  data.reduce((acc, val) => acc + val.rating, initialVal)
+    let rating = ratingSum / data.length
+    document.querySelector('#course-reviews-count').textContent = data.length
+    document.querySelector('#course-reviews-rating').textContent = Math.round(rating * 100) / 100
+    document.querySelector('#course-reviews-btn').addEventListener('click', event => {
+        backdrop.classList.remove('invisible')
+        document.querySelector('#dialog-reviews').show()
+    })
+    data.forEach(review => {
+        const clone = document.querySelector('#template-review').content.cloneNode(true)
+        clone.querySelector('.review-author span').textContent = review.student
+        clone.querySelector('.review-text span').textContent = review.comment
+        clone.querySelectorAll(`svg.review-star-small:nth-child(-n+${review.rating})`).forEach(star => star.classList.add('star-selected'))
+        document.querySelector('#all-reviews').append(clone)
+    })
+}
 
 let optionPrices 
 
@@ -654,6 +672,7 @@ function initializePage(data) {
     getPaymentInfo().then(payment => initializeSidebar(data, payment))
 
     initializeReviewsAdd()
+    initializeReviews(data.reviews)
     // ContentManager.renderSidemenuContent('basic')
 
     // ContentManager.renderBuyElements()

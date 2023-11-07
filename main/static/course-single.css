@@ -263,6 +263,17 @@
     z-index: 100;
 }
 
+#dialog-reviews {
+    position: fixed;
+    margin: auto;
+    width: 800px;
+    height: fit-content;
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
+    z-index: 100;
+}
+
 .test-btns {
     display: flex;
     align-items: center;
@@ -308,10 +319,22 @@
     height: 40px;
 }
 
+.review-star-small {
+    fill: none;
+    stroke: black;
+    width: 20px;
+    height: 20px;
+}
+
 .star-selected {
     fill: yellow;
 }
 
 #review-stars {
     display: flex;
+}
+
+.review-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
 }

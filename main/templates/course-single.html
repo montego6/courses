@@ -110,6 +110,43 @@
         <div id='test-finish-btn' class="form-button">Finish test</div>
     </div> 
 </dialog>
+<dialog id="dialog-reviews">
+    <template id="template-review">
+        <div class="review-wrapper">
+            <div class="review-left-side">
+                <div class="review-author">
+                    <span></span>
+                </div>
+                <div class="review-rating">
+                    <svg class="review-star-small">
+                        <use href="#icon-star"></use>
+                    </svg>
+                    <svg class="review-star-small">
+                        <use href="#icon-star"></use>
+                    </svg>
+                    <svg class="review-star-small">
+                        <use href="#icon-star"></use>
+                    </svg>
+                    <svg class="review-star-small">
+                        <use href="#icon-star"></use>
+                    </svg>
+                    <svg class="review-star-small">
+                        <use href="#icon-star"></use>
+                    </svg>
+                </div>
+            </div>
+            <div class="review-right-side">
+                <div class="review-text">
+                    <span></span>
+                </div>
+            </div>
+        </div>
+        <hr>
+    </template>
+    <div id="all-reviews">
+
+    </div>
+</dialog>
 <div id="course-header">
     <div id="course-header-content">
         <h1 id="course-name"></h1>
@@ -126,6 +163,9 @@
                 <use href="#icon-language"></use>
             </svg>
             <span id="course-language"></span>
+        </div>
+        <div id="course-header-reviews">
+            <span>Средняя оценка: <span id="course-reviews-rating"></span></span>
         </div>
     </div>
 </div>
@@ -225,8 +265,7 @@
         <div id="course-reviews">
             <h2>Отзывы о курсе</h2>
             <span>Отзывов: <span id="course-reviews-count"></span></span>
-            <span>Средняя оценка: <span id="course-reviews-rating"></span></span>
-            <div class="form-button">Посмотреть отзывы</div>
+            <div id="course-reviews-btn" class="form-button">Посмотреть отзывы</div>
         </div>
     </div>
 </div>
