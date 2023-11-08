@@ -162,10 +162,11 @@ class CourseSerializer(serializers.ModelSerializer):
 class CourseSearchSerializer(serializers.ModelSerializer):
     duration = serializers.SerializerMethodField()
     options = serializers.SerializerMethodField()
+    subject = serializers.SlugRelatedField(slug_field='name', read_only=True)
     
     class Meta:
         model = Course
-        fields = ['name', 'cover', 'short_description', 'author', 'price', 'language', 'duration', 'options']
+        fields = ['name', 'cover', 'short_description', 'author', 'price', 'language', 'duration', 'options', 'subject']
 
     def get_duration(self, obj):
         lessons = Lesson.objects.filter(section__course=obj)

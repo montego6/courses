@@ -39,6 +39,7 @@ fetch('http://127.0.0.1:8000/api/courses/search/?' + params).then(response => re
             LanguageManager.renderAllLanguages()
             OptionsManager.renderAllOptions()
             PricesManager.renderAllPrices()
+            SubjectsManager.renderAllSubjects()
         })
 
 let allLanguages
@@ -55,6 +56,7 @@ class Course {
         this.price = data.price
         this.duration = data.duration
         this.options = data.options
+        this.subject = data.subject
         this.element = this.renderElement()
     }
 
@@ -84,6 +86,7 @@ class CourseManager {
         language: [],
         options: [],
         prices: [],
+        subjects: [],
     }
 
     static addCourse(course) {
@@ -195,10 +198,33 @@ class PricesFilter {
     }
 
     static next() {
-        return null
+        return SubjectsFilter
     }
 }
 
+class SubjectsFilter {
+    static filter(courses, filtersArr) {
+        let filters = filtersArr.subjects
+        if (filters.length) {
+            let filteredArr = []
+            filters.forEach(filter => {
+                let filteredCourses = courses.filter(course => course.subject == filter)
+                filteredCourses.forEach(course => {
+                    if (!filteredArr.includes(course)) {
+                        filteredArr.push(course)
+                    }
+                })
+            })
+            return filteredArr
+        } else {
+            return courses
+        }
+    }
+
+    static next() {
+        return null
+    }
+}
 
 class LanguageManager {
     static getDistinctLanguages() {
@@ -284,7 +310,7 @@ class OptionsManager {
 }
 
 class PricesManager {
-    static pricesRanges = [0, 1000, 2000, 3000]
+    static pricesRanges = [0, 1000, 2000, 3000, 5000]
     
     static getDistinctPrices() {
         let pricesArr = Array.from(CourseManager.courses, course => course.price)
@@ -334,7 +360,45 @@ class PricesManager {
     }
 }
 
+class SubjectsManager {
+    static getDistinctSubjects() {
+        let subjectsArr = Array.from(CourseManager.courses, course => course.subject)
+        let subjectsSet = new Set(subjectsArr)
+        return subjectsSet
+    }
 
+    static getSubjectElement(subject) {
+        const clone = document.getElementById('template-filter-subject').content.cloneNode(true)
+        clone.querySelector('input').id = 'subject-' + subject
+        clone.querySelector('label').setAttribute('for', 'subject-' + subject)
+        clone.querySelector('label').textContent = subject
+        return clone
+    }
+
+    static renderSubjectElement(element) {
+        document.querySelector('#filter-subjects .filter-body').append(element)
+    }
+
+    static renderAllSubjects() {
+        let subjects = this.getDistinctSubjects()
+        document.querySelector('#filter-subjects .filter-body').innerHTML = ''
+        subjects.forEach(subject => this.renderSubjectElement(this.getSubjectElement(subject)))
+        this.setEventListeners()
+    }
+
+    static setEventListeners() {
+        document.querySelectorAll('#filter-subjects input').forEach(input => input.addEventListener('change', event => {
+            let element = event.target
+            if (element.checked) {
+                CourseManager.filters.subjects.push(element.id.split('-')[1])
+            } else {
+                let idx = CourseManager.filters.subjects.findIndex(el => el === element.id.split('-')[1])
+                CourseManager.filters.subjects.splice(idx, 1)
+            }
+            CourseManager.renderCourses()
+        }))
+    }
+}
 
 
 function renderCourses(data) {
