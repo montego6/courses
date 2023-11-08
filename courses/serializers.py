@@ -1,9 +1,12 @@
+from email.policy import default
+from django.db.models import Avg
 from rest_framework import serializers
 from rest_framework.fields import empty
 from django.contrib.auth import get_user_model
 from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment, TestCompletion
 from .consts import COURSE_OPTIONS
 from reviews.serializers import ReviewWithFullNameSerializer
+from reviews.models import Review
 from functools import reduce
 
 
@@ -163,10 +166,11 @@ class CourseSearchSerializer(serializers.ModelSerializer):
     duration = serializers.SerializerMethodField()
     options = serializers.SerializerMethodField()
     subject = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    rating = serializers.SerializerMethodField()
     
     class Meta:
         model = Course
-        fields = ['name', 'cover', 'short_description', 'author', 'price', 'language', 'duration', 'options', 'subject']
+        fields = ['name', 'cover', 'short_description', 'author', 'price', 'language', 'duration', 'options', 'subject', 'rating']
 
     def get_duration(self, obj):
         lessons = Lesson.objects.filter(section__course=obj)
@@ -180,6 +184,9 @@ class CourseSearchSerializer(serializers.ModelSerializer):
             content = course_option.get("content", [])
             options_set.update(content)
         return list(options_set)
+    
+    def get_rating(self, obj):
+        return round(Review.objects.filter(course=obj).aggregate(Avg('rating', default=0))['rating__avg'], 2)
 
 
 class CourseProfileSerializer(serializers.ModelSerializer):

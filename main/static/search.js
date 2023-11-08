@@ -40,11 +40,19 @@ fetch('http://127.0.0.1:8000/api/courses/search/?' + params).then(response => re
             OptionsManager.renderAllOptions()
             PricesManager.renderAllPrices()
             SubjectsManager.renderAllSubjects()
+            RatingsManager.renderAllRatings()
+            initializePage()
         })
 
 let allLanguages
 fetch('static/langmap.json').then(response => response.json()).then(data => allLanguages = data)
 
+
+function initializePage() {
+    document.querySelectorAll('.filter-header svg').forEach(expandIcon => expandIcon.addEventListener('click', event => {
+        event.target.closest('div.filter-option').querySelector('.filter-body').classList.toggle('invisible')
+    }))
+}
 
 class Course {
     constructor (data) {
@@ -57,6 +65,7 @@ class Course {
         this.duration = data.duration
         this.options = data.options
         this.subject = data.subject
+        this.rating = data.rating
         this.element = this.renderElement()
     }
 
@@ -87,6 +96,7 @@ class CourseManager {
         options: [],
         prices: [],
         subjects: [],
+        ratings: [],
     }
 
     static addCourse(course) {
@@ -98,7 +108,6 @@ class CourseManager {
         let courses = this.courses
         while (filter) {
             courses = filter.filter(courses, this.filters) 
-            console.log(courses)
             filter = filter.next()
         }
         return courses
@@ -209,6 +218,30 @@ class SubjectsFilter {
             let filteredArr = []
             filters.forEach(filter => {
                 let filteredCourses = courses.filter(course => course.subject == filter)
+                filteredCourses.forEach(course => {
+                    if (!filteredArr.includes(course)) {
+                        filteredArr.push(course)
+                    }
+                })
+            })
+            return filteredArr
+        } else {
+            return courses
+        }
+    }
+
+    static next() {
+        return RatingFilter
+    }
+}
+
+class RatingFilter {
+    static filter(courses, filtersArr) {
+        let filters = filtersArr.ratings
+        if (filters.length) {
+            let filteredArr = []
+            filters.forEach(filter => {
+                let filteredCourses = courses.filter(course => course.rating >= filter)
                 filteredCourses.forEach(course => {
                     if (!filteredArr.includes(course)) {
                         filteredArr.push(course)
@@ -394,6 +427,58 @@ class SubjectsManager {
             } else {
                 let idx = CourseManager.filters.subjects.findIndex(el => el === element.id.split('-')[1])
                 CourseManager.filters.subjects.splice(idx, 1)
+            }
+            CourseManager.renderCourses()
+        }))
+    }
+}
+
+
+class RatingsManager {
+    static ratings = [0, 1, 2, 3, 4, 5]
+
+    static getDistinctRatings() {
+        let ratingsArr = Array.from(CourseManager.courses, course => course.rating)
+        let ratingsRanges = []
+        for (let rating of ratingsArr) {
+            let idx = this.ratings.length - 1
+            while (rating < this.ratings[idx]) {
+                idx--
+            }
+            ratingsRanges.push(this.ratings[idx])
+        }
+        let ratingsSet = new Set(ratingsRanges)
+        return ratingsSet
+    }
+
+
+    static getRatingElement(rating) {
+        const clone = document.getElementById('template-filter-rating').content.cloneNode(true)
+        clone.querySelector('input').id = 'rating-' + rating
+        clone.querySelector('label').setAttribute('for', 'rating-' + rating)
+        clone.querySelector('label').textContent = rating + '+'
+        return clone
+    }
+
+    static renderRatingElement(element) {
+        document.querySelector('#filter-ratings .filter-body').append(element)
+    }
+
+    static renderAllRatings() {
+        let ratings = this.getDistinctRatings()
+        document.querySelector('#filter-ratings .filter-body').innerHTML = ''
+        ratings.forEach(rating => this.renderRatingElement(this.getRatingElement(rating)))
+        this.setEventListeners()
+    }
+
+    static setEventListeners() {
+        document.querySelectorAll('#filter-ratings input').forEach(input => input.addEventListener('change', event => {
+            let element = event.target
+            if (element.checked) {
+                CourseManager.filters.ratings.push(element.id.split('-')[1])
+            } else {
+                let idx = CourseManager.filters.ratings.findIndex(el => el === element.id.split('-')[1])
+                CourseManager.filters.ratings.splice(idx, 1)
             }
             CourseManager.renderCourses()
         }))
