@@ -38,6 +38,7 @@ fetch('http://127.0.0.1:8000/api/courses/search/?' + params).then(response => re
             renderCourses(data)
             LanguageManager.renderAllLanguages()
             OptionsManager.renderAllOptions()
+            PricesManager.renderAllPrices()
         })
 
 let allLanguages
@@ -82,6 +83,7 @@ class CourseManager {
         duration: [],
         language: [],
         options: [],
+        prices: [],
     }
 
     static addCourse(course) {
@@ -156,6 +158,30 @@ class OptionsFilter {
             let filteredArr = []
             filters.forEach(filter => {
                 let filteredCourses = courses.filter(course => course.options.includes(filter))
+                filteredCourses.forEach(course => {
+                    if (!filteredArr.includes(course)) {
+                        filteredArr.push(course)
+                    }
+                })
+            })
+            return filteredArr
+        } else {
+            return courses
+        }
+    }
+
+    static next() {
+        return PricesFilter
+    }
+}
+
+class PricesFilter {
+    static filter(courses, filtersArr) {
+        let filters = filtersArr.prices
+        if (filters.length) {
+            let filteredArr = []
+            filters.forEach(filter => {
+                let filteredCourses = courses.filter(course => course.price > filter)
                 filteredCourses.forEach(course => {
                     if (!filteredArr.includes(course)) {
                         filteredArr.push(course)
@@ -251,6 +277,57 @@ class OptionsManager {
             } else {
                 let idx = CourseManager.filters.options.findIndex(el => el === element.id.split('-')[1])
                 CourseManager.filters.options.splice(idx, 1)
+            }
+            CourseManager.renderCourses()
+        }))
+    }
+}
+
+class PricesManager {
+    static pricesRanges = [0, 1000, 2000, 3000]
+    
+    static getDistinctPrices() {
+        let pricesArr = Array.from(CourseManager.courses, course => course.price)
+        let pricesRanges = []
+        for (let price of pricesArr) {
+            let idx = this.pricesRanges.length - 1
+            while (price < this.pricesRanges[idx]) {
+                idx--
+            }
+            pricesRanges.push(this.pricesRanges[idx])
+        }
+        let pricesSet = new Set(pricesRanges)
+        return pricesSet
+    }
+
+    static getPriceElement(price) {
+        const clone = document.getElementById('template-filter-price').content.cloneNode(true)
+        clone.querySelector('input').id = 'price-' + price
+        clone.querySelector('label').setAttribute('for', 'price-' + price)
+        clone.querySelector('label').textContent = price + '+'
+        return clone
+    }
+
+    static renderPriceElement(element) {
+        document.querySelector('#filter-prices .filter-body').append(element)
+    }
+
+    static renderAllPrices() {
+        let prices = this.getDistinctPrices()
+        console.log('prices', prices)
+        document.querySelector('#filter-prices .filter-body').innerHTML = ''
+        prices.forEach(price => this.renderPriceElement(this.getPriceElement(price)))
+        this.setEventListeners()
+    }
+
+    static setEventListeners() {
+        document.querySelectorAll('#filter-prices input').forEach(input => input.addEventListener('change', event => {
+            let element = event.target
+            if (element.checked) {
+                CourseManager.filters.prices.push(element.id.split('-')[1])
+            } else {
+                let idx = CourseManager.filters.prices.findIndex(el => el === element.id.split('-')[1])
+                CourseManager.filters.prices.splice(idx, 1)
             }
             CourseManager.renderCourses()
         }))
