@@ -64,3 +64,24 @@
     height: 24px;
     margin-left: auto;
 }
+
+.course-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.review-star-small {
+    fill: none;
+    stroke: black;
+    width: 20px;
+    height: 20px;
+}
+
+.star-selected {
+    fill: yellow;
+}
+
+.course-rating {
+    display: flex;
+    align-items: center;
+}

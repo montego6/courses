@@ -559,8 +559,10 @@ function initializeSidebar(data, payment) {
     document.querySelectorAll('#side-menu-options-header span').forEach(option => option.addEventListener('click', event => {
         const selectedOption = event.target.getAttribute('data-option')
         ContentManager.renderSidemenuContent(selectedOption, false)
-        const upgradePrice = filteredOptions.find(option => option.option == selectedOption).price - data.options[paidIndex].price
-        document.getElementById('side-menu-upgrade-price').textContent = `${upgradePrice} руб.`
+        if (paidIndex + 1 && paidIndex + 1 < data.options.length) {
+            const upgradePrice = filteredOptions.find(option => option.option == selectedOption).price - data.options[paidIndex].price
+            document.getElementById('side-menu-upgrade-price').textContent = `${upgradePrice} руб.`
+        }
     }))
     document.getElementById('upgrade-btn').addEventListener('click', event => {
         fetch(`http://127.0.0.1:8000/api/courses/${courseId}/upgrade/${ContentManager.option}/`)

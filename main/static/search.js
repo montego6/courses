@@ -56,6 +56,7 @@ function initializePage() {
 
 class Course {
     constructor (data) {
+        this.id = data.id
         this.name = data.name
         this.description = data.short_description
         this.author = data.author
@@ -66,6 +67,7 @@ class Course {
         this.options = data.options
         this.subject = data.subject
         this.rating = data.rating
+        this.students = data.students
         this.element = this.renderElement()
     }
 
@@ -74,8 +76,12 @@ class Course {
         clone.querySelector('.course-cover img').setAttribute('src', this.cover)
         clone.querySelector('.course-name').textContent = this.name
         clone.querySelector('.course-description').textContent = this.description
-        clone.querySelector('.course-author').textContent = this.author
-        clone.querySelector('.course-price').textContent = this.price
+        clone.querySelector('.course-author').textContent = this.author.name
+        clone.querySelector('.course-price').textContent = this.price + ' руб.'
+        clone.querySelector('.course-student-count').textContent = this.students
+        clone.querySelectorAll(`svg.review-star-small:nth-child(-n+${Math.round(this.rating)})`).forEach(star => star.classList.add('star-selected'))
+        clone.querySelector('.course-rating-number').textContent = this.rating
+        clone.querySelector('a').setAttribute('href', `http://127.0.0.1:8000/course/${this.id}`)
         return clone
     }
 
