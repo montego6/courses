@@ -7,6 +7,12 @@
 {% block title %}My profile{% endblock %}
 {% block content %}
 <div class="main-body">
-    <p>{{ id }}</p>
+    <div class="invisible">
+        <p id="author-id">{{ id }}</p>
+    </div>
+    <div id="teacher-block">
+        <img id="teacher-avatar">
+        <p id="teacher-bio"></p>
+    </div>
 </div>
 {% endblock %}
