@@ -1,8 +1,5 @@
-from email.policy import default
 from django.db.models import Avg
-from numpy import source
 from rest_framework import serializers
-from rest_framework.fields import empty
 from django.contrib.auth import get_user_model
 from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment, TestCompletion
 from .consts import COURSE_OPTIONS
@@ -19,7 +16,7 @@ class SectionItemGetFieldsMixin(serializers.Serializer):
     def get_field_names(self, *args):
         payment_option = self.context.get('payment')
         is_author = self.context.get('is_author')
-        if is_author or not (payment_option and COURSE_OPTIONS.index(payment_option) < COURSE_OPTIONS.index(self.instance.option)):
+        if is_author or (payment_option and COURSE_OPTIONS.index(payment_option) >= COURSE_OPTIONS.index(self.instance.option)):
             return super().get_field_names(*args)
         else:
             if isinstance(self.instance, Lesson):
