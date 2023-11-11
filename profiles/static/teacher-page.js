@@ -2,7 +2,10 @@ const id = document.querySelector('#author-id').textContent
 
 fetch(`http://127.0.0.1:8000/api/profiles/${id}/`)
 .then(response => response.json())
-.then(data => initializeBio(data))
+.then(data => {
+    initializeBio(data)
+    initializeCourses(data.courses)
+})
 
 
 function initializeBio(data) {
@@ -13,4 +16,8 @@ function initializeBio(data) {
     document.querySelector('#teacher-rating').textContent = data.rating
     document.querySelectorAll(`svg.review-star-small:nth-child(-n+${Math.round(data.rating)})`).forEach(star => star.classList.add('star-selected'))
     document.querySelector('#teacher-students').textContent = data.students
+}
+
+function initializeCourses(data) {
+    console.log(data)
 }

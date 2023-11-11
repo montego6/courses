@@ -45,5 +45,44 @@
             <p id="teacher-bio"></p>
         </div>
     </div>
+    <div id="courses-block">
+        <h3>Курсы преподавателя:</h3>
+        <template id="template-course">
+            <div class="course-wrapper">
+                <div class="course-cover">
+                    <img>
+                </div>
+                <div class="course-body">
+                    <a><h3 class="course-name"></h3></a>
+                    <p class="course-description"></p>
+                    <span>Студентов: <span class="course-student-count"></span></span>
+                    <div class="course-rating">
+                        <svg class="review-star-small">
+                            <use href="#icon-star"></use>
+                        </svg>
+                        <svg class="review-star-small">
+                            <use href="#icon-star"></use>
+                        </svg>
+                        <svg class="review-star-small">
+                            <use href="#icon-star"></use>
+                        </svg>
+                        <svg class="review-star-small">
+                            <use href="#icon-star"></use>
+                        </svg>
+                        <svg class="review-star-small">
+                            <use href="#icon-star"></use>
+                        </svg>
+                        <span class="course-rating-number"></span>
+                    </div>
+                </div>
+                <div class="course-price">
+                    <span></span>
+                </div>
+            </div>
+        </template>
+        <div id="courses">
+            
+        </div>
+    </div>
 </div>
 {% endblock %}

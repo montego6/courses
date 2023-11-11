@@ -3,6 +3,8 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import TeacherProfile
 from reviews.models import Review
+from courses.models import Course
+from courses.serializers import CourseSearchSerializer
 
 User = get_user_model()
 
@@ -11,10 +13,11 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     rating = serializers.SerializerMethodField()
     students = serializers.SerializerMethodField()
+    courses = serializers.SerializerMethodField()
     
     class Meta:
         model = TeacherProfile
-        fields = ['avatar', 'bio', 'name', 'rating', 'students']
+        fields = ['avatar', 'bio', 'name', 'rating', 'students', 'courses']
         read_only_fields = ['balance']
     
     def get_name(self, obj):
@@ -25,6 +28,10 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
     
     def get_students(self, obj):
         return User.objects.filter(student_courses__author=obj.user).distinct().count()
+    
+    def get_courses(self, obj):
+        courses = Course.objects.filter(author=obj.user)
+        return CourseSearchSerializer(courses, many=True).data
     
     def create(self, validated_data):
         user = None
