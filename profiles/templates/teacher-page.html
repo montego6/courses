@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load static %}
+{% block imports %}
+<link href="{% static 'teacher-page.css' %}" rel="stylesheet">
+<script src="{% static 'teacher-page.js' %}" defer></script>
+{% endblock %}
+{% block title %}My profile{% endblock %}
+{% block content %}
+<div class="main-body">
+    <p>{{ id }}</p>
+</div>
+{% endblock %}

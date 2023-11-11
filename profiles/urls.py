@@ -7,6 +7,7 @@ router = routers.SimpleRouter()
 router.register(r'profiles', TeacherProfileViewSet)
 
 urlpatterns = [path('myprofile/', TemplateView.as_view(template_name='my-profile.html'), name='my-profile'),
+               path('teacher/<int:id>', TemplateView.as_view(template_name='teacher-page.html'), name='teacher-page'),
                path('api/profiles/has_profile/', HasTeacherProfile.as_view(), name='has-techer-profile'),
                path('api/', include(router.urls)),
             ]
