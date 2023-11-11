@@ -10,3 +10,19 @@
     grid-template-columns: 1fr 3fr;
     width: 100%;
 }
+
+.review-star-small {
+    fill: none;
+    stroke: black;
+    width: 20px;
+    height: 20px;
+}
+
+.star-selected {
+    fill: yellow;
+}
+
+#teacher-rating-block {
+    display: flex;
+    column-gap: 6px;
+}

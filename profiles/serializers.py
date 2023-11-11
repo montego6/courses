@@ -1,7 +1,10 @@
 from django.db.models import Avg
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 from .models import TeacherProfile
 from reviews.models import Review
+
+User = get_user_model()
 
 
 class TeacherProfileSerializer(serializers.ModelSerializer):
@@ -11,7 +14,7 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = TeacherProfile
-        fields = ['avatar', 'bio', 'name', 'rating']
+        fields = ['avatar', 'bio', 'name', 'rating', 'students']
         read_only_fields = ['balance']
     
     def get_name(self, obj):
@@ -21,7 +24,7 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
         return round(Review.objects.filter(course__author=obj.user).aggregate(Avg('rating'))['rating__avg'], 2)
     
     def get_students(self, obj):
-        
+        return User.objects.filter(student_courses__author=obj.user).distinct().count()
     
     def create(self, validated_data):
         user = None

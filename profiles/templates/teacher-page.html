@@ -9,10 +9,41 @@
 <div class="main-body">
     <div class="invisible">
         <p id="author-id">{{ id }}</p>
+        <svg id="icon-star" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
     </div>
     <div id="teacher-block">
         <img id="teacher-avatar">
-        <p id="teacher-bio"></p>
+        <div id="techaer-block-right">
+            <h3 id="teacher-name"></h3>
+            <div id="teacher-rating-block">
+                <span>Рейтинг: </span>
+                <div class="teacher-rating">
+                    <svg class="review-star-small">
+                        <use href="#icon-star"></use>
+                    </svg>
+                    <svg class="review-star-small">
+                        <use href="#icon-star"></use>
+                    </svg>
+                    <svg class="review-star-small">
+                        <use href="#icon-star"></use>
+                    </svg>
+                    <svg class="review-star-small">
+                        <use href="#icon-star"></use>
+                    </svg>
+                    <svg class="review-star-small">
+                        <use href="#icon-star"></use>
+                    </svg>
+                    <span class="course-rating-number"></span>
+                </div>
+                <span id="teacher-rating"></span>
+            </div>
+            <div>
+                <span>Студентов: </span>
+                <span id="teacher-students"></span>
+            </div>
+            <span>Био:</span>
+            <p id="teacher-bio"></p>
+        </div>
     </div>
 </div>
 {% endblock %}
