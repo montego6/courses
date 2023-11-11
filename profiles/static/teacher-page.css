@@ -34,3 +34,22 @@
 #courses {
     display: flex;
 }
+
+.course-wrapper {
+    width: 600px;
+    background-color: aliceblue;
+    display: flex;
+    column-gap: 12px;
+    padding: 12px;
+}
+
+.course-subject {
+    background-color: rgb(175, 218, 255);
+    border-radius: 6px;
+    padding: 4px;
+    width: fit-content;
+}
+
+.course-wrapper img {
+    width: 200px;
+}

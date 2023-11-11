@@ -20,4 +20,17 @@ function initializeBio(data) {
 
 function initializeCourses(data) {
     console.log(data)
+    data.forEach(course => {
+        const clone = document.querySelector('#template-course').content.cloneNode(true)
+        clone.querySelector('.course-cover img').setAttribute('src', course.cover)
+        clone.querySelector('.course-name').textContent = course.name
+        clone.querySelector('.course-description').textContent = course.short_description
+        clone.querySelector('.course-price').textContent = course.price + ' руб.'
+        clone.querySelector('.course-student-count').textContent = course.students
+        clone.querySelectorAll(`svg.review-star-small:nth-child(-n+${Math.round(course.rating)})`).forEach(star => star.classList.add('star-selected'))
+        clone.querySelector('.course-rating-number').textContent = course.rating
+        clone.querySelector('.course-subject span').textContent = course.subject
+        clone.querySelector('a').setAttribute('href', `http://127.0.0.1:8000/course/${id}`)
+        document.querySelector('#courses').append(clone)
+    })
 }
