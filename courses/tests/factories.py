@@ -102,6 +102,24 @@ class TestQuestionFactory(factory.django.DjangoModelFactory):
     answer = factory.LazyAttribute(lambda obj: obj.options[0])
 
 
+class TestCompletionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.TestCompletion
+
+    test = factory.SubFactory(TestFactory)
+    student = factory.SubFactory(UserFactory)
+    result = 100
+
+
+class HomeworkFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.Homework
+
+    name = factory.Faker('text', max_nb_chars=70)
+    description = factory.Faker('text', max_nb_chars=180)
+    task = factory.Faker('text', max_nb_chars=180)
+    section = factory.SubFactory(SectionFactory)
+    
 
 
 

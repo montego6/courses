@@ -1,5 +1,5 @@
 import pytest
-from courses.serializers import AdditionalFileSerializer, LessonSerializer, TestQuestionSerializer, TestSerializer
+from courses.serializers import AdditionalFileSerializer, HomeworkSerializer, LessonSerializer, TestCompletionSerializer, TestQuestionSerializer, TestSerializer
 
 
 
@@ -94,3 +94,38 @@ def test_test_serializer_full(test):
     assert data['questions'] == TestQuestionSerializer(test.questions, many=True).data
     assert data['completed'] == False
     assert data['type'] == 'test'
+
+
+@pytest.mark.django_db
+def test_test_completion_serializer(test_completion):
+    data = TestCompletionSerializer(test_completion).data
+    fields = {'test', 'result'}
+    assert set(data.keys()) == fields
+    assert data['test'] == test_completion.test.id
+    assert data['result'] == test_completion.result
+
+
+@pytest.mark.django_db
+def test_homework_serializer(homework):
+    data = HomeworkSerializer(homework).data
+    fields = {'id', 'name', 'description', 'option', 'type'}
+    assert set(data.keys()) == fields
+    assert data['id'] == homework.id
+    assert data['name'] == homework.name
+    assert data['description'] == homework.description
+    assert data['option'] == homework.option
+    assert data['type'] == 'homework'
+
+
+@pytest.mark.django_db
+def test_homework_serializer_full(homework):
+    data = HomeworkSerializer(homework, context={'is_author': True}).data
+    fields = {'id', 'name', 'description', 'task', 'section', 'option', 'type'}
+    assert set(data.keys()) == fields
+    assert data['id'] == homework.id
+    assert data['name'] == homework.name
+    assert data['description'] == homework.description
+    assert data['task'] == homework.task
+    assert data['section'] == homework.section.id
+    assert data['option'] == homework.option
+    assert data['type'] == 'homework'

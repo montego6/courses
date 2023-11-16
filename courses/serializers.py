@@ -72,6 +72,8 @@ class TestSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
     
 
 class TestCompletionSerializer(serializers.ModelSerializer):
+    __test__ = False
+    
     class Meta:
         model = TestCompletion
         fields = ['test', 'result']
