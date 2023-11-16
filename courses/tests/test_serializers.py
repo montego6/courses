@@ -84,16 +84,13 @@ def test_test_serializer(test):
 
 @pytest.mark.django_db
 def test_test_serializer_full(test):
-    print(test.id)
     data = TestSerializer(test, context={'is_author': True}).data
-    fields = {'id', 'name', 'description', 'option', 'type', 'questions', 'completed'}
-    print(test.id)
-    print(test.question)
+    fields = {'id', 'name', 'description', 'option', 'type', 'questions', 'completed', 'section'}
     assert set(data.keys()) == fields
     assert data['id'] == test.id
     assert data['name'] == test.name
     assert data['description'] == test.description
     assert data['option'] == test.option
-    # assert data['questions'] == TestQuestionSerializer(test.questions, many=True)
+    assert data['questions'] == TestQuestionSerializer(test.questions, many=True).data
     assert data['completed'] == False
     assert data['type'] == 'test'

@@ -12,14 +12,18 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     username = factory.Sequence(lambda n: "user_%d" % n)
 
-class CategoryFactory
+class CategoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Category
+
+    name = factory.Faker('text', max_nb_chars=20)
 
 class SubCategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = SubCategory
     
     name = factory.Faker('text', max_nb_chars=20)
-    parent_category = factory.SubFactory()
+    parent_category = factory.SubFactory(CategoryFactory)
 
 class SubjectFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -32,6 +36,7 @@ class SubjectFactory(factory.django.DjangoModelFactory):
 class CourseFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Course
+        skip_postgeneration_save = True
 
     name = factory.Faker('text', max_nb_chars=70)
     short_description = factory.Faker('text', max_nb_chars=180)
@@ -56,7 +61,7 @@ class SectionFactory(factory.django.DjangoModelFactory):
 
     name = factory.Faker('text', max_nb_chars=70)
     description = factory.Faker('text', max_nb_chars=180)
-    course = 
+    course = factory.SubFactory(CourseFactory)
 
 class LessonFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -75,17 +80,7 @@ class AdditinalFileFactory(factory.django.DjangoModelFactory):
     name = factory.Faker('text', max_nb_chars=70)
     description = factory.Faker('text', max_nb_chars=180)
     file = 'media/media/courses/extra_files/lord-of-the-rings.jpg'
-    section = models.Section()
-
-
-class TestQuestionFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = models.TestQuestion
-
-    test = models.Test()
-    question = factory.Faker('text', max_nb_chars=70)
-    options = factory.Faker('texts', nb_texts=3, max_nb_chars=70)
-    answer = factory.LazyAttribute(lambda obj: obj.options[0])
+    section = factory.SubFactory(SectionFactory)
 
 
 class TestFactory(factory.django.DjangoModelFactory):
@@ -94,9 +89,19 @@ class TestFactory(factory.django.DjangoModelFactory):
     
     name = factory.Faker('text', max_nb_chars=70)
     description = factory.Faker('text', max_nb_chars=180)
-    questions = factory.RelatedFactoryList(TestQuestionFactory, size=5)
-    # factory.LazyAttribute(lambda obj: obj.questions.set(TestQuestionFactory.build_batch(5)))
-    # TestQuestionFactory.build_batch(5)
-    section = models.Section()
+    section = factory.SubFactory(SectionFactory)
+
+
+class TestQuestionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = models.TestQuestion
+
+    test = factory.SubFactory(TestFactory)
+    question = factory.Faker('text', max_nb_chars=70)
+    options = factory.Faker('texts', nb_texts=3, max_nb_chars=70)
+    answer = factory.LazyAttribute(lambda obj: obj.options[0])
+
+
+
 
 

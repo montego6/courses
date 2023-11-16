@@ -18,9 +18,12 @@ def additional_file(disconnect_signals):
 
 @pytest.fixture
 def test(disconnect_signals):
-    return TestFactory()
+    questions = [TestQuestionFactory() for _ in range(5)]
+    test = TestFactory()
+    test.questions.set(questions)
+    return test
 
 @pytest.fixture
-def test_question():
+def test_question(disconnect_signals):
     return TestQuestionFactory()
 
