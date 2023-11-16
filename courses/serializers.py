@@ -43,6 +43,7 @@ class AdditionalFileSerializer(SectionItemGetFieldsMixin, serializers.ModelSeria
 
 
 class TestQuestionSerializer(serializers.ModelSerializer):
+    __test__ = False
     
     class Meta:
         model = TestQuestion
@@ -50,6 +51,7 @@ class TestQuestionSerializer(serializers.ModelSerializer):
 
 
 class TestSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
+    __test__ = False
     type = serializers.CharField(default='test', read_only=True)
     questions = TestQuestionSerializer(many=True, read_only=True)
     completed = serializers.SerializerMethodField(read_only=True)

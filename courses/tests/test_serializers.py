@@ -1,5 +1,5 @@
 import pytest
-from courses.serializers import AdditionalFileSerializer, LessonSerializer
+from courses.serializers import AdditionalFileSerializer, LessonSerializer, TestQuestionSerializer, TestSerializer
 
 
 
@@ -56,3 +56,44 @@ def test_additional_file_serializer_full(additional_file):
     assert data['file'] == additional_file.file.url
     assert data['section'] == additional_file.section.id
     assert data['type'] == 'extra_file'
+
+
+@pytest.mark.django_db
+def test_question_test_serializer(test_question):
+    data = TestQuestionSerializer(test_question).data
+    fields = {'id', 'test', 'question', 'options', 'answer'}
+    assert set(data.keys()) == fields
+    assert data['id'] == test_question.id
+    assert data['test'] == test_question.test.id
+    assert data['question'] == test_question.question
+    assert data['options'] == test_question.options
+    assert data['answer'] == test_question.answer
+
+
+@pytest.mark.django_db
+def test_test_serializer(test):
+    data = TestSerializer(test).data
+    fields = {'id', 'name', 'description', 'option', 'type'}
+    assert set(data.keys()) == fields
+    assert data['id'] == test.id
+    assert data['name'] == test.name
+    assert data['description'] == test.description
+    assert data['option'] == test.option
+    assert data['type'] == 'test'
+
+
+@pytest.mark.django_db
+def test_test_serializer_full(test):
+    print(test.id)
+    data = TestSerializer(test, context={'is_author': True}).data
+    fields = {'id', 'name', 'description', 'option', 'type', 'questions', 'completed'}
+    print(test.id)
+    print(test.question)
+    assert set(data.keys()) == fields
+    assert data['id'] == test.id
+    assert data['name'] == test.name
+    assert data['description'] == test.description
+    assert data['option'] == test.option
+    # assert data['questions'] == TestQuestionSerializer(test.questions, many=True)
+    assert data['completed'] == False
+    assert data['type'] == 'test'

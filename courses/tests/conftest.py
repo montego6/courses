@@ -1,6 +1,6 @@
 import pytest
 from courses.models import Lesson
-from factories import LessonFactory, AdditinalFileFactory
+from factories import LessonFactory, AdditinalFileFactory, TestFactory, TestQuestionFactory
 
 
 
@@ -10,9 +10,17 @@ def disconnect_signals(monkeypatch):
 
 @pytest.fixture
 def lesson(disconnect_signals):
-    return LessonFactory.build()
+    return LessonFactory()
 
 @pytest.fixture
 def additional_file(disconnect_signals):
-    return AdditinalFileFactory.build()
+    return AdditinalFileFactory()
+
+@pytest.fixture
+def test(disconnect_signals):
+    return TestFactory()
+
+@pytest.fixture
+def test_question():
+    return TestQuestionFactory()
 
