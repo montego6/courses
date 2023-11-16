@@ -1,6 +1,6 @@
 import pytest
-from model_bakery import baker
 from courses.models import Lesson
+from factories import LessonFactory, AdditinalFileFactory
 
 
 
@@ -10,5 +10,9 @@ def disconnect_signals(monkeypatch):
 
 @pytest.fixture
 def lesson(disconnect_signals):
-    return baker.make(Lesson, file='/media/courses/covers/linux.jpg')
+    return LessonFactory.build()
+
+@pytest.fixture
+def additional_file(disconnect_signals):
+    return AdditinalFileFactory.build()
 
