@@ -1,9 +1,11 @@
 from django.forms import model_to_dict
+from django.utils.formats import localize
 import pytest
 import factory
 from courses.models import SectionItem
 import factories as ft
-from courses.serializers import AdditionalFileSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestCompletionSerializer, TestQuestionSerializer, TestSerializer
+from courses.serializers import AdditionalFileSerializer, CourseSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestCompletionSerializer, TestQuestionSerializer, TestSerializer
+from reviews.serializers import ReviewSerializer
 
 
 
@@ -291,3 +293,30 @@ def test_section_serialize_data_fails():
     serializer = SectionSerializer(data=data)
     assert not serializer.is_valid()
     assert serializer.errors != {}
+
+@pytest.mark.django_db
+def test_course_serializer(course):
+    data = CourseSerializer(course).data
+    expected_data = {
+       'id': course.id,
+       'name': course.name,
+       'short_description': course.short_description,
+       'full_description': course.full_description,
+       'author': course.author.id,
+       'price': course.price,
+       'cover': course.cover.url,
+       'language': course.language,
+       'what_will_learn': course.what_will_learn,
+       'requirements': course.requirements,
+       'options': course.options,
+       'students': [student.id for student in course.students.all()],
+       'date_created': str(course.date_created),
+       'date_updated': str(course.date_updated),
+       'is_published': course.is_published,
+       'is_free': course.is_free,
+       'subject': course.subject.id,
+       'sections': SectionSerializer(course.sections, many=True).data,
+       'reviews': ReviewSerializer(course.reviews, many=True).data,
+    }
+
+    assert data == expected_data

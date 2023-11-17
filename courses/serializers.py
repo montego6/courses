@@ -147,10 +147,9 @@ class CourseSerializer(serializers.ModelSerializer):
     def get_sections(self, obj):
         sections = Section.objects.filter(course=obj)
         request = self.context.get('request')
+        user = None
         if request and hasattr(request, 'user'):
             user = request.user
-        if not isinstance(user, User):
-            user = None
         context = {}
         try:
             payment = CoursePayment.objects.get(course=obj, student=user)
