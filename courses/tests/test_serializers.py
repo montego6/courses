@@ -287,6 +287,14 @@ def test_section_item_serializer(disconnect_signals, model, serializer):
 
 
 @pytest.mark.django_db
+def test_section_item_serializer_exception(disconnect_signals, course):
+    section = ft.SectionFactory()
+    section_item = SectionItem.objects.create(content_object=course, section=section)
+    with pytest.raises(Exception):
+        data = SectionItemSerializer(section_item).data
+
+
+@pytest.mark.django_db
 def test_section_serializer(section):
     data = SectionSerializer(section).data
     expected_data = {
@@ -358,6 +366,17 @@ def test_section_serialize_data_fails():
     assert not serializer.is_valid()
     assert serializer.errors != {}
 
+@pytest.mark.django_db
+def test_course_serializer_create(subject, user):
+    data = factory.build(dict, FACTORY_CLASS=ft.CourseFactory)
+    data['subject'] = subject.id
+
+    request = Mock()
+    request.user = user
+    serializer = CourseSerializer(data=data, context={'request': request})
+    serializer.is_valid()
+    course = serializer.save()
+    assert course.author == user
 
 @pytest.mark.django_db
 def test_course_search_serializer(course):
