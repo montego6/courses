@@ -1,5 +1,7 @@
+from charset_normalizer import from_path
 from django.db.migrations import questioner
 import factory
+from pytest import File
 from courses import models
 from categories.models import Subject, SubCategory, Category
 from django.contrib.auth import get_user_model
@@ -11,6 +13,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = User
 
     username = factory.Sequence(lambda n: "user_%d" % n)
+    password = factory.Faker('password', length=10)
 
 class CategoryFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -69,7 +72,7 @@ class LessonFactory(factory.django.DjangoModelFactory):
     
     name = factory.Faker('text', max_nb_chars=70)
     description = factory.Faker('text', max_nb_chars=180)
-    file = 'media/media/courses/lessons/0.0_Введение.mp4'
+    file = factory.django.FileField(from_path='media/media/courses/lessons/0.0_Введение.mp4')
     section = factory.SubFactory(SectionFactory)
 
 
@@ -79,7 +82,7 @@ class AdditinalFileFactory(factory.django.DjangoModelFactory):
 
     name = factory.Faker('text', max_nb_chars=70)
     description = factory.Faker('text', max_nb_chars=180)
-    file = 'media/media/courses/extra_files/lord-of-the-rings.jpg'
+    file = factory.django.FileField(from_path='media/media/courses/extra_files/lord-of-the-rings.jpg')
     section = factory.SubFactory(SectionFactory)
 
 

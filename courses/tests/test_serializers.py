@@ -24,9 +24,10 @@ def test_lesson_serialize_model(lesson):
     
     assert data == expected_data
 
-
-def test_lesson_serialize_data():
+@pytest.mark.django_db
+def test_lesson_serialize_data(section):
     data = factory.build(dict, FACTORY_CLASS=ft.LessonFactory)
+    data['section'] = section.id
     serializer = LessonSerializer(data=data)
     assert serializer.is_valid()
     assert serializer.errors == {}
@@ -34,7 +35,6 @@ def test_lesson_serialize_data():
 
 def test_lesson_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.LessonFactory)
-    del data['name']
     serializer = LessonSerializer(data=data)
     assert not serializer.is_valid()
     assert serializer.errors != {}
@@ -70,9 +70,10 @@ def test_additional_file_serializer_model(additional_file):
     
     assert data == expected_data
 
-
-def test_additional_file_serialize_data():
+@pytest.mark.django_db
+def test_additional_file_serialize_data(section):
     data = factory.build(dict, FACTORY_CLASS=ft.AdditinalFileFactory)
+    data['section'] = section.id
     serializer = AdditionalFileSerializer(data=data)
     assert serializer.is_valid()
     assert serializer.errors == {}
@@ -80,7 +81,6 @@ def test_additional_file_serialize_data():
 
 def test_additional_file_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.AdditinalFileFactory)
-    del data['name']
     serializer = AdditionalFileSerializer(data=data)
     assert not serializer.is_valid()
     assert serializer.errors != {}
@@ -146,9 +146,10 @@ def test_test_serializer(test):
     
     assert data == expected_data
 
-
-def test_test_serialize_data():
+@pytest.mark.django_db
+def test_test_serialize_data(section):
     data = factory.build(dict, FACTORY_CLASS=ft.TestFactory)
+    data['section'] = section.id
     serializer = TestSerializer(data=data)
     assert serializer.is_valid()
     assert serializer.errors == {}
@@ -156,7 +157,6 @@ def test_test_serialize_data():
 
 def test_test_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.TestFactory)
-    del data['name']
     serializer = TestSerializer(data=data)
     assert not serializer.is_valid()
     assert serializer.errors != {}
@@ -241,8 +241,10 @@ def test_homework_serializer(homework):
     assert data == expected_data
 
 
-def test_homework_serialize_data():
+@pytest.mark.django_db
+def test_homework_serialize_data(section):
     data = factory.build(dict, FACTORY_CLASS=ft.HomeworkFactory)
+    data['section'] = section.id
     serializer = HomeworkSerializer(data=data)
     assert serializer.is_valid()
     assert serializer.errors == {}
@@ -250,7 +252,6 @@ def test_homework_serialize_data():
 
 def test_homework_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.HomeworkFactory)
-    del data['name']
     serializer = HomeworkSerializer(data=data)
     assert not serializer.is_valid()
     assert serializer.errors != {}

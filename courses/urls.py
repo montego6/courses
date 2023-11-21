@@ -14,6 +14,6 @@ router.register(r'homeworks', HomeworkViewSet)
 urlpatterns = [
     path('user/', GetUser.as_view()),
     path('courses/search/', CourseSearchView.as_view()),
-    path('test-completions/', TestCompletionView.as_view()),
+    path('test-completions/', TestCompletionView.as_view(), name='test-completion'),
 ]
 urlpatterns += router.urls

@@ -53,3 +53,4 @@ def subject(disconnect_signals):
 @pytest.fixture
 def user():
     return UserFactory()
+

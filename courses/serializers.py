@@ -1,6 +1,7 @@
 from django.db.models import Avg
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework.exceptions import ValidationError
 from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment, TestCompletion
 from .consts import COURSE_OPTIONS
 from reviews.serializers import ReviewWithFullNameSerializer
@@ -13,16 +14,28 @@ User = get_user_model()
 
 
 class SectionItemGetFieldsMixin(serializers.Serializer):
-    def get_field_names(self, *args):
+    def to_representation(self, instance):
+        data =  super().to_representation(instance)
+        exclude_fields = ['file', 'section', 'questions', 'completed', 'task']
         payment_option = self.context.get('payment')
         is_author = self.context.get('is_author')
-        if is_author or (payment_option and COURSE_OPTIONS.index(payment_option) >= COURSE_OPTIONS.index(self.instance.option)):
-            return super().get_field_names(*args)
-        else:
-            if isinstance(self.instance, Lesson):
-                return ['id', 'name', 'description', 'duration', 'option', 'type']
-            else:
-                return ['id', 'name', 'description', 'option', 'type']
+        if not (is_author or (payment_option and COURSE_OPTIONS.index(payment_option) >= COURSE_OPTIONS.index(self.instance.option))):
+            for field in exclude_fields:
+                if field in data:
+                    data.pop(field)
+        return data
+
+    # def get_field_names(self, *args):
+    #     request = self.context.get('request')
+    #     payment_option = self.context.get('payment')
+    #     is_author = self.context.get('is_author')
+    #     if request or is_author or (payment_option and COURSE_OPTIONS.index(payment_option) >= COURSE_OPTIONS.index(self.instance.option)):
+    #         return super().get_field_names(*args)
+    #     else:
+    #         if isinstance(self.instance, Lesson):
+    #             return ['id', 'name', 'description', 'duration', 'option', 'type']
+    #         else:
+    #             return ['id', 'name', 'description', 'option', 'type']
 
 
 
@@ -79,14 +92,13 @@ class TestCompletionSerializer(serializers.ModelSerializer):
         read_only_fields = ['student']
     
     def create(self, validated_data):
-        user = None
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
-            user = request.user
-        validated_data['student'] = user
-        print('context', self.context)
-        return super().create(validated_data)
-
+            if isinstance(request.user, User):
+                validated_data['student'] = request.user
+                return super().create(validated_data)
+            else:
+                raise ValidationError('User should be logged in')
 
 class HomeworkSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
     type = serializers.CharField(default='homework', read_only=True)
@@ -94,6 +106,10 @@ class HomeworkSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer)
     class Meta:
         model = Homework
         fields = '__all__'
+
+    def create(self, validated_data):
+        print('fields', self.fields)
+        return super().create(validated_data)
 
 
 class SectionItemSerializer(serializers.Serializer):
@@ -149,7 +165,8 @@ class CourseSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         user = None
         if request and hasattr(request, 'user'):
-            user = request.user
+            if request.user.is_authenticated:
+                user = request.user
         context = {}
         try:
             payment = CoursePayment.objects.get(course=obj, student=user)
