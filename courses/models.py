@@ -107,6 +107,8 @@ class TestQuestion(models.Model):
 
 
 class TestCompletion(models.Model):
+    __test__ = False
+
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='test_completions')
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='test_completions')
     result = models.PositiveIntegerField()

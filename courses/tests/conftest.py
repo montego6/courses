@@ -1,6 +1,6 @@
 import pytest
-from courses.models import Lesson, SectionItem
-from factories import CourseFactory, HomeworkFactory, LessonFactory, AdditinalFileFactory, TestCompletionFactory, TestFactory, TestQuestionFactory, SectionFactory
+from courses.models import Lesson, SectionItem, TestCompletion
+from factories import CourseFactory, HomeworkFactory, LessonFactory, AdditinalFileFactory, SubjectFactory, TestCompletionFactory, TestFactory, TestQuestionFactory, SectionFactory, UserFactory
 
 
 
@@ -45,4 +45,11 @@ def section(disconnect_signals):
 @pytest.fixture
 def course(disconnect_signals):
     return CourseFactory()
+
+@pytest.fixture
+def subject(disconnect_signals):
+    return SubjectFactory()
     
+@pytest.fixture
+def user():
+    return UserFactory()

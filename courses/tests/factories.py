@@ -45,13 +45,13 @@ class CourseFactory(factory.django.DjangoModelFactory):
     price = 100
     cover = factory.django.ImageField(from_path='media/media/courses/covers/linux.jpg')
     language = factory.Faker('language_code')
-    what_will_learn = factory.Faker('texts', nb_texts=8, max_nb_chars=80)
-    requirements = factory.Faker('texts', nb_texts=6, max_nb_chars=80)
-    options = {
-        "basic": {},
-        "extra": {},
-        "premium": {},
-    }
+    what_will_learn = factory.Faker('texts', nb_texts=8, max_nb_chars=60)
+    requirements = factory.Faker('texts', nb_texts=6, max_nb_chars=60)
+    options = [
+        {"basic": {'content': []}},
+        {"extra": {'content': []}},
+        {"premium": {'content': []}},
+    ]
     students = factory.RelatedFactoryList(UserFactory, size=5)
     subject = factory.SubFactory(SubjectFactory)
 

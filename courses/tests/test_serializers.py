@@ -1,10 +1,11 @@
-from django.forms import model_to_dict
-from django.utils.formats import localize
+from unittest.mock import Mock
+from django.test import RequestFactory
 import pytest
 import factory
-from courses.models import SectionItem
+from rest_framework.request import Request
+from courses.models import SectionItem, TestCompletion
 import factories as ft
-from courses.serializers import AdditionalFileSerializer, CourseSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestCompletionSerializer, TestQuestionSerializer, TestSerializer
+from courses.serializers import AdditionalFileSerializer, CourseProfileSerializer, CourseSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestCompletionSerializer, TestQuestionSerializer, TestSerializer, CourseSearchSerializer
 from reviews.serializers import ReviewSerializer
 
 
@@ -179,6 +180,26 @@ def test_test_serializer_full(test):
 
 
 @pytest.mark.django_db
+def test_test_serializer_completion(test_completion):
+    user, test = test_completion.student, test_completion.test
+    data_with_user_context = TestSerializer(test, context={'is_author': True, 'user': user.id}).data
+    data_without_user_context = TestSerializer(test, context={'is_author': True}).data
+    assert data_with_user_context['completed'] == 100
+    assert data_without_user_context['completed'] == False
+
+@pytest.mark.django_db
+def test_test_completion_serializer_user(user, test):
+    data = factory.build(dict, FACTORY_CLASS=ft.TestCompletionFactory)
+    data['test'] = test.id
+
+    request = Mock()
+    request.user = user
+    serializer = TestCompletionSerializer(data=data, context={'request': request})
+    serializer.is_valid()
+    test_completion = serializer.save()
+    assert test_completion.student == user
+
+@pytest.mark.django_db
 def test_test_completion_serializer(test_completion):
     data = TestCompletionSerializer(test_completion).data
     expected_data = {
@@ -317,6 +338,56 @@ def test_course_serializer(course):
        'subject': course.subject.id,
        'sections': SectionSerializer(course.sections, many=True).data,
        'reviews': ReviewSerializer(course.reviews, many=True).data,
+    }
+
+    assert data == expected_data
+
+@pytest.mark.django_db
+def test_course_serialize_data(subject):
+    data = factory.build(dict, FACTORY_CLASS=ft.CourseFactory)
+    data['subject'] = subject.id
+    serializer = CourseSerializer(data=data)
+    assert serializer.is_valid()
+    assert serializer.errors == {}
+
+
+def test_section_serialize_data_fails():
+    data = factory.build(dict, FACTORY_CLASS=ft.CourseFactory)
+    del data['name']
+    serializer = CourseSerializer(data=data)
+    assert not serializer.is_valid()
+    assert serializer.errors != {}
+
+
+@pytest.mark.django_db
+def test_course_search_serializer(course):
+    data = CourseSearchSerializer(course).data
+    expected_data = {
+       'id': course.id,
+       'name': course.name,
+       'short_description': course.short_description,
+       'author': {'id': course.author.id, 'name': course.author.first_name + ' ' + course.author.last_name},
+       'price': course.price,
+       'duration': 0,
+       'rating': 0,
+       'cover': course.cover.url,
+       'language': course.language,
+       'options': [],
+       'students': course.students.count(),
+       'subject': course.subject.name,
+    }
+
+    assert data == expected_data
+
+
+@pytest.mark.django_db
+def test_course_profile_serializer(course):
+    data = CourseProfileSerializer(course).data
+    expected_data = {
+       'name': course.name,
+       'short_description': course.short_description,
+       'price': course.price,
+       'cover': course.cover.url,
     }
 
     assert data == expected_data
