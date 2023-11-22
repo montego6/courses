@@ -4,25 +4,11 @@ from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 import factory
 from courses.models import Homework, TestCompletion
+from courses.serializers import HomeworkSerializer
 import factories as ft
 import pytest
 
-User = get_user_model()
-
-
-@pytest.fixture
-def client():
-    return APIClient()
-
-@pytest.fixture
-def client_logged(user):
-    client = APIClient()
-    password = user.password
-    user.set_password(user.password)
-    user.save()
-    client.login(username=user.username, password=password)
-    yield client
-    client.logout()
+# User = get_user_model()
 
 
 @pytest.mark.django_db
@@ -38,7 +24,64 @@ def test_create_test_completion(client_logged, test):
 def test_create_homework(client, section):
     data = factory.build(dict, FACTORY_CLASS=ft.HomeworkFactory)
     data['section'] = section.id
-    print(data)
     response = client.post(reverse('homework-list'), data)
     assert response.status_code == status.HTTP_201_CREATED
     assert Homework.objects.last() is not None
+
+@pytest.mark.django_db
+def test_update_homework(client, section, homework):
+    data = factory.build(dict, FACTORY_CLASS=ft.HomeworkFactory)
+    data['section'] = section.id
+    response = client.put(reverse('homework-detail', kwargs={'pk': homework.id}), data)
+    
+    expected_data = {
+        'id': homework.id,
+        'type': 'homework',
+        'name': data['name'],
+        'description': data['description'],
+        'option': 'basic',
+    }
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == expected_data
+
+@pytest.mark.django_db
+def test_partial_update_homework(client, section, homework):
+    data = {
+        'name': 'test name',
+        'section': section.id,
+    }
+
+    response = client.patch(reverse('homework-detail', kwargs={'pk': homework.id}), data)
+
+    expected_data = {
+        'id': homework.id,
+        'name': data['name'],
+        'description': homework.description,
+        'option': 'basic',
+    }
+
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == expected_data
+    homework.refresh_from_db()
+    assert homework.section.id == data['section']
+
+
+@pytest.mark.django_db
+def test_retrieve_homework(client, homework):
+    response = client.get(reverse('homework-detail', kwargs={'pk': homework.id}))
+
+    expected_data = HomeworkSerializer(homework).data
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == expected_data
+
+
+@pytest.mark.django_db
+def test_list_homework(client, disconnect_signals):
+    homeworks = ft.HomeworkFactory.create_batch(9)
+    
+    response = client.get(reverse('homework-list'))
+
+    expected_data = HomeworkSerializer(homeworks, many=True).data
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data == expected_data

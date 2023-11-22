@@ -1,8 +1,21 @@
 import pytest
+from rest_framework.test import APIClient
 from courses.models import Lesson, SectionItem, TestCompletion
 from factories import CourseFactory, HomeworkFactory, LessonFactory, AdditinalFileFactory, SubjectFactory, TestCompletionFactory, TestFactory, TestQuestionFactory, SectionFactory, UserFactory
 
+@pytest.fixture
+def client():
+    return APIClient()
 
+@pytest.fixture
+def client_logged(user):
+    client = APIClient()
+    password = user.password
+    user.set_password(user.password)
+    user.save()
+    client.login(username=user.username, password=password)
+    yield client
+    client.logout()
 
 @pytest.fixture
 def disconnect_signals(monkeypatch):
