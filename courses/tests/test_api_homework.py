@@ -1,14 +1,11 @@
 from django.urls import reverse
 from rest_framework import status
-from django.contrib.auth import get_user_model
-from rest_framework.test import APIClient
 import factory
 from courses.models import Homework, TestCompletion
 from courses.serializers import HomeworkSerializer
 import factories as ft
 import pytest
 
-# User = get_user_model()
 
 
 @pytest.mark.django_db

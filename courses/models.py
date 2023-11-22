@@ -92,6 +92,8 @@ class AdditionalFile(models.Model):
 
 
 class Test(models.Model):
+    __test__ = False
+    
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=200, null=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='tests')
@@ -100,6 +102,8 @@ class Test(models.Model):
 
 
 class TestQuestion(models.Model):
+    __test__ = False
+    
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='questions')
     question = models.CharField(max_length=180)
     options = ArrayField(models.CharField(max_length=100), size=3)
