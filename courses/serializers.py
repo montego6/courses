@@ -187,6 +187,7 @@ class CourseSearchSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
     author = serializers.SerializerMethodField()
     students = serializers.IntegerField(source='students.count', read_only=True)
+    cover = serializers.ImageField(use_url=True)
     
     class Meta:
         model = Course

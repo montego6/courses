@@ -16,4 +16,4 @@ def test_list_course_search(client, disconnect_signals):
 
     response = client.get(reverse('course-search') + f'?query={query}')
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == CourseSearchSerializer(courses, many=True).data
+    assert response.data == CourseSearchSerializer(courses, many=True, context={'request': response.wsgi_request}).data
