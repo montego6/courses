@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 import factory
-from courses.models import Test
+from courses.models import Test, TestQuestion
 from courses.serializers import TestQuestionSerializer
 import factories as ft
 import pytest
@@ -74,3 +74,11 @@ def test_list_test_question(client, disconnect_signals):
     expected_data = TestQuestionSerializer(test_questions, many=True).data
     assert response.status_code == status.HTTP_200_OK
     assert response.data == expected_data
+
+
+@pytest.mark.django_db
+def test_destroy_test_question(client, test_question):
+    response = client.delete(reverse('testquestion-detail', kwargs={'pk': test_question.id}))
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not TestQuestion.objects.filter(id=test_question.id).exists()

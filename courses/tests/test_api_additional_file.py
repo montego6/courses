@@ -75,3 +75,11 @@ def test_list_additional_file(client, disconnect_signals):
     expected_data = AdditionalFileSerializer(additional_files, many=True).data
     assert response.status_code == status.HTTP_200_OK
     assert response.data == expected_data
+
+
+@pytest.mark.django_db
+def test_destroy_additional_file(client, additional_file):
+    response = client.delete(reverse('additionalfile-detail', kwargs={'pk': additional_file.id}))
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not AdditionalFile.objects.filter(id=additional_file.id).exists()

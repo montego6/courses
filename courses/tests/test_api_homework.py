@@ -82,3 +82,11 @@ def test_list_homework(client, disconnect_signals):
     expected_data = HomeworkSerializer(homeworks, many=True).data
     assert response.status_code == status.HTTP_200_OK
     assert response.data == expected_data
+
+
+@pytest.mark.django_db
+def test_destroy_homework(client, homework):
+    response = client.delete(reverse('homework-detail', kwargs={'pk': homework.id}))
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not Homework.objects.filter(id=homework.id).exists()

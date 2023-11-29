@@ -75,3 +75,11 @@ def test_list_test(client, disconnect_signals):
     expected_data = TestSerializer(tests, many=True).data
     assert response.status_code == status.HTTP_200_OK
     assert response.data == expected_data
+
+
+@pytest.mark.django_db
+def test_destroy_test(client, test):
+    print(Test.objects.all())
+    response = client.delete(reverse('test-detail', kwargs={'pk': test.id}))
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not Test.objects.filter(id=test.id).exists()

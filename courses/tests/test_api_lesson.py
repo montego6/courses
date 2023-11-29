@@ -77,3 +77,11 @@ def test_list_lesson(client, disconnect_signals):
     expected_data = LessonSerializer(lessons, many=True).data
     assert response.status_code == status.HTTP_200_OK
     assert response.data == expected_data
+
+
+@pytest.mark.django_db
+def test_destroy_lesson(client, lesson):
+    response = client.delete(reverse('lesson-detail', kwargs={'pk': lesson.id}))
+
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+    assert not Lesson.objects.filter(id=lesson.id).exists()
