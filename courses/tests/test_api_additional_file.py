@@ -14,7 +14,7 @@ def test_create_additional_file(client, section):
     data['section'] = section.id
     response = client.post(reverse('additionalfile-list'), data)
     assert response.status_code == status.HTTP_201_CREATED
-    assert AdditionalFile.objects.last() is not None
+    assert AdditionalFile.objects.filter(id=response.data['id']).exists()
 
 
 @pytest.mark.django_db

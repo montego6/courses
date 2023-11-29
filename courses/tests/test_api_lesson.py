@@ -14,7 +14,7 @@ def test_create_lesson(client, section):
     data['section'] = section.id
     response = client.post(reverse('lesson-list'), data)
     assert response.status_code == status.HTTP_201_CREATED
-    assert Lesson.objects.last() is not None
+    assert Lesson.objects.filter(id=response.data['id']).exists()
 
 
 @pytest.mark.django_db

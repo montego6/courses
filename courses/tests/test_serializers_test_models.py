@@ -60,6 +60,7 @@ def test_test_completion_serializer_user(user, test):
 def test_test_completion_serializer(test_completion):
     data = TestCompletionSerializer(test_completion).data
     expected_data = {
+        'id': test_completion.id,
         'test': test_completion.test.id,
         'result': test_completion.result,
     }

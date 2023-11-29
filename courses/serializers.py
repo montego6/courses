@@ -88,7 +88,7 @@ class TestCompletionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = TestCompletion
-        fields = ['test', 'result']
+        fields = ['id', 'test', 'result']
         read_only_fields = ['student']
     
     def create(self, validated_data):
@@ -194,13 +194,11 @@ class CourseSearchSerializer(serializers.ModelSerializer):
 
     def get_duration(self, obj):
         lessons = Lesson.objects.filter(section__course=obj)
-        print(lessons)
         duration = reduce(lambda x,y: x+y.duration, lessons, lessons[0].duration) if lessons else 0
         return duration
     
     def get_options(self, obj):
         options_set = set()
-        print(obj.options)
         for course_option in obj.options:
             content = course_option.get("content", [])
             options_set.update(content)

@@ -14,7 +14,8 @@ def test_create_test_completion(client_logged, test):
     data['test'] = test.id
     response = client_logged.post(reverse('test-completion'), data)
     assert response.status_code == status.HTTP_201_CREATED
-    assert TestCompletion.objects.last() is not None
+    print(response.data)
+    assert TestCompletion.objects.filter(id=response.data['id']).exists()
 
 
 @pytest.mark.django_db

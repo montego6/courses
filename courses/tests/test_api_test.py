@@ -14,7 +14,7 @@ def test_create_test(client, section):
     data['section'] = section.id
     response = client.post(reverse('test-list'), data)
     assert response.status_code == status.HTTP_201_CREATED
-    assert Test.objects.last() is not None
+    assert Test.objects.filter(id=response.data['id']).exists()
 
 
 @pytest.mark.django_db
