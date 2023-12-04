@@ -57,10 +57,10 @@ def has_user_full_access(context, instance):
 
 
 class StripeSession:
-    def __init__(self, course, option, upgrade=False) -> None:
+    def __init__(self, course, option, upgrade_from=False) -> None:
         self.course = course
         self.option = option
-        self.upgrade = upgrade
+        self.upgrade_from = upgrade_from
     
     def buy(self, request):
         price = self.course.stripe.price if not self.option else self.course.stripe.option_prices[self.option]
@@ -69,7 +69,7 @@ class StripeSession:
         return self.create_session(request, line_items, metadata)
     
     def upgrade(self, request):
-        price = self.course.stripe.option_prices[self.option]['upgrade'][self.upgrade]
+        price = self.course.stripe.option_prices[self.option]['upgrade'][self.upgrade_from]
         line_items = self.get_line_items(price)
         metadata = {'option': self.option, 'upgrade': True, 'course': self.course.id} 
         return self.create_session(request, line_items, metadata)
