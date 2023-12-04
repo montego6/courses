@@ -1,3 +1,5 @@
+from django.urls import reverse
+import stripe
 from courses import consts
 from courses.models import CoursePayment, TestCompletion
 
@@ -11,18 +13,6 @@ def get_user_from_context(context):
     return user
     
 
-# class GetUserFromContext:
-#     def __init__(self, context) -> None:
-#         self.context = context
-#         self.user = None
-
-#     def get_user(self):
-#         request = self.context.get('request')
-#         if request and hasattr(request, 'user'):
-#             if request.user.is_authenticated:
-#                 self.user = request.user
-#         return self.user
-    
 def make_payment_context(course, student):
     context = {}
     try:
@@ -33,21 +23,6 @@ def make_payment_context(course, student):
         context['payment'] = payment.option
     return context
 
-# class MakePaymentContext:
-#     def __init__(self, course, student) -> None:
-#         self.course = course
-#         self.student = student
-#         self.context = {}
-    
-#     def get_context(self):
-#         try:
-#             payment = CoursePayment.objects.get(course=self.course, student=self.student)
-#         except CoursePayment.DoesNotExist:
-#             self.context['payment'] = consts.COURSE_OPTION_FREE
-#         else:
-#             self.context['payment'] = payment.option
-        
-#         return self.context
     
 
 class ExtraContext:
@@ -79,3 +54,37 @@ def has_user_full_access(context, instance):
     payment_option = context.get('payment')
     is_author = context.get('is_author')
     return is_author or (payment_option and consts.COURSE_OPTIONS.index(payment_option) >= consts.COURSE_OPTIONS.index(instance.option))
+
+
+class StripeSession:
+    def __init__(self, course, option, upgrade=False) -> None:
+        self.course = course
+        self.option = option
+        self.upgrade = upgrade
+    
+    def buy(self, request):
+        price = self.course.stripe.price if not self.option else self.course.stripe.option_prices[self.option]
+        line_items = self.get_line_items(price)
+        metadata = {'option': self.option} if self.option else {'option': consts.COURSE_OPTION_BASIC}
+        return self.create_session(request, line_items, metadata)
+    
+    def upgrade(self, request):
+        price = self.course.stripe.option_prices[self.option]['upgrade'][self.upgrade]
+        line_items = self.get_line_items(price)
+        metadata = {'option': self.option, 'upgrade': True, 'course': self.course.id} 
+        return self.create_session(request, line_items, metadata)
+
+    def create_session(self, request, line_items, metadata):
+        session = stripe.checkout.Session.create(
+            success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': self.course.id})),
+            client_reference_id=request.user.id,
+            line_items=[line_items],
+            currency='rub',
+            mode="payment",
+            metadata=metadata
+        )
+        return session
+
+    @staticmethod
+    def get_line_items(price):
+        return {'price': price, 'quantity': 1}

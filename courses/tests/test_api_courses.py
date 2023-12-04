@@ -14,8 +14,8 @@ import factories as ft
 def test_list_course_search(client, disconnect_signals):
     query = 'ab'
     ft.CourseFactory.create_batch(64)
-    courses = Course.objects.filter(Q(name__icontains=query) | Q(short_description__icontains=query) | Q(full_description__icontains=query))
-
+    # courses = Course.objects.filter(Q(name__icontains=query) | Q(short_description__icontains=query) | Q(full_description__icontains=query))
+    courses = Course.custom_objects.search_by_query(query)
     response = client.get(reverse('course-search') + f'?query={query}')
     assert response.status_code == status.HTTP_200_OK
     assert response.data == CourseSearchSerializer(courses, many=True, context={'request': response.wsgi_request}).data

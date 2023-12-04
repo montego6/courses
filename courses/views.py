@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.db.models import Q
 from django.contrib.auth import get_user_model
+
+from courses.blogic import StripeSession
 from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework, CoursePayment
 from .models import TestCompletion
 from reviews.models import Review
@@ -32,42 +34,58 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get'], detail=True, url_path=r'buy/(?P<option>[^/.]+)')
     def buy(self, request, option, pk=None):
-        course = Course.objects.get(id=pk)
-        price = course.stripe.price if not option else course.stripe.option_prices[option]
-        line_items = {'price': price, 'quantity': 1}
-        # line_items = CourseItemPaymentSerializer(course).data
-        metadata = {'option': option} if option else {'option': consts.COURSE_OPTION_BASIC}
-        session = stripe.checkout.Session.create(
-            success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
-            client_reference_id=request.user.id,
-            line_items=[line_items],
-            currency='rub',
-            mode="payment",
-            metadata=metadata
-        )
-        return Response({'id': session['id']})
+        try:
+            course = Course.objects.get(id=pk)
+        except Course.DoesNotExist:
+            return Response({'detail': 'course does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            stripe_session = StripeSession(course, option)
+            session = stripe_session.buy(request)
+        # price = course.stripe.price if not option else course.stripe.option_prices[option]
+        # line_items = {'price': price, 'quantity': 1}
+        # # line_items = CourseItemPaymentSerializer(course).data
+        # metadata = {'option': option} if option else {'option': consts.COURSE_OPTION_BASIC}
+        # session = stripe.checkout.Session.create(
+        #     success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
+        #     client_reference_id=request.user.id,
+        #     line_items=[line_items],
+        #     currency='rub',
+        #     mode="payment",
+        #     metadata=metadata
+        # )
+            return Response({'id': session['id']})
     
     @action(methods=['get'], detail=True, url_path=r'upgrade/(?P<option>[^/.]+)')
     def upgrade(self, request, option, pk=None):
-        course = Course.objects.get(id=pk)
-        paid_option = CoursePayment.objects.get(course=course, student=request.user).option
-        price = course.stripe.option_prices[option]['upgrade'][paid_option]
-        line_items = {'price': price, 'quantity': 1}
-        metadata = {'option': option, 'upgrade': True, 'course': course.id} 
-        session = stripe.checkout.Session.create(
-            success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
-            client_reference_id=request.user.id,
-            line_items=[line_items],
-            currency='rub',
-            mode="payment",
-            metadata=metadata
-        )
-        return Response({'id': session['id']})
+        try:
+            course = Course.objects.get(id=pk)
+        except Course.DoesNotExist:
+            return Response({'detail': 'course does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            try:
+                paid_option = CoursePayment.objects.get(course=course, student=request.user).option
+            except CoursePayment.DoesNotExist:
+                return Response({'detail': 'course payment does not exist'}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                stripe_session = StripeSession(course, option, paid_option)
+                session = stripe_session.upgrade(request)
+        # price = course.stripe.option_prices[option]['upgrade'][paid_option]
+        # line_items = {'price': price, 'quantity': 1}
+        # metadata = {'option': option, 'upgrade': True, 'course': course.id} 
+        # session = stripe.checkout.Session.create(
+        #     success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
+        #     client_reference_id=request.user.id,
+        #     line_items=[line_items],
+        #     currency='rub',
+        #     mode="payment",
+        #     metadata=metadata
+        # )
+                return Response({'id': session['id']})
     
 
     @action(methods=['get'], detail=False, url_path=r'barsearch/(?P<query>[^/.]+)')
     def bar_search(self, request, query):
-        courses = Course.objects.filter(Q(name__icontains=query) | Q(short_description__icontains=query) | Q(full_description__icontains=query))
+        courses = Course.custom_objects.search_by_query(query)
         serializer = self.serializer_class(courses, many=True)
         return Response(serializer.data)
     
@@ -86,7 +104,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=True)
     def review_info(self, request, pk=None):
         user = request.user
-        if isinstance(user, User) and Review.objects.filter(student=user, course__id=pk).exists():
+        if user.is_authenticated and Review.objects.filter(student=user, course__id=pk).exists():
             return Response({'review': True})
         return Response({'review': False})
 
@@ -100,9 +118,10 @@ class CourseSearchView(generics.ListAPIView):
     serializer_class = CourseSearchSerializer
 
     def get_queryset(self):
-        queryset = Course.objects.all()
+        # queryset = Course.objects.all()
         query = self.request.query_params.get('query')
-        queryset = queryset.filter(Q(name__icontains=query) | Q(short_description__icontains=query) | Q(full_description__icontains=query))
+        # queryset = queryset.filter(Q(name__icontains=query) | Q(short_description__icontains=query) | Q(full_description__icontains=query))
+        queryset = Course.custom_objects.search_by_query(query)
         return queryset
 
 

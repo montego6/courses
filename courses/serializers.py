@@ -4,13 +4,13 @@ from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
 
 from courses.blogic import ExtraContext, get_test_completion_result, get_user_from_context, has_user_full_access, make_payment_context
-from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment, TestCompletion
-from .consts import COURSE_OPTIONS, EXCLUDE_FIELDS
+from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, TestCompletion
+from .consts import EXCLUDE_FIELDS
 from reviews.serializers import ReviewWithFullNameSerializer
 from reviews.models import Review
 from functools import reduce
 
-from courses import consts
+
 
 
 User = get_user_model()
