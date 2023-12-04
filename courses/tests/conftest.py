@@ -1,7 +1,11 @@
+from asyncio import shield
 import pytest
 from rest_framework.test import APIClient
 from courses.models import Lesson, SectionItem, TestCompletion
 from factories import CourseFactory, HomeworkFactory, LessonFactory, AdditinalFileFactory, SubjectFactory, TestCompletionFactory, TestFactory, TestQuestionFactory, SectionFactory, UserFactory
+import os
+import shutil
+
 
 @pytest.fixture
 def client():
@@ -21,9 +25,17 @@ def client_logged(user):
 def disconnect_signals(monkeypatch):
     monkeypatch.setattr('django.db.models.signals.post_save.send', lambda **kwargs: True)
 
+@pytest.fixture(autouse=True, scope='session')
+def delete_test_files():
+    from django.conf import settings
+    settings.MEDIA_ROOT = 'test_media/'
+    yield
+    shutil.rmtree(settings.MEDIA_ROOT)
+
 @pytest.fixture
 def lesson(disconnect_signals):
     return LessonFactory()
+
 
 @pytest.fixture
 def additional_file(disconnect_signals):

@@ -9,7 +9,7 @@ import pytest
 
 
 @pytest.mark.django_db
-def test_create_additional_file(client, section):
+def test_create_additional_file(client, section, delete_test_files):
     data = factory.build(dict, FACTORY_CLASS=ft.AdditinalFileFactory)
     data['section'] = section.id
     response = client.post(reverse('additionalfile-list'), data)
@@ -18,7 +18,7 @@ def test_create_additional_file(client, section):
 
 
 @pytest.mark.django_db
-def test_update_additional_file(client, section, additional_file):
+def test_update_additional_file(client, section, additional_file, delete_test_files):
     data = factory.build(dict, FACTORY_CLASS=ft.AdditinalFileFactory)
     data['section'] = section.id
     response = client.put(reverse('additionalfile-detail', kwargs={'pk': additional_file.id}), data)
