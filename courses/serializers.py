@@ -2,44 +2,33 @@ from django.db.models import Avg
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
+
+from courses.blogic import ExtraContext, get_test_completion_result, get_user_from_context, has_user_full_access, make_payment_context
 from .models import Course, Section, Lesson, AdditionalFile, SectionItem, Test, TestQuestion, Homework, CoursePayment, TestCompletion
-from .consts import COURSE_OPTIONS
+from .consts import COURSE_OPTIONS, EXCLUDE_FIELDS
 from reviews.serializers import ReviewWithFullNameSerializer
 from reviews.models import Review
 from functools import reduce
+
+from courses import consts
 
 
 User = get_user_model()
 
 
 
-class SectionItemGetFieldsMixin(serializers.Serializer):
+class SectionItemExcludeFieldsMixin(serializers.Serializer):
     def to_representation(self, instance):
         data =  super().to_representation(instance)
-        exclude_fields = ['file', 'section', 'questions', 'completed', 'task']
-        payment_option = self.context.get('payment')
-        is_author = self.context.get('is_author')
-        if not (is_author or (payment_option and COURSE_OPTIONS.index(payment_option) >= COURSE_OPTIONS.index(self.instance.option))):
-            for field in exclude_fields:
+        if not has_user_full_access(self.context, instance):
+            for field in EXCLUDE_FIELDS:
                 if field in data:
                     data.pop(field)
         return data
 
-    # def get_field_names(self, *args):
-    #     request = self.context.get('request')
-    #     payment_option = self.context.get('payment')
-    #     is_author = self.context.get('is_author')
-    #     if request or is_author or (payment_option and COURSE_OPTIONS.index(payment_option) >= COURSE_OPTIONS.index(self.instance.option)):
-    #         return super().get_field_names(*args)
-    #     else:
-    #         if isinstance(self.instance, Lesson):
-    #             return ['id', 'name', 'description', 'duration', 'option', 'type']
-    #         else:
-    #             return ['id', 'name', 'description', 'option', 'type']
 
 
-
-class LessonSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
+class LessonSerializer(SectionItemExcludeFieldsMixin, serializers.ModelSerializer):
     type = serializers.CharField(default='lesson', read_only=True)
     
     class Meta:
@@ -47,7 +36,7 @@ class LessonSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AdditionalFileSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
+class AdditionalFileSerializer(SectionItemExcludeFieldsMixin, serializers.ModelSerializer):
     type = serializers.CharField(default='extra_file', read_only=True)
 
     class Meta:
@@ -63,7 +52,7 @@ class TestQuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class TestSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
+class TestSerializer(SectionItemExcludeFieldsMixin, serializers.ModelSerializer):
     __test__ = False
     type = serializers.CharField(default='test', read_only=True)
     questions = TestQuestionSerializer(many=True, read_only=True)
@@ -74,13 +63,7 @@ class TestSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
         fields = '__all__'
     
     def get_completed(self, obj):
-        user = self.context.get('user')
-        try:
-            test_completion = TestCompletion.objects.get(test=obj, student=user)
-        except TestCompletion.DoesNotExist:
-            return False
-        else:
-            return test_completion.result
+        return get_test_completion_result(self.context, obj)
     
 
 class TestCompletionSerializer(serializers.ModelSerializer):
@@ -92,24 +75,20 @@ class TestCompletionSerializer(serializers.ModelSerializer):
         read_only_fields = ['student']
     
     def create(self, validated_data):
-        request = self.context.get('request')
-        if request and hasattr(request, 'user'):
-            if isinstance(request.user, User):
-                validated_data['student'] = request.user
-                return super().create(validated_data)
-            else:
-                raise ValidationError('User should be logged in')
+        user = get_user_from_context(self.context)
+        if user:
+            validated_data['student'] = user
+            return super().create(validated_data)
+        else:
+            raise ValidationError('User should be logged in')
 
-class HomeworkSerializer(SectionItemGetFieldsMixin, serializers.ModelSerializer):
+class HomeworkSerializer(SectionItemExcludeFieldsMixin, serializers.ModelSerializer):
     type = serializers.CharField(default='homework', read_only=True)
 
     class Meta:
         model = Homework
         fields = '__all__'
 
-    def create(self, validated_data):
-        print('fields', self.fields)
-        return super().create(validated_data)
 
 
 class SectionItemSerializer(serializers.Serializer):
@@ -153,45 +132,43 @@ class CourseSerializer(serializers.ModelSerializer):
         read_only_fields = ['author', 'students', 'date_created', 'date_updated']
 
     def create(self, validated_data):
-        user = None
-        request = self.context.get('request')
-        if request and hasattr(request, 'user'):
-            user = request.user
-        validated_data['author'] = user
+        validated_data['author'] = get_user_from_context(self.context)
         return super().create(validated_data)
     
     def get_sections(self, obj):
         sections = Section.objects.filter(course=obj)
-        request = self.context.get('request')
-        user = None
-        if request and hasattr(request, 'user'):
-            if request.user.is_authenticated:
-                user = request.user
-        context = {}
-        try:
-            payment = CoursePayment.objects.get(course=obj, student=user)
-        except CoursePayment.DoesNotExist:
-            context['payment'] = 'free'
-        else:
-            context['payment'] = payment.option
-        context['is_author'] = user == obj.author
-        context['user']  = user
+        user = get_user_from_context(self.context)
+        context = make_payment_context(obj, user)
+        context = ExtraContext(context, user, obj).update_context()
         serializer = SectionSerializer(sections, many=True, read_only=True, context=context)
         return serializer.data
     
+
+class AuthorSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = User
+        fields = ['id', 'name']
+        read_only_fields = ['id', 'name']
+
+    def get_name(self, obj):
+        return obj.first_name + ' ' + obj.last_name
+
 
 class CourseSearchSerializer(serializers.ModelSerializer):
     duration = serializers.SerializerMethodField()
     options = serializers.SerializerMethodField()
     subject = serializers.SlugRelatedField(slug_field='name', read_only=True)
     rating = serializers.SerializerMethodField()
-    author = serializers.SerializerMethodField()
-    students = serializers.IntegerField(source='students.count', read_only=True)
+    author = AuthorSerializer()
+    students = serializers.IntegerField(source='students.count')
     cover = serializers.ImageField(use_url=True)
     
     class Meta:
         model = Course
         fields = ['id', 'name', 'cover', 'short_description', 'author', 'price', 'language', 'duration', 'options', 'subject', 'rating', 'students']
+        read_only_fields = ['id', 'name', 'cover', 'short_description', 'author', 'price', 'language', 'duration', 'options', 'subject', 'rating', 'students']
 
     def get_duration(self, obj):
         lessons = Lesson.objects.filter(section__course=obj)
@@ -208,12 +185,6 @@ class CourseSearchSerializer(serializers.ModelSerializer):
     def get_rating(self, obj):
         return round(Review.objects.filter(course=obj).aggregate(Avg('rating', default=0))['rating__avg'], 2)
     
-    def get_author(self, obj):
-        return {
-            'id': obj.author.id,
-            'name': obj.author.first_name + ' ' + obj.author.last_name
-        }
-
 
 class CourseProfileSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,9 +1,7 @@
-from asyncio import shield
 import pytest
 from rest_framework.test import APIClient
 from courses.models import Lesson, SectionItem, TestCompletion
 from factories import CourseFactory, HomeworkFactory, LessonFactory, AdditinalFileFactory, SubjectFactory, TestCompletionFactory, TestFactory, TestQuestionFactory, SectionFactory, UserFactory
-import os
 import shutil
 
 
