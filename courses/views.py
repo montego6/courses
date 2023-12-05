@@ -22,7 +22,6 @@ from rest_framework import status
 import stripe
 from decouple import config
 
-stripe.api_key = config('STRIPE_KEY')
 
 User = get_user_model()
 

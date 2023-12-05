@@ -3,6 +3,7 @@ from rest_framework.test import APIClient
 from courses.models import Lesson, SectionItem, TestCompletion
 from factories import CourseFactory, HomeworkFactory, LessonFactory, AdditinalFileFactory, SubjectFactory, TestCompletionFactory, TestFactory, TestQuestionFactory, SectionFactory, UserFactory
 import shutil
+import os
 
 
 @pytest.fixture
@@ -28,7 +29,8 @@ def delete_test_files():
     from django.conf import settings
     settings.MEDIA_ROOT = 'test_media/'
     yield
-    shutil.rmtree(settings.MEDIA_ROOT)
+    if os.path.isdir(settings.MEDIA_ROOT):
+        shutil.rmtree(settings.MEDIA_ROOT)
 
 @pytest.fixture
 def lesson(disconnect_signals):
