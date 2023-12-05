@@ -49,7 +49,6 @@ class Course(models.Model):
 class StripeCourse(models.Model):
     course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='stripe')
     product = models.CharField(max_length=300)
-    # price = models.CharField(max_length=300)
     option_prices = models.JSONField()
 
 

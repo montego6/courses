@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 
-from courses.blogic import StripeSession
+from courses.blogic_stripe import StripeSession
 from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework, CoursePayment
 from .models import TestCompletion
 from reviews.models import Review
