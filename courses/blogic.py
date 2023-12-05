@@ -30,13 +30,13 @@ def make_payment_context(course, student):
     
 
 class ExtraContext:
-    def __init__(self, context, user, obj) -> None:
+    def __init__(self, context, user, course) -> None:
         self.context = context
         self.user = user
-        self.obj = obj
+        self.course = course
 
     def is_author(self):
-        return self.user == self.obj.author
+        return self.user == self.course.author
     
     def update_context(self):
         self.context['is_author'] = self.is_author()
