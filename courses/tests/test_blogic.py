@@ -5,7 +5,7 @@ import pytest
 from courses import consts
 import factories as ft
 
-from courses.blogic import ExtraContext, get_user_from_context, make_payment_context
+from courses.blogic import ExtraContext, calculate_video_length, get_test_completion_result, get_user_from_context, has_user_full_access, make_payment_context
 from courses.models import CoursePayment
 
 @pytest.mark.django_db
@@ -66,3 +66,91 @@ class TestExtraContext:
             'user': user
         }
         assert context == expected_result
+
+
+@pytest.mark.django_db
+def test_get_test_completion_result(user, test):
+    context = {
+        'user': user
+    }
+    test_completion = ft.TestCompletionFactory(student=user, test=test)
+    result = get_test_completion_result(context, test)
+    assert result == test_completion.result
+
+
+@pytest.mark.django_db
+def test_get_test_completion_result_false(user, test):
+    context = {
+        'user': user
+    }
+    result = get_test_completion_result(context, test)
+    assert result is False
+
+
+@pytest.mark.parametrize('model', [
+    ft.LessonFactory,
+    ft.AdditinalFileFactory,
+    ft.TestFactory,
+    ft.HomeworkFactory
+])
+@pytest.mark.django_db
+def test_has_user_full_access_author(model, disconnect_signals):
+    context = {
+        'is_author': True
+    }
+    instance = model()
+    assert has_user_full_access(context, instance)
+
+
+@pytest.mark.parametrize('model', [
+    ft.LessonFactory,
+    ft.AdditinalFileFactory,
+    ft.TestFactory,
+    ft.HomeworkFactory
+])
+@pytest.mark.django_db
+def test_has_user_full_access_paid(model, disconnect_signals):
+    context = {
+        'payment': consts.COURSE_OPTION_PREMIUM
+    }
+    instance = model(option=consts.COURSE_OPTION_EXTRA)
+    assert has_user_full_access(context, instance)
+
+
+@pytest.mark.parametrize('model', [
+    ft.LessonFactory,
+    ft.AdditinalFileFactory,
+    ft.TestFactory,
+    ft.HomeworkFactory
+])
+@pytest.mark.django_db
+def test_has_user_full_access_not_paid(model, disconnect_signals):
+    context = {
+        'payment': consts.COURSE_OPTION_BASIC
+    }
+    instance = model(option=consts.COURSE_OPTION_EXTRA)
+    assert not has_user_full_access(context, instance)
+
+
+@pytest.mark.parametrize('model', [
+    ft.LessonFactory,
+    ft.AdditinalFileFactory,
+    ft.TestFactory,
+    ft.HomeworkFactory
+])
+@pytest.mark.django_db
+def test_has_user_full_access_not_paid_author(model, disconnect_signals):
+    context = {
+        'is_author': True,
+        'payment': consts.COURSE_OPTION_BASIC
+    }
+    instance = model(option=consts.COURSE_OPTION_EXTRA)
+    assert has_user_full_access(context, instance)
+
+
+@pytest.mark.django_db
+def test_calculate_video_length(lesson):
+    assert lesson.duration is None
+    calculate_video_length(lesson)
+    lesson.refresh_from_db()
+    assert lesson.duration == 63

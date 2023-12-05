@@ -44,10 +44,10 @@ class ExtraContext:
         return self.context
     
 
-def get_test_completion_result(context, obj):
+def get_test_completion_result(context, test):
     user = context.get('user')
     try:
-        test_completion = TestCompletion.objects.get(test=obj, student=user)
+        test_completion = TestCompletion.objects.get(test=test, student=user)
     except TestCompletion.DoesNotExist:
         return False
     else:
@@ -55,8 +55,8 @@ def get_test_completion_result(context, obj):
     
 
 def has_user_full_access(context, instance):
-    payment_option = context.get('payment')
-    is_author = context.get('is_author')
+    payment_option = context.get('payment', consts.COURSE_OPTION_FREE)
+    is_author = context.get('is_author', False)
     return is_author or (payment_option and consts.COURSE_OPTIONS.index(payment_option) >= consts.COURSE_OPTIONS.index(instance.option))
 
 
