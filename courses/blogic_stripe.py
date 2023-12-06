@@ -15,7 +15,7 @@ class StripeSession:
         self.upgrade_from = upgrade_from
     
     def buy(self, request):
-        price = self.course.stripe.price if not self.option else self.course.stripe.option_prices[self.option]
+        price = self.course.stripe.option_prices[self.option]['price']
         line_items = self.get_line_items(price)
         metadata = {'option': self.option} if self.option else {'option': consts.COURSE_OPTION_BASIC}
         return self.create_session(request, line_items, metadata)

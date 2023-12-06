@@ -1,4 +1,3 @@
-from unittest.mock import Mock
 from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory
 import pytest

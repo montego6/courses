@@ -50,11 +50,9 @@ class CourseFactory(factory.django.DjangoModelFactory):
     language = factory.Faker('language_code')
     what_will_learn = factory.Faker('texts', nb_texts=8, max_nb_chars=60)
     requirements = factory.Faker('texts', nb_texts=6, max_nb_chars=60)
-    options = factory.List([
-        {"basic": {'content': ['lesson']}},
-        {"extra": {'content': ['lesson']}},
-        {"premium": {'content': ['lesson']}},
-    ])
+    options = factory.List([{"price": 1690, "option": "basic", "content": ["lesson"]}, 
+                            {"price": 1900, "option": "extra"}, 
+                            {"price": 2300, "option": "premium", "content": ["lesson", "test"]}])
     students = factory.RelatedFactoryList(UserFactory, size=5)
     subject = factory.SubFactory(SubjectFactory)
 

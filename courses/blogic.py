@@ -1,9 +1,8 @@
-from django.urls import reverse
 from decouple import config
 import stripe
 from moviepy.editor import VideoFileClip
 from courses import consts
-from courses.models import CoursePayment, Lesson, SectionItem, StripeCourse, TestCompletion
+from courses.models import CoursePayment, Lesson,  TestCompletion
 
 
 stripe.api_key = config('STRIPE_KEY')
