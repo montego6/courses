@@ -29,13 +29,13 @@ def request_f(user):
 
 class TestStripeSession:
 
-    # def test_get_line_items(self):
-    #     price = 'qwdfsdgv2131234lkxcz'
-    #     expected_data = {
-    #         'price': price,
-    #         'quantity': 1
-    #     }
-    #     assert StripeSession.get_line_items(price) == expected_data
+    def test_get_line_items(self):
+        price = 'qwdfsdgv2131234lkxcz'
+        expected_data = {
+            'price': price,
+            'quantity': 1
+        }
+        assert StripeSession.get_line_items(price) == expected_data
 
     @pytest.mark.django_db
     def test_create_session(self, stripe_course, request_f):
@@ -45,8 +45,5 @@ class TestStripeSession:
         assert 'id' in session
         assert isinstance(session['id'], str)
         assert len(session['id']) > 0
-        assert False
 
-    # def test_1(self):
-    #     print(stripe.Product.search(query=f"name~'Major realize gas air left close. Wall say big.'"))
-    #     assert False
+    
