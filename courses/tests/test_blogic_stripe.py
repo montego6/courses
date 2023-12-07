@@ -3,7 +3,7 @@ import pytest
 import stripe
 from courses import consts
 
-from courses.blogic_stripe import StripeSession, create_stripe_upgrade_prices
+from courses.blogic_stripe import StripePrice, StripeSession, create_stripe_upgrade_prices
 from courses.models import StripeCourse
 
 @pytest.fixture
@@ -37,6 +37,7 @@ class TestStripeSession:
         }
         assert StripeSession.get_line_items(price) == expected_data
 
+    @pytest.mark.stripe
     @pytest.mark.django_db
     def test_create_session(self, stripe_course, request_f):
         stripe_session = StripeSession(stripe_course.course, consts.COURSE_OPTION_PREMIUM)
@@ -47,3 +48,34 @@ class TestStripeSession:
         assert len(session['id']) > 0
 
     
+    @pytest.mark.stripe
+    @pytest.mark.django_db
+    def test_buy(self, stripe_course, request_f):
+        stripe_session = StripeSession(stripe_course.course, consts.COURSE_OPTION_PREMIUM)
+        session = stripe_session.buy(request_f)
+        assert 'id' in session
+        assert isinstance(session['id'], str)
+        assert len(session['id']) > 0
+
+    
+    @pytest.mark.stripe
+    @pytest.mark.django_db
+    def test_upgrade(self, stripe_course, request_f):
+        stripe_session = StripeSession(stripe_course.course, consts.COURSE_OPTION_PREMIUM, upgrade_from=consts.COURSE_OPTION_BASIC)
+        session = stripe_session.upgrade(request_f)
+        assert 'id' in session
+        assert isinstance(session['id'], str)
+        assert len(session['id']) > 0
+
+
+class TestStripePrice:
+    @pytest.mark.stripe
+    def test_create(self):
+        product = stripe.Product.create(name='test product')
+        stripe_price = StripePrice(1200, product)
+        price = stripe_price.create()
+        assert 'id' in price
+        assert isinstance(price['id'], str)
+        assert len(price['id']) > 0
+        stripe.Product.modify(product['id'], active=False)
+        stripe.Price.modify(price['id'], active=False)
