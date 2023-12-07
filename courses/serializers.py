@@ -180,7 +180,7 @@ class CourseSearchSerializer(serializers.ModelSerializer):
         for course_option in obj.options:
             content = course_option.get("content", [])
             options_set.update(content)
-        return list(options_set)
+        return sorted(list(options_set))
     
     def get_rating(self, obj):
         return round(Review.objects.filter(course=obj).aggregate(Avg('rating', default=0))['rating__avg'], 2)

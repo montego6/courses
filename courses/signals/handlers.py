@@ -1,8 +1,8 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from courses.models import Lesson, AdditionalFile, Test, Homework, Course
-from courses.blogic_stripe import create_section_item, delete_stripe_course_item, create_stripe_course_item
-from courses.blogic import calculate_video_length
+from courses.blogic_stripe import delete_stripe_course_item, create_stripe_course_item
+from courses.blogic import calculate_video_length, create_section_item
 
 
 @receiver(post_save, sender=Lesson)

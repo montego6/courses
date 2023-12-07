@@ -3,7 +3,7 @@ import pytest
 import stripe
 from courses import consts
 
-from courses.blogic_stripe import StripePrice, StripeSession, create_stripe_upgrade_prices
+from courses.blogic_stripe import StripePrice, StripeSession, create_stripe_course_item, create_stripe_upgrade_prices, delete_stripe_course_item
 from courses.models import StripeCourse
 
 @pytest.fixture
@@ -26,6 +26,13 @@ def request_f(user):
     request = RequestFactory().get('/')
     request.user = user
     return request
+
+
+@pytest.fixture
+def deactivate_product():
+    yield
+    for product in stripe.Product.list(limit=3)['data']:
+        stripe.Product.modify(product['id'], active=False)
 
 class TestStripeSession:
 
@@ -79,3 +86,38 @@ class TestStripePrice:
         assert len(price['id']) > 0
         stripe.Product.modify(product['id'], active=False)
         stripe.Price.modify(price['id'], active=False)
+
+
+@pytest.mark.stripe
+@pytest.mark.django_db
+def test_create_stripe_upgrade_prices(course, deactivate_product):
+    product = stripe.Product.create(name=course.name)
+    option_prices = create_stripe_upgrade_prices(course, product)
+    prev_options = []
+    for idx, option_dict in enumerate(course.options):
+        option = option_dict['option']
+        assert option in option_prices
+        assert isinstance(option_prices[option], dict)
+        assert 'price' in option_prices[option]
+        assert isinstance(option_prices[option]['price'], str)
+        if idx > 0:
+            assert 'upgrade' in option_prices[option]
+            assert isinstance(option_prices[option]['upgrade'], dict)
+            for prev_option in prev_options:
+                assert prev_option in option_prices[option]['upgrade']
+                assert isinstance(option_prices[option]['upgrade'][prev_option], str)
+        prev_options.append(option)
+
+
+@pytest.mark.stripe
+@pytest.mark.django_db
+def test_create_stripe_course_item(course, deactivate_product):
+    create_stripe_course_item(course)
+    assert StripeCourse.objects.filter(course=course).exists()
+
+
+@pytest.mark.stripe
+@pytest.mark.django_db
+def test_delete_stripe_course_item(stripe_course):
+    delete_stripe_course_item(stripe_course.course)
+    assert not StripeCourse.objects.filter(course=stripe_course.course).exists()

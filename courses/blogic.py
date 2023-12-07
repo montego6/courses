@@ -2,7 +2,7 @@ from decouple import config
 import stripe
 from moviepy.editor import VideoFileClip
 from courses import consts
-from courses.models import CoursePayment, Lesson,  TestCompletion
+from courses.models import CoursePayment, Lesson, SectionItem,  TestCompletion
 
 
 stripe.api_key = config('STRIPE_KEY')
@@ -136,3 +136,7 @@ def has_user_full_access(context, instance):
 def calculate_video_length(instance):
     video = VideoFileClip(instance.file.path)
     Lesson.objects.filter(id=instance.id).update(duration=video.duration)
+
+
+def create_section_item(instance):
+    SectionItem.objects.create(content_object=instance, section=instance.section)

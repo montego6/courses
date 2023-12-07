@@ -75,7 +75,7 @@ def test_course_search_serializer(course: CourseFactory):
        'rating': 0,
        'cover': course.cover.url,
        'language': course.language,
-       'options': [],
+       'options': ['lesson', 'test'],
        'students': course.students.count(),
        'subject': course.subject.name,
     }

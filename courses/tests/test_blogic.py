@@ -1,11 +1,12 @@
+from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory
 import pytest
 from courses import consts
 import factories as ft
 
-from courses.blogic import ExtraContext, calculate_video_length, get_test_completion_result, get_user_from_context, has_user_full_access, make_payment_context
-from courses.models import CoursePayment
+from courses.blogic import ExtraContext, calculate_video_length, create_section_item, get_test_completion_result, get_user_from_context, has_user_full_access, make_payment_context
+from courses.models import CoursePayment, SectionItem
 
 @pytest.mark.django_db
 def test_get_user_from_context(user):
@@ -153,3 +154,16 @@ def test_calculate_video_length(lesson):
     calculate_video_length(lesson)
     lesson.refresh_from_db()
     assert lesson.duration == 63
+
+
+@pytest.mark.parametrize('model', [
+    ft.LessonFactory,
+    ft.AdditinalFileFactory,
+    ft.TestFactory,
+    ft.HomeworkFactory
+])
+@pytest.mark.django_db
+def test_create_section_item(model, disconnect_signals):
+    instance = model()
+    create_section_item(instance)
+    assert SectionItem.objects.filter(content_type=get_content_type_for_model(instance), object_id=instance.id, section=instance.section)

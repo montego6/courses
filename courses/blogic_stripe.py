@@ -54,8 +54,7 @@ class StripePrice:
             product=self.product['id']
         )
     
-def create_section_item(instance):
-    SectionItem.objects.create(content_object=instance, section=instance.section)
+
 
 
 def create_stripe_upgrade_prices(instance, product):
