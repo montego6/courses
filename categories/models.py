@@ -5,7 +5,7 @@ from django.core.validators import MinLengthValidator,RegexValidator
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True, validators=[MinLengthValidator(5, message='Количество символов должно быть больше 4'), 
-                                                                    RegexValidator(r'[А-Яа-я\-]+', message='Допускаются только кириллические буквы')])
+                                                                    RegexValidator(r'^[А-Яа-я\-]+$', message='Допускаются только кириллические буквы')])
     
     def __str__(self) -> str:
         return self.name
@@ -13,7 +13,7 @@ class Category(models.Model):
 
 class SubCategory(models.Model):
     name = models.CharField(max_length=50, unique=True, validators=[MinLengthValidator(5, message='Количество символов должно быть больше 4'), 
-                                                                    RegexValidator(r'[А-Яа-я\-]+', message='Допускаются только кириллические буквы')])
+                                                                    RegexValidator(r'^[А-Яа-я\-]+$', message='Допускаются только кириллические буквы')])
     parent_category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
 
     def __str__(self) -> str:

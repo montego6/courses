@@ -34,7 +34,6 @@ def test_subject_serialize_data_fails():
 
 
 
-pass
 
 @pytest.mark.django_db
 def test_subcategory_serializer(subcategory):
@@ -60,13 +59,12 @@ def test_subcategory_serialize_data(category):
 
 @pytest.mark.django_db
 def test_subcategory_serialize_data_fails():
-    data = factory.build(dict, FACTORY_CLASS=ft.SubCategoryFactory)
+    data = factory.build(dict, FACTORY_CLASS=ft.SubCategoryFactory, name='Подкатегория')
     serializer = SubCategorySerializer(data=data)
     assert not serializer.is_valid()
     assert serializer.errors != {}
 
 
-pass
 
 @pytest.mark.django_db
 def test_category_serializer(category):
