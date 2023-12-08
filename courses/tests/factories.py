@@ -1,9 +1,7 @@
-from charset_normalizer import from_path
-from django.db.migrations import questioner
 import factory
 from pytest import File
 from courses import models
-from categories.models import Subject, SubCategory, Category
+from categories.tests.factories import SubjectFactory
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -15,25 +13,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     username = factory.Sequence(lambda n: "user_%d" % n)
     password = factory.Faker('password', length=10)
 
-class CategoryFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Category
 
-    name = factory.Faker('text', max_nb_chars=20)
-
-class SubCategoryFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = SubCategory
-    
-    name = factory.Faker('text', max_nb_chars=20)
-    parent_category = factory.SubFactory(CategoryFactory)
-
-class SubjectFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Subject
-    
-    name = factory.Faker('text', max_nb_chars=20)
-    parent_subcategory = factory.SubFactory(SubCategoryFactory)
 
 
 class CourseFactory(factory.django.DjangoModelFactory):
