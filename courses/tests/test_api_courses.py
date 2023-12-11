@@ -7,7 +7,7 @@ from rest_framework import status
 from courses.models import Course
 from courses.serializers import CourseSerializer, CourseSearchSerializer, SectionSerializer
 from reviews.serializers import ReviewSerializer
-import factories as ft
+import courses.tests.factories as ft
 
 
 @pytest.mark.django_db

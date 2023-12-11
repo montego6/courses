@@ -3,7 +3,7 @@ from rest_framework import status
 import factory
 from courses.models import Lesson
 from courses.serializers import LessonSerializer
-import factories as ft
+import courses.tests.factories as ft
 import pytest
 
 

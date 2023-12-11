@@ -2,13 +2,13 @@ from unittest.mock import Mock
 import factory
 import pytest
 from courses.serializers import CourseProfileSerializer, CourseSearchSerializer, CourseSerializer, SectionSerializer
-from factories import CourseFactory, SubjectFactory, UserFactory
 from reviews.serializers import ReviewSerializer
-import factories as ft
+import courses.tests.factories as ft
+from categories.tests.factories import CategoryFactory, SubjectFactory
 
 
 @pytest.mark.django_db
-def test_course_serializer(course: CourseFactory):
+def test_course_serializer(course):
     data = CourseSerializer(course).data
     expected_data = {
        'id': course.id,
@@ -51,7 +51,7 @@ def test_section_serialize_data_fails():
     assert serializer.errors != {}
 
 @pytest.mark.django_db
-def test_course_serializer_create(subject: SubjectFactory, user: UserFactory):
+def test_course_serializer_create(subject: SubjectFactory, user):
     data = factory.build(dict, FACTORY_CLASS=ft.CourseFactory)
     data['subject'] = subject.id
 
@@ -63,7 +63,7 @@ def test_course_serializer_create(subject: SubjectFactory, user: UserFactory):
     assert course.author == user
 
 @pytest.mark.django_db
-def test_course_search_serializer(course: CourseFactory):
+def test_course_search_serializer(course):
     data = CourseSearchSerializer(course).data
     expected_data = {
        'id': course.id,
@@ -84,7 +84,7 @@ def test_course_search_serializer(course: CourseFactory):
 
 
 @pytest.mark.django_db
-def test_course_profile_serializer(course: CourseFactory):
+def test_course_profile_serializer(course):
     data = CourseProfileSerializer(course).data
     expected_data = {
        'name': course.name,

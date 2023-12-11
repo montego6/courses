@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 import factory
 import pytest
-import factories as ft
+import courses.tests.factories as ft
 from courses.serializers import TestCompletionSerializer, TestQuestionSerializer, TestSerializer
 
 

@@ -10,7 +10,7 @@ class ReviewCreateView(generics.GenericAPIView, CreateModelMixin):
     serializer_class = ReviewSerializer
 
     def post(self, request):
-        request.data.update(student=self.request.user.id)
+        # request.data.update(student=self.request.user.id)
         return self.create(request)
 
 

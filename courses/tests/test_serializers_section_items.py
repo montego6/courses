@@ -4,7 +4,7 @@ import pytest
 import factory
 from rest_framework.request import Request
 from courses.models import SectionItem, TestCompletion
-import factories as ft
+import courses.tests.factories as ft
 from courses.serializers import AdditionalFileSerializer, CourseProfileSerializer, CourseSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestCompletionSerializer, TestQuestionSerializer, TestSerializer, CourseSearchSerializer
 from reviews.serializers import ReviewSerializer
 

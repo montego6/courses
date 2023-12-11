@@ -2,7 +2,7 @@ import pytest
 import factory
 from courses.models import SectionItem
 from courses.serializers import AdditionalFileSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestSerializer
-import factories as ft
+import courses.tests.factories as ft
 
 
 @pytest.mark.parametrize('model, serializer', [

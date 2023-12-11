@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from courses.models import Section
 from courses.serializers import SectionItemSerializer, SectionSerializer
-import factories as ft
+import courses.tests.factories as ft
 
 
 

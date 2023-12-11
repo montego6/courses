@@ -1,3 +1,4 @@
+from unittest.mock import Mock
 import pytest
 import factory
 from reviews.tests import factories as ft
@@ -33,6 +34,19 @@ def test_review_serialize_data_fails():
     serializer = ReviewSerializer(data=data)
     assert not serializer.is_valid()
     assert serializer.errors != {}
+
+
+@pytest.mark.django_db
+def test_review_serialize_data_create(course, user, disconnect_signals):
+    data = factory.build(dict, FACTORY_CLASS=ft.ReviewFactory)
+    data['course'] = course.id
+    request = Mock()
+    request.user = user
+    serializer = ReviewSerializer(data=data, context={'request': request})
+    assert serializer.is_valid()
+    assert serializer.errors == {}
+    review = serializer.save()
+    assert review.student == user
 
 
 @pytest.mark.django_db

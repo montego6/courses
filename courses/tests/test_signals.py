@@ -1,7 +1,7 @@
 from unittest.mock import patch
 import pytest
-import factories as ft
-
+import courses.tests.factories as ft
+from categories.tests.factories import CategoryFactory, SubjectFactory, SubCategoryFactory
 
 @pytest.mark.parametrize('factory', [
     ft.AdditinalFileFactory,
@@ -20,8 +20,8 @@ def test_signal_create_section_item(mock_class, factory):
 
 @pytest.mark.parametrize('factory', [
     ft.CourseFactory,
-    ft.CategoryFactory,
-    ft.SubCategoryFactory, 
+    CategoryFactory,
+    SubCategoryFactory, 
     ft.UserFactory,
 ])
 @pytest.mark.django_db
@@ -43,7 +43,7 @@ def test_signal_create_stripe_course_item():
 @pytest.mark.django_db
 def test_signal_create_stripe_course_item_fails():
     with patch('courses.signals.handlers.create_stripe_course_item') as mock:
-        model = ft.CategoryFactory()
+        model = CategoryFactory()
         assert not mock.called
 
 
