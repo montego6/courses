@@ -17,3 +17,4 @@ class ReviewWithFullNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'
+        read_only_fields = ['student']
