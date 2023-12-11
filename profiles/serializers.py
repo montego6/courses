@@ -5,6 +5,7 @@ from .models import TeacherProfile
 from reviews.models import Review
 from courses.models import Course
 from courses.serializers import CourseSearchSerializer
+from courses.blogic import get_user_from_context
 
 User = get_user_model()
 
@@ -17,14 +18,16 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = TeacherProfile
-        fields = ['avatar', 'bio', 'name', 'rating', 'students', 'courses']
-        read_only_fields = ['balance']
+        fields = ['id', 'avatar', 'bio', 'name', 'rating', 'students', 'courses', 'balance']
+        read_only_fields = ['balance', 'rating', 'students', 'courses', 'name']
     
     def get_name(self, obj):
         return obj.user.first_name + ' ' + obj.user.last_name
     
     def get_rating(self, obj):
-        return round(Review.objects.filter(course__author=obj.user).aggregate(Avg('rating'))['rating__avg'], 2)
+        agg = Review.objects.filter(course__author=obj.user).aggregate(Avg('rating'))['rating__avg']
+        rating = round(agg, 2) if agg else 0
+        return rating
     
     def get_students(self, obj):
         return User.objects.filter(student_courses__author=obj.user).distinct().count()
@@ -34,9 +37,5 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
         return CourseSearchSerializer(courses, many=True).data
     
     def create(self, validated_data):
-        user = None
-        request = self.context.get('request')
-        if request and hasattr(request, 'user'):
-            user = request.user
-        validated_data['user'] = user
+        validated_data['user'] = get_user_from_context(self.context)
         return super().create(validated_data)
