@@ -1,12 +1,17 @@
 from django.db import models
 from django.core.validators import MinLengthValidator,RegexValidator
 
+from categories.managers import CategoryStatisticsManager
+
 # Create your models here.
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True, validators=[MinLengthValidator(5, message='Количество символов должно быть больше 4'), 
                                                                     RegexValidator(r'^[А-Яа-я\-]+$', message='Допускаются только кириллические буквы')])
     
+    objects = models.Manager()
+    statistics = CategoryStatisticsManager()
+
     def __str__(self) -> str:
         return self.name
 

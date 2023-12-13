@@ -4,7 +4,6 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 import courses.consts as consts
-from categories.models import Subject
 from courses.managers import CourseManager
 
 User = get_user_model()
@@ -40,7 +39,7 @@ class Course(models.Model):
     date_updated = models.DateField(auto_now=True)
     is_published = models.BooleanField(default=False)
     is_free = models.BooleanField(default=False)
-    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, related_name='courses')
+    subject = models.ForeignKey('categories.Subject', on_delete=models.SET_NULL, null=True, related_name='courses')
 
     objects = models.Manager()
     custom_objects = CourseManager()

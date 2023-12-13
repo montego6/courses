@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+import courses
 from .models import Category, SubCategory, Subject
 
 
@@ -29,3 +31,13 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = '__all__'
 
+
+class CategoryStatisticsSerializer(serializers.ModelSerializer):
+    courses = serializers.IntegerField()
+    payments = serializers.DecimalField(max_digits=15, decimal_places=2)
+    students = serializers.IntegerField()
+    authors = serializers.IntegerField()
+
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'courses', 'payments', 'students', 'authors']
