@@ -1,0 +1,18 @@
+.stats-row, .stats-header {
+    display: grid;
+    grid-template-columns: 1fr 5fr 1fr 1fr 1fr 3fr 3fr;
+    padding: 6px;
+}
+
+.stats-row span, .stats-header span {
+    text-align: center;
+}
+
+#stats {
+    width: 75%;
+    margin: 0 auto;
+}
+
+.stats-header {
+    background-color: aliceblue;
+}

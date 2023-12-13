@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}Войти на сайт{% endblock %}
 {% block imports %}
-<!-- <link href="{% static 'course-add.css' %}" rel="stylesheet"> -->
+<link href="{% static 'statistic-main.css' %}" rel="stylesheet">
 <script src="{% static 'statistic-main.js' %}" defer></script>
 {% endblock %}  
 {% block content %}
@@ -16,10 +16,19 @@
             <span class="cat-courses"></span>
             <span class="cat-students"></span>
             <span class="cat-payments"></span>
+            <span class="cat-month-payments"></span>
         </div>
     </template>
     <div id="stats">
-        
+        <div class="stats-header">
+            <span class="cat-id">id</span>
+            <span class="cat-name">name</span>
+            <span class="cat-authors">authors</span>
+            <span class="cat-courses">courses</span>
+            <span class="cat-students">students</span>
+            <span class="cat-payments">payments</span>
+            <span class="cat-payments">last month payments</span>
+        </div>
     </div>
 </div>
 {% endblock %} 

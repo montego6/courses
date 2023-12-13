@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-import courses
 from .models import Category, SubCategory, Subject
 
 
@@ -37,7 +36,8 @@ class CategoryStatisticsSerializer(serializers.ModelSerializer):
     payments = serializers.DecimalField(max_digits=15, decimal_places=2)
     students = serializers.IntegerField()
     authors = serializers.IntegerField()
+    cur_month_payments = serializers.DecimalField(max_digits=15, decimal_places=2)
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'courses', 'payments', 'students', 'authors']
+        fields = ['id', 'name', 'courses', 'payments', 'students', 'authors', 'cur_month_payments']

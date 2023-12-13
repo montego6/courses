@@ -8,6 +8,7 @@ class CategoriesStats {
         this.authors = data.authors
         this.students = data.students
         this.payments = data.payments
+        this.curMonthPayments = data.cur_month_payments
     }
 
     createElement() {
@@ -18,6 +19,7 @@ class CategoriesStats {
         clone.querySelector('.cat-authors').textContent = this.authors
         clone.querySelector('.cat-students').textContent = this.students
         clone.querySelector('.cat-payments').textContent = this.payments
+        clone.querySelector('.cat-month-payments').textContent = this.curMonthPayments
         return clone
     }
 
