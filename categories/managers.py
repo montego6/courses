@@ -17,5 +17,4 @@ class CategoryStatisticsManager(models.Manager):
             students=models.Count('subcategories__subjects__courses__students', distinct=True),
             authors=models.Count('subcategories__subjects__courses__author', distinct=True)
             )
-        print(query.query)
         return query

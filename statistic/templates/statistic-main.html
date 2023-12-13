@@ -2,9 +2,24 @@
 {% load static %}
 {% block title %}Войти на сайт{% endblock %}
 {% block imports %}
-<!-- <link href="{% static 'course-add.css' %}" rel="stylesheet">
-<script src="{% static 'course-add.js' %}" defer></script> -->
+<!-- <link href="{% static 'course-add.css' %}" rel="stylesheet"> -->
+<script src="{% static 'statistic-main.js' %}" defer></script>
 {% endblock %}  
 {% block content %}
-<p>Statistic</p>
+<div class="main-body">
+    <p>Statistic</p>
+    <template id="template-stats">
+        <div class="stats-row">
+            <span class="cat-id"></span>
+            <span class="cat-name"></span>
+            <span class="cat-authors"></span>
+            <span class="cat-courses"></span>
+            <span class="cat-students"></span>
+            <span class="cat-payments"></span>
+        </div>
+    </template>
+    <div id="stats">
+        
+    </div>
+</div>
 {% endblock %} 
