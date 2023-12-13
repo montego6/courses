@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'courses.apps.CoursesConfig',
     'profiles',
     'reviews',
+    'statistic',
 ]
 
 MIDDLEWARE = [
