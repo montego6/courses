@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinLengthValidator,RegexValidator
 
-from categories.managers import CategoryStatisticsManager, SubCategoryStatisticsManager
+from categories.managers import CategoryStatisticsManager, SubCategoryStatisticsManager, SubjectStatisticsManager
 
 # Create your models here.
 
@@ -32,6 +32,8 @@ class Subject(models.Model):
     name = models.CharField(max_length=50, unique=True)
     parent_subcategory = models.ForeignKey(SubCategory, related_name='subjects', on_delete=models.CASCADE)
 
+    objects = models.Manager()
+    statistics = SubjectStatisticsManager()
 
     def __str__(self) -> str:
         return f'{self.name}, подкатегория: {self.parent_subcategory.name}'

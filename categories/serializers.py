@@ -50,3 +50,9 @@ class SubCategoryStatisticsSerializer(serializers.ModelSerializer, StatisticsSer
         model = SubCategory
         fields = ['id', 'name', 'courses', 'payments', 'students', 'authors', 'cur_month_payments']
 
+
+class SubjectStatisticsSerializer(serializers.ModelSerializer, StatisticsSerializer):
+    class Meta:
+        model = Subject
+        fields = ['id', 'name', 'courses', 'payments', 'students', 'authors', 'cur_month_payments']
+
