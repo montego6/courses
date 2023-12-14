@@ -52,7 +52,9 @@ class SubCategoryStatisticsSerializer(serializers.ModelSerializer, StatisticsSer
 
 
 class SubjectStatisticsSerializer(serializers.ModelSerializer, StatisticsSerializer):
+    courses_num = courses = serializers.IntegerField()
+    
     class Meta:
         model = Subject
-        fields = ['id', 'name', 'courses', 'payments', 'students', 'authors', 'cur_month_payments']
+        fields = ['id', 'name', 'courses_num', 'payments', 'students', 'authors', 'cur_month_payments']
 

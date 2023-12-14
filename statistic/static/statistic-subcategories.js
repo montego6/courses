@@ -15,7 +15,7 @@ class SubCategoriesStats {
         const clone = document.querySelector('#template-stats').content.cloneNode(true)
         clone.querySelector('.subcat-id').textContent = this.id
         clone.querySelector('.subcat-name').textContent = this.name
-        clone.querySelector('.subcat-name').setAttribute('href', `http://127.0.0.1:8000/subcategories/by_category/${this.id}/statistics`)
+        clone.querySelector('.subcat-name').setAttribute('href', `http://127.0.0.1:8000/statistic/subjects/by_subcategory/${this.id}/`)
         clone.querySelector('.subcat-courses').textContent = this.courses
         clone.querySelector('.subcat-authors').textContent = this.authors
         clone.querySelector('.subcat-students').textContent = this.students

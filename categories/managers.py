@@ -63,7 +63,7 @@ class SubjectStatisticsManager(models.Manager):
                     annotate(total=models.Func(models.F('amount'), function='SUM')).values('total')
         
         query = self.filter(parent_subcategory_id=subcategory_id).annotate(
-            courses=models.Count('courses', distinct=True),
+            courses_num=models.Count('courses', distinct=True),
             payments=models.Subquery(total_amount),
             cur_month_payments=models.Subquery(cur_month_amount),
             students=models.Count('courses__students', distinct=True),

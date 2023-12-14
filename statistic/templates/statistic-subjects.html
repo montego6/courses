@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Войти на сайт{% endblock %}
+{% block imports %}
+<link href="{% static 'statistic-main.css' %}" rel="stylesheet">
+<script src="{% static 'statistic-subjects.js' %}" defer></script>
+{% endblock %}  
+{% block content %}
+<div class="invisible">
+    <p id="subcat-id">{{ id }}</p>
+</div>
+<div class="main-body">
+    <p>Statistic</p>
+    <template id="template-stats">
+        <div class="stats-row">
+            <span class="subject-id"></span>
+            <a class="subject-name"></a>
+            <span class="subject-authors"></span>
+            <span class="subject-courses"></span>
+            <span class="subject-students"></span>
+            <span class="subject-payments"></span>
+            <span class="subject-month-payments"></span>
+        </div>
+    </template>
+    <div id="stats">
+        <div class="stats-header">
+            <span class="subject-id">id</span>
+            <span class="subject-name">name</span>
+            <span class="subject-authors">authors</span>
+            <span class="subject-courses">courses</span>
+            <span class="subject-students">students</span>
+            <span class="subject-payments">payments</span>
+            <span class="subject-payments">last month payments</span>
+        </div>
+    </div>
+</div>
+{% endblock %} 
