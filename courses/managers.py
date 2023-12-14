@@ -22,15 +22,19 @@ class CourseStatisticsManager(models.Manager):
             filter(payment_datetime__year=cur_year, payment_datetime__month=cur_month).\
                     annotate(total=models.Func(models.F('amount'), function='SUM')).values('total')
 
-        total_reviews = rmodels.Review.objects.filter(course=models.OuterRef('id')).count('id')
+        total_reviews = rmodels.Review.objects.filter(course=models.OuterRef('id')).\
+            annotate(count=models.Func(models.F('id'), function='COUNT')).values('count')
         rating = rmodels.Review.objects.filter(course=models.OuterRef('id')).\
-            annotate(rating=models.Func(models.F('rating'), function='AVG')).values('total')
+            annotate(avg_rating=models.Func(models.F('rating'), function='AVG', output_field=models.DecimalField())).values('avg_rating')
 
-        query = self.filter(subject_id=subject_id).annotate(
-            reviews=models.Subquery(total_reviews),
+        num_students = self.\
+            annotate(students_count=models.Func(models.F('students'), function='COUNT')).values('students_count')
+        
+        query = self.filter(subject_id=subject_id).only('id', 'name').annotate(
+            num_reviews=models.Subquery(total_reviews),
             rating=models.Subquery(rating),
-            payments=models.Subquery(total_amount),
+            total_payments=models.Subquery(total_amount),
             cur_month_payments=models.Subquery(cur_month_amount),
-            students=models.Count('students', distinct=True),
-            ).order_by('payments')
+            num_students=models.Subquery(num_students),
+            ).order_by('total_payments')
         return query

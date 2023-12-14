@@ -145,15 +145,15 @@ class CourseSerializer(serializers.ModelSerializer):
     
 
 class CourseStatisticsSerializer(serializers.ModelSerializer):
-    reviews = serializers.IntegerField()
-    rating = serializers.IntegerField()
-    payments = serializers.DecimalField(max_digits=15, decimal_places=2)
+    num_reviews = serializers.IntegerField()
+    rating = serializers.DecimalField(max_digits=15, decimal_places=2)
+    total_payments = serializers.DecimalField(max_digits=15, decimal_places=2)
     cur_month_payments = serializers.DecimalField(max_digits=15, decimal_places=2)
-    students = serializers.IntegerField()
+    num_students = serializers.IntegerField()
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'reviews', 'rating', 'payments', 'cur_month_payments', 'students']
+        fields = ['id', 'name', 'num_reviews', 'rating', 'total_payments', 'cur_month_payments', 'num_students']
     
 
 class AuthorSerializer(serializers.ModelSerializer):

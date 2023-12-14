@@ -15,7 +15,7 @@ class SubjectStats {
         const clone = document.querySelector('#template-stats').content.cloneNode(true)
         clone.querySelector('.subject-id').textContent = this.id
         clone.querySelector('.subject-name').textContent = this.name
-        clone.querySelector('.subject-name').setAttribute('href', `http://127.0.0.1:8000/statistic/subjects/by_subcategory/${this.id}/`)
+        clone.querySelector('.subject-name').setAttribute('href', `http://127.0.0.1:8000/statistic/courses/by_subject/${this.id}/`)
         clone.querySelector('.subject-courses').textContent = this.courses
         clone.querySelector('.subject-authors').textContent = this.authors
         clone.querySelector('.subject-students').textContent = this.students
