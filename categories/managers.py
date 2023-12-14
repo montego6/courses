@@ -4,11 +4,12 @@ from datetime import datetime
 from django.db import models
 
 from courses.models import CoursePayment
-
+from categories.utils import get_current_month, get_current_year
 
 class CategoryStatisticsManager(models.Manager):
     def all(self):
-        cur_year, cur_month = datetime.now().year, datetime.now().month
+        cur_year, cur_month = get_current_year(), get_current_month()
+
         total_amount = CoursePayment.objects.filter(course__subject__parent_subcategory__parent_category=models.OuterRef('id')).\
             annotate(total=models.Func(models.F('amount'), function='SUM')).values('total')
 
@@ -29,7 +30,8 @@ class CategoryStatisticsManager(models.Manager):
 
 class SubCategoryStatisticsManager(models.Manager):
     def all(self, category_id):
-        cur_year, cur_month = datetime.now().year, datetime.now().month
+        cur_year, cur_month = get_current_year(), get_current_month()
+        
         total_amount = CoursePayment.objects.filter(course__subject__parent_subcategory=models.OuterRef('id')).\
             annotate(total=models.Func(models.F('amount'), function='SUM')).values('total')
 
