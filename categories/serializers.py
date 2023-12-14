@@ -31,13 +31,22 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CategoryStatisticsSerializer(serializers.ModelSerializer):
+class StatisticsSerializer(serializers.Serializer):
     courses = serializers.IntegerField()
     payments = serializers.DecimalField(max_digits=15, decimal_places=2)
     students = serializers.IntegerField()
     authors = serializers.IntegerField()
     cur_month_payments = serializers.DecimalField(max_digits=15, decimal_places=2)
 
+
+class CategoryStatisticsSerializer(serializers.ModelSerializer, StatisticsSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'courses', 'payments', 'students', 'authors', 'cur_month_payments']
+
+
+class SubCategoryStatisticsSerializer(serializers.ModelSerializer, StatisticsSerializer):
+    class Meta:
+        model = SubCategory
+        fields = ['id', 'name', 'courses', 'payments', 'students', 'authors', 'cur_month_payments']
+
