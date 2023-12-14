@@ -24,7 +24,7 @@ class CategoryStatisticsManager(models.Manager):
             cur_month_payments=models.Subquery(cur_month_amount),
             students=models.Count('subcategories__subjects__courses__students', distinct=True),
             authors=models.Count('subcategories__subjects__courses__author', distinct=True)
-            )
+            ).order_by('payments')
         return query
     
 
@@ -46,7 +46,7 @@ class SubCategoryStatisticsManager(models.Manager):
             cur_month_payments=models.Subquery(cur_month_amount),
             students=models.Count('subjects__courses__students', distinct=True),
             authors=models.Count('subjects__courses__author', distinct=True)
-            )
+            ).order_by('payments')
         return query
     
 
@@ -68,5 +68,5 @@ class SubjectStatisticsManager(models.Manager):
             cur_month_payments=models.Subquery(cur_month_amount),
             students=models.Count('courses__students', distinct=True),
             authors=models.Count('courses__author', distinct=True)
-            )
+            ).order_by('payments')
         return query

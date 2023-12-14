@@ -7,7 +7,7 @@ from courses.blogic_stripe import StripeSession
 from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework, CoursePayment
 from .models import TestCompletion
 from reviews.models import Review
-from .serializers import CourseSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
+from .serializers import CourseSerializer, CourseStatisticsSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
 from .serializers import TestSerializer, TestQuestionSerializer, CourseItemPaymentSerializer, CourseSearchSerializer
 from .serializers import TestCompletionSerializer
 from . import consts
@@ -25,11 +25,10 @@ from decouple import config
 
 User = get_user_model()
 
-# (?P<course_pk>[^/.]+)/
+
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    # authentication_classes = [SessionAuthentication]
 
     @action(methods=['get'], detail=True, url_path=r'buy/(?P<option>[^/.]+)')
     def buy(self, request, option, pk=None):
@@ -40,18 +39,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         else:
             stripe_session = StripeSession(course, option)
             session = stripe_session.buy(request)
-        # price = course.stripe.price if not option else course.stripe.option_prices[option]
-        # line_items = {'price': price, 'quantity': 1}
-        # # line_items = CourseItemPaymentSerializer(course).data
-        # metadata = {'option': option} if option else {'option': consts.COURSE_OPTION_BASIC}
-        # session = stripe.checkout.Session.create(
-        #     success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
-        #     client_reference_id=request.user.id,
-        #     line_items=[line_items],
-        #     currency='rub',
-        #     mode="payment",
-        #     metadata=metadata
-        # )
             return Response({'id': session['id']})
     
     @action(methods=['get'], detail=True, url_path=r'upgrade/(?P<option>[^/.]+)')
@@ -68,17 +55,6 @@ class CourseViewSet(viewsets.ModelViewSet):
             else:
                 stripe_session = StripeSession(course, option, paid_option)
                 session = stripe_session.upgrade(request)
-        # price = course.stripe.option_prices[option]['upgrade'][paid_option]
-        # line_items = {'price': price, 'quantity': 1}
-        # metadata = {'option': option, 'upgrade': True, 'course': course.id} 
-        # session = stripe.checkout.Session.create(
-        #     success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': pk})),
-        #     client_reference_id=request.user.id,
-        #     line_items=[line_items],
-        #     currency='rub',
-        #     mode="payment",
-        #     metadata=metadata
-        # )
                 return Response({'id': session['id']})
     
 
@@ -108,20 +84,23 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response({'review': False})
 
     
-    # @action(methods=['get'], detail=True)
-    # def is_paid(self, request, pk=None):
-    #     course = Course.objects.get(id=pk)
 
 
 class CourseSearchView(generics.ListAPIView):
     serializer_class = CourseSearchSerializer
 
     def get_queryset(self):
-        # queryset = Course.objects.all()
         query = self.request.query_params.get('query')
-        # queryset = queryset.filter(Q(name__icontains=query) | Q(short_description__icontains=query) | Q(full_description__icontains=query))
         queryset = Course.custom_objects.search_by_query(query)
         return queryset
+
+
+class CourseStatisticsView(generics.ListAPIView):
+    serializer_class = CourseStatisticsSerializer
+
+    def get_queryset(self):
+        subject_id = self.kwargs.get('id')
+        return Course.statistics.by_subject(subject_id=subject_id)
 
 
 class SectionViewSet(viewsets.ModelViewSet):

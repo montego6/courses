@@ -4,7 +4,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 import courses.consts as consts
-from courses.managers import CourseManager
+import courses.managers as cmanagers
+# import CourseManager, CourseStatisticsManager
 
 User = get_user_model()
 
@@ -42,7 +43,8 @@ class Course(models.Model):
     subject = models.ForeignKey('categories.Subject', on_delete=models.SET_NULL, null=True, related_name='courses')
 
     objects = models.Manager()
-    custom_objects = CourseManager()
+    custom_objects = cmanagers.CourseManager()
+    statistics = cmanagers.CourseStatisticsManager()
 
 
 class StripeCourse(models.Model):
