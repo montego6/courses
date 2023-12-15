@@ -157,3 +157,29 @@ REST_FRAMEWORK = {
     ],
     # 'UPLOADED_FILES_USE_URL': True,
 }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/debug.log',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'courses': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            
+        },
+    },
+    'formatters': {
+        'simple': {
+            'format': '{asctime} - {levelname} - {message}',
+            'style': '{'
+        },
+    },
+}
