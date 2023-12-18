@@ -6,7 +6,7 @@ const popoverTemplate = document.getElementById('header-popover-template')
 let categories
 
 
-fetch('http://localhost:8000/api/categories/').then(response => response.json())
+fetch('http://127.0.0.1:8000/api/categories/').then(response => response.json())
 .then(data => {
     categories = data
     createMenuElements(categories, popoverMenu)

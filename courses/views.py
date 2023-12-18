@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
 from django.db.models import Q
@@ -88,13 +89,14 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 
-class CourseSearchView(APILogger, generics.ListAPIView):
+class CourseSearchView(generics.ListAPIView):
     serializer_class = CourseSearchSerializer
 
     def get_queryset(self):
         query = self.request.query_params.get('query')
         queryset = Course.custom_objects.search_by_query(query)
         return queryset
+    
 
 
 class CourseStatisticsView(generics.ListAPIView):
