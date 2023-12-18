@@ -155,26 +155,43 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication'
     ],
-    # 'UPLOADED_FILES_USE_URL': True,
 }
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'file': {
+        'apifile': {
             'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/api.log',
+            'formatter': 'simple',
+        },
+        'debugfile': {
+            'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': 'logs/debug.log',
             'formatter': 'simple',
         },
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
     },
     'loggers': {
-        'courses': {
-            'handlers': ['file'],
+        'api': {
+            'handlers': ['apifile'],
             'level': 'INFO',
             
         },
+        "django": {
+            "handlers": ["debugfile"],
+            "level": "DEBUG",
+            "propagate": True,
+        }
     },
     'formatters': {
         'simple': {
@@ -183,3 +200,4 @@ LOGGING = {
         },
     },
 }
+
