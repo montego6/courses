@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'profiles',
     'reviews',
     'statistic',
+    'mailings',
 ]
 
 MIDDLEWARE = [
@@ -206,4 +207,18 @@ LOGGING = {
         },
     },
 }
+
+
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+
+
+DEFAULT_FROM_EMAIL = config('EMAIL')
+SERVER_EMAIL = config('EMAIL')
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_HOST_USER = config('EMAIL')
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
+EMAIL_PORT = 587
 
