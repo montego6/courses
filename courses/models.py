@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 import courses.consts as consts
 import courses.managers as cmanagers
-# import CourseManager, CourseStatisticsManager
+from .validators import FileValidator
 
 User = get_user_model()
 
@@ -22,6 +22,9 @@ COURSE_PAYMENT_CHOICES = [
     (consts.COURSE_PAYMENT_ERROR, 'Course is not paid due to error'),
     (consts.COURSE_PAYMENT_REFUND, 'Course is refunded'),
 ]
+
+validate_file = FileValidator(max_size=1024 * 100, 
+                             content_types=('application/xml',))
 
 
 class Course(models.Model):
