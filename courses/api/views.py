@@ -1,16 +1,10 @@
 from django.contrib.auth import get_user_model
-from courses.blogic_stripe import StripeSession
-from ..models import Course, Section, CoursePayment
-from reviews.models import Review
-from .serializers import CourseSerializer, CourseStatisticsSerializer, SectionSerializer
+from ..models import Course
+from .serializers import CourseStatisticsSerializer
 from .serializers import CourseSearchSerializer
-from ...core import consts
-from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.decorators import action
 from rest_framework import generics
-from rest_framework import status
 
 
 User = get_user_model()

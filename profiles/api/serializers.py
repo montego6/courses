@@ -5,7 +5,7 @@ from ..models import TeacherProfile
 from reviews.models import Review
 from courses.models import Course
 from courses.api.serializers import CourseSearchSerializer
-from courses.blogic import get_user_from_context
+from courses.utils import get_user_from_context
 
 User = get_user_model()
 

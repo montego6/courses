@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 import core.consts as consts
 import courses.managers as cmanagers
 from .validators import FileValidator
+import statistic.managers as smanagers
 
 User = get_user_model()
 
@@ -46,7 +47,7 @@ class Course(models.Model):
 
     objects = models.Manager()
     custom_objects = cmanagers.CourseManager()
-    statistics = cmanagers.CourseStatisticsManager()
+    statistics = smanagers.CourseStatisticsManager()
 
 
 class StripeCourse(models.Model):

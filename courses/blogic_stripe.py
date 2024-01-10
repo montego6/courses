@@ -2,7 +2,7 @@ from decouple import config
 import stripe
 from django.urls import reverse
 from core import consts
-from courses.models import SectionItem, StripeCourse
+from courses.models import StripeCourse
 
 
 stripe.api_key = config('STRIPE_KEY')

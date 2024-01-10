@@ -1,6 +1,5 @@
 from rest_framework import viewsets
-from courses.api.serializers import AdditionalFileSerializer, HomeworkSerializer, LessonSerializer, TestQuestionSerializer, TestSerializer
-
+from .serializers import AdditionalFileSerializer, HomeworkSerializer, LessonSerializer, TestQuestionSerializer, TestSerializer
 from sectionitems.models import AdditionalFile, Homework, Lesson, Test, TestQuestion
 
 

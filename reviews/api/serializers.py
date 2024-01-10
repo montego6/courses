@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from courses.blogic import get_user_from_context
+from courses.utils import get_user_from_context
 from ..models import Review
 
 

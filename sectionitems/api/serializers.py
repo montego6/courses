@@ -2,7 +2,8 @@ from django.forms import ValidationError
 from rest_framework import serializers
 from core.consts import EXCLUDE_FIELDS
 
-from courses.blogic import get_test_completion_result, get_user_from_context, has_user_full_access
+from courses.utils import  get_user_from_context
+from ..utils import get_test_completion_result, has_user_full_access
 from sectionitems.models import AdditionalFile, Homework, Lesson, Test, TestCompletion, TestQuestion
 
 

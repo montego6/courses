@@ -1,9 +1,8 @@
 from django.db.models import Avg
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from rest_framework.exceptions import ValidationError
 
-from courses.blogic import ExtraContext, get_user_from_context, make_payment_context
+from courses.utils import ExtraContext, get_user_from_context, make_payment_context
 from sectionitems.api.serializers import SectionItemSerializer
 from sectionitems.models import Lesson, SectionItem
 from ..models import Course, Section
