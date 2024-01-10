@@ -1,27 +1,17 @@
-from django.http import Http404
-from django.shortcuts import render
-from django.urls import reverse
-from django.db.models import Q
 from django.contrib.auth import get_user_model
-
 from courses.blogic_stripe import StripeSession
-from .models import Course, Section, Lesson, AdditionalFile, Test, TestQuestion, Homework, CoursePayment
-from .models import TestCompletion
+from .models import Course, Section, CoursePayment
 from reviews.models import Review
-from .serializers import CourseSerializer, CourseStatisticsSerializer, SectionSerializer, LessonSerializer, AdditionalFileSerializer, HomeworkSerializer
-from .serializers import TestSerializer, TestQuestionSerializer, CourseItemPaymentSerializer, CourseSearchSerializer
-from .serializers import TestCompletionSerializer
+from .serializers import CourseSerializer, CourseStatisticsSerializer, SectionSerializer
+from .serializers import CourseSearchSerializer
 from . import consts
 from rest_framework import viewsets
-from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework import generics
 from rest_framework import status
 
-import stripe
-from decouple import config
 
 
 
@@ -111,37 +101,6 @@ class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
 
-
-class LessonViewSet(viewsets.ModelViewSet):
-    queryset = Lesson.objects.all()
-    serializer_class = LessonSerializer
-
-
-class AdditionalFileViewSet(viewsets.ModelViewSet):
-    queryset = AdditionalFile.objects.all()
-    serializer_class = AdditionalFileSerializer
-
-
-class TestViewSet(viewsets.ModelViewSet):
-    queryset = Test.objects.all()
-    serializer_class = TestSerializer
-
-
-class TestQuestionViewSet(viewsets.ModelViewSet):
-    queryset = TestQuestion.objects.all()
-    serializer_class = TestQuestionSerializer
-
-
-class HomeworkViewSet(viewsets.ModelViewSet):
-    queryset = Homework.objects.all()
-    serializer_class = HomeworkSerializer
-
-
-class TestCompletionView(generics.CreateAPIView):
-    queryset = TestCompletion.objects.all()
-    serializer_class = TestCompletionSerializer
-
-    
 
 class GetUser(APIView):
     def get(self, request):

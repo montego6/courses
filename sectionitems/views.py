@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from rest_framework import generics
+from courses.serializers import TestCompletionSerializer
 
-# Create your views here.
+from sectionitems.models import TestCompletion
+
+class TestCompletionView(generics.CreateAPIView):
+    queryset = TestCompletion.objects.all()
+    serializer_class = TestCompletionSerializer
