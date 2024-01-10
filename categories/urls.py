@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework import routers
-from .views import CategoryStatisticsView, CategoryViewSet, SubCategoryStatisticsView, SubCategoryViewSet, SubjectStatisticsView, SubjectViewSet
+from .api.views import CategoryStatisticsView, CategoryViewSet, SubCategoryStatisticsView, SubCategoryViewSet, SubjectStatisticsView, SubjectViewSet
 
 router = routers.SimpleRouter()
 router.register(r'categories', CategoryViewSet)

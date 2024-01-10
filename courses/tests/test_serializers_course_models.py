@@ -1,8 +1,8 @@
 from unittest.mock import Mock
 import factory
 import pytest
-from courses.serializers import CourseProfileSerializer, CourseSearchSerializer, CourseSerializer, SectionSerializer
-from reviews.serializers import ReviewSerializer
+from courses.api.serializers import CourseProfileSerializer, CourseSearchSerializer, CourseSerializer, SectionSerializer
+from reviews.api.serializers import ReviewSerializer
 import courses.tests.factories as ft
 from categories.tests.factories import CategoryFactory, SubjectFactory
 

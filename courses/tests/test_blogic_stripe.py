@@ -1,7 +1,7 @@
 from django.test import RequestFactory
 import pytest
 import stripe
-from courses import consts
+from core import consts
 
 from courses.blogic_stripe import StripePrice, StripeSession, create_stripe_course_item, create_stripe_upgrade_prices, delete_stripe_course_item
 from courses.models import StripeCourse

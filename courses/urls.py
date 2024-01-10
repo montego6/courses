@@ -1,6 +1,6 @@
 from rest_framework import routers
-from .views import CourseViewSet, SectionViewSet, LessonViewSet, AdditionalFileViewSet, GetUser
-from .views import TestViewSet, TestQuestionViewSet, HomeworkViewSet, CourseSearchView, TestCompletionView, CourseStatisticsView
+from .api.views import CourseViewSet, SectionViewSet, LessonViewSet, AdditionalFileViewSet, GetUser
+from .api.views import TestViewSet, TestQuestionViewSet, HomeworkViewSet, CourseSearchView, TestCompletionView, CourseStatisticsView
 from django.urls import path
 
 router = routers.SimpleRouter()

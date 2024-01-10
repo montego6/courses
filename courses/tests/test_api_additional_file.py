@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 import factory
 from courses.models import AdditionalFile
-from courses.serializers import AdditionalFileSerializer
+from courses.api.serializers import AdditionalFileSerializer
 import courses.tests.factories as ft
 import pytest
 

@@ -1,7 +1,7 @@
 from decouple import config
 import stripe
 from django.urls import reverse
-from courses import consts
+from core import consts
 from courses.models import SectionItem, StripeCourse
 
 

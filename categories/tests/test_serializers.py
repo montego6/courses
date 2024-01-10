@@ -1,7 +1,7 @@
 import pytest
 import factory
 import categories.tests.factories as ft
-from categories.serializers import CategorySerializer, SubCategorySerializer, SubjectSerializer
+from categories.api.serializers import CategorySerializer, SubCategorySerializer, SubjectSerializer
 
 
 @pytest.mark.django_db

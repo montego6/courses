@@ -1,10 +1,10 @@
 from unittest.mock import Mock
 import pytest
 import factory
-from courses.serializers import CourseSearchSerializer, CourseSerializer
+from courses.api.serializers import CourseSearchSerializer, CourseSerializer
 from courses.tests.factories import CourseFactory, UserFactory
 from profiles.models import TeacherProfile
-from profiles.serializers import TeacherProfileSerializer
+from profiles.api.serializers import TeacherProfileSerializer
 from profiles.tests import factories as ft
 from courses.tests.conftest import disconnect_signals
 

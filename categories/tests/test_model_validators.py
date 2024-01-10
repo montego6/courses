@@ -1,7 +1,7 @@
 
 import factory
 import pytest
-from categories.serializers import CategorySerializer, SubCategorySerializer, SubjectSerializer
+from categories.api.serializers import CategorySerializer, SubCategorySerializer, SubjectSerializer
 import categories.tests.factories as ft
 
 

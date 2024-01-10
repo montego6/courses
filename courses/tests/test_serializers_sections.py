@@ -1,7 +1,7 @@
 import pytest
 import factory
 from courses.models import SectionItem
-from courses.serializers import AdditionalFileSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestSerializer
+from courses.api.serializers import AdditionalFileSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestSerializer
 import courses.tests.factories as ft
 
 

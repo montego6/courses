@@ -5,8 +5,8 @@ import json
 from django.urls import reverse
 from rest_framework import status
 from courses.models import Course
-from courses.serializers import CourseSerializer, CourseSearchSerializer, SectionSerializer
-from reviews.serializers import ReviewSerializer
+from courses.api.serializers import CourseSerializer, CourseSearchSerializer, SectionSerializer
+from reviews.api.serializers import ReviewSerializer
 import courses.tests.factories as ft
 
 

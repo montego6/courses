@@ -1,9 +1,8 @@
 from django.db import models
 from django.core.validators import MinLengthValidator,RegexValidator
 
-from categories.managers import CategoryStatisticsManager, SubCategoryStatisticsManager, SubjectStatisticsManager
+from statistic.managers import CategoryStatisticsManager, SubCategoryStatisticsManager, SubjectStatisticsManager
 
-# Create your models here.
 
 class Category(models.Model):
     name = models.CharField(max_length=50, unique=True, validators=[MinLengthValidator(5, message='Количество символов должно быть больше 4'), 

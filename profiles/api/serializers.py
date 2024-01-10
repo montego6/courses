@@ -1,10 +1,10 @@
 from django.db.models import Avg
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import TeacherProfile
+from ..models import TeacherProfile
 from reviews.models import Review
 from courses.models import Course
-from courses.serializers import CourseSearchSerializer
+from courses.api.serializers import CourseSearchSerializer
 from courses.blogic import get_user_from_context
 
 User = get_user_model()

@@ -4,7 +4,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 from courses.models import COURSE_OPTION_CHOICES, Section
-from courses import consts
+from core import consts
 
 
 User = get_user_model()

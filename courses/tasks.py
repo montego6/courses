@@ -1,6 +1,6 @@
 from celery import shared_task
 from moviepy.editor import VideoFileClip
-from .consts import LESSON_VIDEO_FPS
+from ..core.consts import LESSON_VIDEO_FPS
 
 
 @shared_task

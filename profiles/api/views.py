@@ -1,11 +1,9 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
-from .models import TeacherProfile
+from ..models import TeacherProfile
 from .serializers import TeacherProfileSerializer
 from courses.models import Course
-from courses.serializers import CourseProfileSerializer
+from courses.api.serializers import CourseProfileSerializer
 
 
 class HasTeacherProfile(APIView):
@@ -20,7 +18,5 @@ class HasTeacherProfile(APIView):
             return Response({'profile': False})
 
 
-class TeacherProfileViewSet(ModelViewSet):
-    serializer_class = TeacherProfileSerializer
-    queryset = TeacherProfile.objects.all()
+
 # Create your views here.

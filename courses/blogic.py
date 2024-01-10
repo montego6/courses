@@ -1,7 +1,7 @@
 import stripe
 from moviepy.editor import VideoFileClip
 from decouple import config
-from courses import consts
+from core import consts
 from courses.models import CoursePayment, Lesson, SectionItem,  TestCompletion
 
 

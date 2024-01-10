@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.views import APIView
-from .models import Review
+from ..models import Review
 from .serializers import ReviewSerializer
 
 

@@ -1,5 +1,5 @@
 from rest_framework import generics
-from courses.serializers import TestCompletionSerializer
+from courses.api.serializers import TestCompletionSerializer
 
 from sectionitems.models import TestCompletion
 

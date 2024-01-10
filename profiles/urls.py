@@ -1,7 +1,7 @@
 from django.urls import path, include
 from django.views.generic.base import TemplateView
 from rest_framework import routers
-from .views import HasTeacherProfile, TeacherProfileViewSet
+from .api.views import HasTeacherProfile, TeacherProfileViewSet
 
 router = routers.SimpleRouter()
 router.register(r'profiles', TeacherProfileViewSet)

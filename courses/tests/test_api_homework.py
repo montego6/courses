@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 import factory
 from courses.models import Homework, TestCompletion
-from courses.serializers import HomeworkSerializer
+from courses.api.serializers import HomeworkSerializer
 import courses.tests.factories as ft
 import pytest
 

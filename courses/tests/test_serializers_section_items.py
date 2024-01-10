@@ -5,8 +5,8 @@ import factory
 from rest_framework.request import Request
 from courses.models import SectionItem, TestCompletion
 import courses.tests.factories as ft
-from courses.serializers import AdditionalFileSerializer, CourseProfileSerializer, CourseSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestCompletionSerializer, TestQuestionSerializer, TestSerializer, CourseSearchSerializer
-from reviews.serializers import ReviewSerializer
+from courses.api.serializers import AdditionalFileSerializer, CourseProfileSerializer, CourseSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestCompletionSerializer, TestQuestionSerializer, TestSerializer, CourseSearchSerializer
+from reviews.api.serializers import ReviewSerializer
 
 
 

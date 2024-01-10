@@ -2,7 +2,7 @@ from django.contrib.admin.options import get_content_type_for_model
 from django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory
 import pytest
-from courses import consts
+from core import consts
 import courses.tests.factories as ft
 
 from courses.blogic import ExtraContext, calculate_video_length, create_section_item, get_test_completion_result, get_user_from_context, has_user_full_access, make_payment_context

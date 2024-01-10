@@ -3,7 +3,7 @@ import pytest
 import factory
 from reviews.tests import factories as ft
 from courses.tests.conftest import disconnect_signals, course, user
-from reviews.serializers import ReviewSerializer, ReviewWithFullNameSerializer
+from reviews.api.serializers import ReviewSerializer, ReviewWithFullNameSerializer
 
 @pytest.mark.django_db
 def test_review_serializer(review, disconnect_signals):

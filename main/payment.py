@@ -1,5 +1,5 @@
 from courses.models import Course, CoursePayment
-from courses.consts import COURSE_PAYMENT_PAID
+from core.consts import COURSE_PAYMENT_PAID
 from django.contrib.auth import get_user_model
 from django.db.models import F
 from mailings.tasks import send_course_buy_letter

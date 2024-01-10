@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from courses.blogic import get_user_from_context
-from .models import Review
+from ..models import Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):

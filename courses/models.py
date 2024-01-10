@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
 from django.contrib.auth import get_user_model
-import courses.consts as consts
+import core.consts as consts
 import courses.managers as cmanagers
 from .validators import FileValidator
 

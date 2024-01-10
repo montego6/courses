@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 import factory
 from categories.models import Category, SubCategory, Subject
-from categories.serializers import CategorySerializer, SubCategorySerializer, SubjectSerializer
+from categories.api.serializers import CategorySerializer, SubCategorySerializer, SubjectSerializer
 import categories.tests.factories as ft
 import pytest
 

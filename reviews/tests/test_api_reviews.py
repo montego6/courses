@@ -3,9 +3,9 @@ from rest_framework import status
 import factory
 from rest_framework.test import APIClient
 from profiles.models import TeacherProfile
-from profiles.serializers import TeacherProfileSerializer
+from profiles.api.serializers import TeacherProfileSerializer
 from reviews.models import Review
-from reviews.serializers import ReviewSerializer
+from reviews.api.serializers import ReviewSerializer
 import reviews.tests.factories as ft
 import pytest
 from courses.tests.conftest import client, client_logged, course, user, disconnect_signals

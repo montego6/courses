@@ -3,7 +3,7 @@ from rest_framework import status
 import factory
 from rest_framework.test import APIClient
 from profiles.models import TeacherProfile
-from profiles.serializers import TeacherProfileSerializer
+from profiles.api.serializers import TeacherProfileSerializer
 import profiles.tests.factories as ft
 import pytest
 from courses.tests.conftest import client, client_logged
