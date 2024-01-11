@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from categories.models import Category, SubCategory, Subject
+from courses.models import Course
 
 
 class StatisticsSerializer(serializers.Serializer):
@@ -29,3 +30,15 @@ class SubjectStatisticsSerializer(serializers.ModelSerializer, StatisticsSeriali
     class Meta:
         model = Subject
         fields = ['id', 'name', 'courses_num', 'payments', 'students', 'authors', 'cur_month_payments']
+
+
+class CourseStatisticsSerializer(serializers.ModelSerializer):
+    num_reviews = serializers.IntegerField()
+    rating = serializers.DecimalField(max_digits=15, decimal_places=2)
+    total_payments = serializers.DecimalField(max_digits=15, decimal_places=2)
+    cur_month_payments = serializers.DecimalField(max_digits=15, decimal_places=2)
+    num_students = serializers.IntegerField()
+
+    class Meta:
+        model = Course
+        fields = ['id', 'name', 'num_reviews', 'rating', 'total_payments', 'cur_month_payments', 'num_students']

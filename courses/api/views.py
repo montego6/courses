@@ -19,12 +19,7 @@ class CourseSearchView(generics.ListAPIView):
         return queryset
 
 
-class CourseStatisticsView(generics.ListAPIView):
-    serializer_class = CourseStatisticsSerializer
 
-    def get_queryset(self):
-        subject_id = self.kwargs.get('id')
-        return Course.statistics.by_subject(subject_id=subject_id)
 
 
 

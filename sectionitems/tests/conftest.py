@@ -1,12 +1,11 @@
 import pytest
 from rest_framework.test import APIClient
-from categories.tests.factories import SubjectFactory
-from courses.tests.factories import CourseFactory, SectionFactory, UserFactory
 import shutil
 import os
+from courses.tests.factories import SectionFactory, UserFactory
 from sectionitems.models import SectionItem
 
-from sectionitems.tests.factories import LessonFactory, TestFactory
+from sectionitems.tests.factories import AdditinalFileFactory, HomeworkFactory, LessonFactory, TestCompletionFactory, TestFactory, TestQuestionFactory
 
 
 @pytest.fixture
@@ -35,8 +34,33 @@ def delete_test_files():
     if os.path.isdir(settings.MEDIA_ROOT):
         shutil.rmtree(settings.MEDIA_ROOT)
 
+@pytest.fixture
+def lesson(disconnect_signals):
+    return LessonFactory()
 
 
+@pytest.fixture
+def additional_file(disconnect_signals):
+    return AdditinalFileFactory()
+
+@pytest.fixture
+def test(disconnect_signals):
+    questions = [TestQuestionFactory() for _ in range(5)]
+    test = TestFactory()
+    test.questions.set(questions)
+    return test
+
+@pytest.fixture
+def test_question(disconnect_signals):
+    return TestQuestionFactory()
+
+@pytest.fixture
+def test_completion(disconnect_signals):
+    return TestCompletionFactory()
+
+@pytest.fixture
+def homework(disconnect_signals):
+    return HomeworkFactory()
 
 @pytest.fixture
 def section(disconnect_signals):
@@ -46,14 +70,5 @@ def section(disconnect_signals):
     return section
 
 @pytest.fixture
-def course(disconnect_signals):
-    return CourseFactory()
-
-@pytest.fixture
-def subject(disconnect_signals):
-    return SubjectFactory()
-    
-@pytest.fixture
 def user():
     return UserFactory()
-
