@@ -4,9 +4,14 @@ import shutil
 import os
 from courses.tests.factories import SectionFactory, UserFactory
 from sectionitems.models import SectionItem
-
+from django.conf import settings
 from sectionitems.tests.factories import AdditinalFileFactory, HomeworkFactory, LessonFactory, TestCompletionFactory, TestFactory, TestQuestionFactory
 
+
+@pytest.fixture(autouse=True, scope='session')
+def disable_logging():
+    if 'loggers.middlewares.LogRequestsMiddleware' in settings.MIDDLEWARE:
+        settings.MIDDLEWARE.remove('loggers.middlewares.LogRequestsMiddleware')
 
 @pytest.fixture
 def client():

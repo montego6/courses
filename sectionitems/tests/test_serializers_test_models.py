@@ -1,8 +1,8 @@
 from unittest.mock import Mock
 import factory
 import pytest
-import courses.tests.factories as ft
-from courses.api.serializers import TestCompletionSerializer, TestQuestionSerializer, TestSerializer
+import sectionitems.tests.factories as ft
+from sectionitems.api.serializers import TestCompletionSerializer, TestQuestionSerializer, TestSerializer
 
 
 @pytest.mark.django_db

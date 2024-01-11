@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
 from categories.models import Category, SubCategory, Subject
-from serializers import CategorySerializer, SubCategorySerializer, SubjectSerializer
+from .serializers import CategorySerializer, SubCategorySerializer, SubjectSerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):

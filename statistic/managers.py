@@ -1,14 +1,16 @@
 from django.db import models
-from courses.models import CoursePayment
+# import courses.models 
 from .utils import get_current_month, get_current_year
-import courses.models as cmodels
 import reviews.models as rmodels
+from django.apps import apps
+
 
 
 class CategoryStatisticsManager(models.Manager):
     def all(self):
         cur_year, cur_month = get_current_year(), get_current_month()
 
+        CoursePayment = apps.get_model(app_label='courses', model_name='CoursePayment')
         total_amount = CoursePayment.objects.filter(course__subject__parent_subcategory__parent_category=models.OuterRef('id')).\
             annotate(total=models.Func(models.F('amount'), function='SUM')).values('total')
 
@@ -31,6 +33,7 @@ class SubCategoryStatisticsManager(models.Manager):
     def by_category(self, category_id):
         cur_year, cur_month = get_current_year(), get_current_month()
 
+        CoursePayment = apps.get_model(app_label='courses', model_name='CoursePayment')
         total_amount = CoursePayment.objects.filter(course__subject__parent_subcategory=models.OuterRef('id')).\
             annotate(total=models.Func(models.F('amount'), function='SUM')).values('total')
 
@@ -53,6 +56,7 @@ class SubjectStatisticsManager(models.Manager):
     def by_subcategory(self, subcategory_id):
         cur_year, cur_month = get_current_year(), get_current_month()
         
+        CoursePayment = apps.get_model(app_label='courses', model_name='CoursePayment')
         total_amount = CoursePayment.objects.filter(course__subject=models.OuterRef('id')).\
             annotate(total=models.Func(models.F('amount'), function='SUM')).values('total')
 
@@ -75,10 +79,11 @@ class CourseStatisticsManager(models.Manager):
     def by_subject(self, subject_id):
         cur_year, cur_month = get_current_year(), get_current_month()
         
-        total_amount = cmodels.CoursePayment.objects.filter(course=models.OuterRef('id')).\
+        CoursePayment = apps.get_model(app_label='courses', model_name='CoursePayment')
+        total_amount = CoursePayment.objects.filter(course=models.OuterRef('id')).\
             annotate(total=models.Func(models.F('amount'), function='SUM')).values('total')
 
-        cur_month_amount = cmodels.CoursePayment.objects.\
+        cur_month_amount = CoursePayment.objects.\
             filter(course=models.OuterRef('id')).\
             filter(payment_datetime__year=cur_year, payment_datetime__month=cur_month).\
                     annotate(total=models.Func(models.F('amount'), function='SUM')).values('total')

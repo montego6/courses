@@ -1,6 +1,12 @@
 import pytest
 from rest_framework.test import APIClient
 import categories.tests.factories as ft
+from django.conf import settings
+
+@pytest.fixture(autouse=True, scope='session')
+def disable_logging():
+    if 'loggers.middlewares.LogRequestsMiddleware' in settings.MIDDLEWARE:
+        settings.MIDDLEWARE.remove('loggers.middlewares.LogRequestsMiddleware')
 
 @pytest.fixture
 def category():

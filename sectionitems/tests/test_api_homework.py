@@ -1,9 +1,9 @@
 from django.urls import reverse
 from rest_framework import status
 import factory
-from courses.models import Homework, TestCompletion
-from courses.api.serializers import HomeworkSerializer
-import courses.tests.factories as ft
+from ..models import Homework, TestCompletion
+from sectionitems.api.serializers import HomeworkSerializer
+import sectionitems.tests.factories as ft
 import pytest
 
 

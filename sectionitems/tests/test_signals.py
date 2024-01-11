@@ -13,7 +13,7 @@ import sectionitems.tests.factories as ft
 @pytest.mark.django_db
 @patch('courses.signals.handlers.create_stripe_course_item')
 def test_signal_create_section_item(mock_class, factory):
-    with patch('courses.signals.handlers.create_section_item') as mock:
+    with patch('sectionitems.signals.handlers.create_section_item') as mock:
         model = factory()
         assert mock.called
         assert mock.call_count == 1
@@ -28,15 +28,15 @@ def test_signal_create_section_item(mock_class, factory):
 @pytest.mark.django_db
 @patch('courses.signals.handlers.create_stripe_course_item')
 def test_signal_create_section_item_fails(mock_class, factory):
-    with patch('courses.signals.handlers.create_section_item') as mock:
+    with patch('sectionitems.signals.handlers.create_section_item') as mock:
         model = factory()
         assert not mock.called
 
 
 @pytest.mark.django_db
-@patch('courses.signals.handlers.calculate_video_length')
+@patch('courses.signals.handlers.create_stripe_course_item')
 def test_signal_calculate_video_length(mock_class):
-    with patch('courses.signals.handlers.calculate_video_length') as mock:
+    with patch('sectionitems.signals.handlers.calculate_video_length') as mock:
         model = ft.LessonFactory()
         assert mock.called
         assert mock.call_count == 1
@@ -49,8 +49,8 @@ def test_signal_calculate_video_length(mock_class):
     ft.HomeworkFactory,
 ])
 @pytest.mark.django_db
-@patch('courses.signals.handlers.calculate_video_length')
+@patch('courses.signals.handlers.create_stripe_course_item')
 def test_signal_calculate_video_length_fails(mock_class, factory):
-    with patch('courses.signals.handlers.calculate_video_length') as mock:
+    with patch('sectionitems.signals.handlers.calculate_video_length') as mock:
         model = factory()
         assert not mock.called

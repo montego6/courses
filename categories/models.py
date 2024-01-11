@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinLengthValidator,RegexValidator
 
-from statistic.managers import CategoryStatisticsManager, SubCategoryStatisticsManager, SubjectStatisticsManager
+import statistic.managers
 
 
 class Category(models.Model):
@@ -9,7 +9,7 @@ class Category(models.Model):
                                                                     RegexValidator(r'^[А-Яа-я\-]+$', message='Допускаются только кириллические буквы')])
     
     objects = models.Manager()
-    statistics = CategoryStatisticsManager()
+    statistics = statistic.managers.CategoryStatisticsManager()
 
     def __str__(self) -> str:
         return self.name
@@ -21,7 +21,7 @@ class SubCategory(models.Model):
     parent_category = models.ForeignKey(Category, related_name='subcategories', on_delete=models.CASCADE)
 
     objects = models.Manager()
-    statistics = SubCategoryStatisticsManager()
+    statistics = statistic.managers.SubCategoryStatisticsManager()
 
     def __str__(self) -> str:
         return f'{self.name}, категория: {self.parent_category.name}'
@@ -32,7 +32,7 @@ class Subject(models.Model):
     parent_subcategory = models.ForeignKey(SubCategory, related_name='subjects', on_delete=models.CASCADE)
 
     objects = models.Manager()
-    statistics = SubjectStatisticsManager()
+    statistics = statistic.managers.SubjectStatisticsManager()
 
     def __str__(self) -> str:
         return f'{self.name}, подкатегория: {self.parent_subcategory.name}'

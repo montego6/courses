@@ -1,4 +1,5 @@
 import pytest
+from django.conf import settings
 from rest_framework.test import APIClient
 from categories.tests.factories import SubjectFactory
 from courses.tests.factories import CourseFactory, SectionFactory, UserFactory
@@ -8,6 +9,11 @@ from sectionitems.models import SectionItem
 
 from sectionitems.tests.factories import LessonFactory, TestFactory
 
+
+@pytest.fixture(autouse=True, scope='session')
+def disable_logging():
+    if 'loggers.middlewares.LogRequestsMiddleware' in settings.MIDDLEWARE:
+        settings.MIDDLEWARE.remove('loggers.middlewares.LogRequestsMiddleware')
 
 @pytest.fixture
 def client():

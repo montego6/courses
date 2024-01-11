@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from ..models import Course
-from .serializers import CourseStatisticsSerializer
 from .serializers import CourseSearchSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -17,11 +16,6 @@ class CourseSearchView(generics.ListAPIView):
         query = self.request.query_params.get('query')
         queryset = Course.custom_objects.search_by_query(query)
         return queryset
-
-
-
-
-
 
 
 

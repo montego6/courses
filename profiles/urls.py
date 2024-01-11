@@ -1,7 +1,6 @@
-from django.urls import path, include
+from django.urls import path
 from django.views.generic.base import TemplateView
-from rest_framework import routers
-from .api.views import HasTeacherProfile, TeacherProfileViewSet
+
 
 
 
