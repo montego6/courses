@@ -5,26 +5,7 @@ from courses.api.serializers import AdditionalFileSerializer, HomeworkSerializer
 import courses.tests.factories as ft
 
 
-@pytest.mark.parametrize('model, serializer', [
-    (ft.LessonFactory, LessonSerializer),
-    (ft.AdditinalFileFactory, AdditionalFileSerializer),
-    (ft.TestFactory, TestSerializer),
-    (ft.HomeworkFactory, HomeworkSerializer)
-])
-@pytest.mark.django_db
-def test_section_item_serializer(disconnect_signals, model, serializer):
-    section = ft.SectionFactory()
-    instance = model()
-    section_item = SectionItem.objects.create(content_object=instance, section=section)
-    assert SectionItemSerializer(section_item).data == serializer(instance).data
 
-
-@pytest.mark.django_db
-def test_section_item_serializer_exception(disconnect_signals, course):
-    section = ft.SectionFactory()
-    section_item = SectionItem.objects.create(content_object=course, section=section)
-    with pytest.raises(Exception):
-        data = SectionItemSerializer(section_item).data
 
 
 @pytest.mark.django_db

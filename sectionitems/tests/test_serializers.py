@@ -1,13 +1,33 @@
 from unittest.mock import Mock
-from django.test import RequestFactory
 import pytest
 import factory
-from rest_framework.request import Request
-from courses.models import SectionItem, TestCompletion
-import courses.tests.factories as ft
-from courses.api.serializers import AdditionalFileSerializer, CourseProfileSerializer, CourseSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, SectionSerializer, TestCompletionSerializer, TestQuestionSerializer, TestSerializer, CourseSearchSerializer
-from reviews.api.serializers import ReviewSerializer
+from courses.tests.factories import CourseFactory
+from sectionitems.api.serializers import AdditionalFileSerializer, HomeworkSerializer, LessonSerializer, SectionItemSerializer, TestQuestionSerializer, TestSerializer
+from sectionitems.models import SectionItem
+import sectionitems.tests.factories as ft
 
+
+@pytest.mark.parametrize('model, serializer', [
+    (ft.LessonFactory, LessonSerializer),
+    (ft.AdditinalFileFactory, AdditionalFileSerializer),
+    (ft.TestFactory, TestSerializer),
+    (ft.HomeworkFactory, HomeworkSerializer)
+])
+@pytest.mark.django_db
+def test_section_item_serializer(disconnect_signals, model, serializer):
+    section = ft.SectionFactory()
+    instance = model()
+    section_item = SectionItem.objects.create(content_object=instance, section=section)
+    assert SectionItemSerializer(section_item).data == serializer(instance).data
+
+
+@pytest.mark.django_db
+def test_section_item_serializer_exception(disconnect_signals):
+    course = CourseFactory()
+    section = ft.SectionFactory()
+    section_item = SectionItem.objects.create(content_object=course, section=section)
+    with pytest.raises(Exception):
+        data = SectionItemSerializer(section_item).data
 
 
 @pytest.mark.django_db
