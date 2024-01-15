@@ -1,10 +1,9 @@
 from django.urls import path
-from django.views.generic.base import TemplateView
+from profiles.models import TeacherProfile
+
+from profiles.views import MyProfileView
 
 
-
-
-urlpatterns = [path('myprofile/', TemplateView.as_view(template_name='my-profile.html'), name='my-profile'),
-               path('teacher/<int:id>', TemplateView.as_view(template_name='teacher-page.html'), name='teacher-page'),
-               
+urlpatterns = [path('myprofile/', MyProfileView.as_view(), name='my-profile'),
+               path('teacher/<int:id>', TeacherProfile.as_view(), name='teacher-page'),
             ]

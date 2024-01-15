@@ -1,10 +1,10 @@
 from django.urls import path
-from django.views.generic import TemplateView
+from statistic.views import CategoryStatisticsView, CourseBySubjectStatisticsView, SubCategoryStatisticsView, SubjectStatisticsView
 
 
 urlpatterns = [
-    path('main/', TemplateView.as_view(template_name='statistic-main.html'), name='statistic-main'),
-    path('subcategories/by_category/<int:id>/', TemplateView.as_view(template_name='statistic-subcategories.html'), name='statistic-subcategories'),
-    path('subjects/by_subcategory/<int:id>/', TemplateView.as_view(template_name='statistic-subjects.html'), name='statistic-subjects'),
-    path('courses/by_subject/<int:id>/', TemplateView.as_view(template_name='statistic-courses.html'), name='statistic-courses'),
+    path('main/', CategoryStatisticsView.as_view(), name='statistic-main'),
+    path('subcategories/by_category/<int:id>/', SubCategoryStatisticsView.as_view(), name='statistic-subcategories'),
+    path('subjects/by_subcategory/<int:id>/', SubjectStatisticsView.as_view(), name='statistic-subjects'),
+    path('courses/by_subject/<int:id>/', CourseBySubjectStatisticsView.as_view(), name='statistic-courses'),
 ]

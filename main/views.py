@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
 import stripe
 from decouple import config
 from .payment import fullfill_order
@@ -9,9 +10,25 @@ stripe.api_key = config('STRIPE_KEY')
 
 endpoint_secret = config('STRIPE_WEBHOOK_SECRET')
 
-# Create your views here.
-def index(request):
-    return HttpResponse('All is OK')
+
+class IndexView(TemplateView):
+  template_name = 'index.html'
+
+
+class CourseCreateView(TemplateView):
+  template_name = 'course-add.html'
+
+
+class CourseContentView(TemplateView):
+  template_name = 'course-content.html'
+
+
+class CourseDetailView(TemplateView):
+  template_name = 'course-single.html'
+
+
+class CourseSearchView(TemplateView):
+  template_name = 'search.html'
 
 
 @csrf_exempt
@@ -38,8 +55,6 @@ def my_webhook_view(request):
       expand=['line_items'],
     )
     line_items = session.line_items
-    print(line_items)
-    print(session)
     # Fulfill the purchase...
     fullfill_order(line_items['data'][0], session['client_reference_id'], session['metadata'])
 
