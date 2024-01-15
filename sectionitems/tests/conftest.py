@@ -10,8 +10,8 @@ from sectionitems.tests.factories import AdditinalFileFactory, HomeworkFactory, 
 
 @pytest.fixture(autouse=True, scope='session')
 def disable_logging():
-    if 'loggers.middlewares.LogRequestsMiddleware' in settings.MIDDLEWARE:
-        settings.MIDDLEWARE.remove('loggers.middlewares.LogRequestsMiddleware')
+    if 'core.middlewares.LogRequestsMiddleware' in settings.MIDDLEWARE:
+        settings.MIDDLEWARE.remove('core.middlewares.LogRequestsMiddleware')
 
 @pytest.fixture
 def client():
