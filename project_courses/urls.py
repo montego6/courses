@@ -21,9 +21,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', include('main.urls')),
-    path('', include('profiles.urls')),
-    path('statistic/', include('statistic.urls')),
-    path('auth/', include('users.urls')),
-    path('api/v1/', include('core.api_urls'))
+    path('', include('main.urls', namespace='course')),
+    path('', include('profiles.urls', namespace='profiles')),
+    path('statistic/', include('statistic.urls', namespace='statistics')),
+    path('auth/', include('users.urls', namespace='users')),
+    path('api/v1/', include('core.api_urls', namespace='api'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
