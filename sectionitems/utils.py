@@ -1,5 +1,5 @@
 from moviepy.editor import VideoFileClip
-from sectionitems.models import Lesson, SectionItem, TestCompletion
+from sectionitems.models import AdditionalFile, Homework, Lesson, SectionItem, Test, TestCompletion
 from core import consts
 
 
@@ -26,4 +26,10 @@ def calculate_video_length(instance):
 
 
 def create_section_item(instance):
-    SectionItem.objects.create(content_object=instance, section=instance.section)
+    mapping = {
+        Lesson: {'lesson': instance},
+        AdditionalFile: {'additional_file': instance},
+        Test: {'test': instance},
+        Homework: {'homework': instance}
+    }
+    SectionItem.objects.create(**mapping[type(instance)], section=instance.section)

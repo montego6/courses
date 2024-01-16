@@ -83,16 +83,16 @@ class HomeworkSerializer(SectionItemExcludeFieldsMixin, serializers.ModelSeriali
 
 class SectionItemSerializer(serializers.Serializer):
     def to_representation(self, value):
-        item = value.content_object
+        # item = value.content_object
         context = self.context
-        if isinstance(item, Lesson):
-            serializer = LessonSerializer(item, context=context)
-        elif isinstance(item, AdditionalFile):
-            serializer = AdditionalFileSerializer(item, context=context)
-        elif isinstance(item, Test):
-            serializer = TestSerializer(item, context=context)
-        elif isinstance(item, Homework):
-            serializer = HomeworkSerializer(item, context=context)        
+        if value.lesson:
+            serializer = LessonSerializer(value.lesson, context=context)
+        elif value.additional_file:
+            serializer = AdditionalFileSerializer(value.additional_file, context=context)
+        elif value.test:
+            serializer = TestSerializer(value.test, context=context)
+        elif value.homework:
+            serializer = HomeworkSerializer(value.homework, context=context)        
         else:
             raise Exception('Unexpected type of section item')
         return serializer.data

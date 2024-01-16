@@ -19,11 +19,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', include('main.urls', namespace='course')),
-    path('', include('profiles.urls', namespace='profiles')),
-    path('statistic/', include('statistic.urls', namespace='statistics')),
-    path('auth/', include('users.urls', namespace='users')),
-    path('api/v1/', include('core.api_urls', namespace='api'))
+    path('', include(('main.urls', 'main'), namespace='course')),
+    path('', include(('profiles.urls', 'profiles'), namespace='profiles')),
+    path('auth/', include(('users.urls', 'users'), namespace='users')),
+    path('api/v1/', include(('core.api_urls', 'core'), namespace='api')),
+    path('statistic/', include(('statistic.urls', 'statistic'), namespace='statistics')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
