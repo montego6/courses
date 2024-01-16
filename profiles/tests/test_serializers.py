@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 import pytest
 import factory
-from core.helpers import get_user_full_name
+from users.helpers import get_user_full_name
 from courses.api.serializers import CourseSearchSerializer, CourseSerializer
 from courses.tests.factories import CourseFactory, UserFactory
 from profiles.models import TeacherProfile

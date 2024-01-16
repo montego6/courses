@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 import factory
 from rest_framework.test import APIClient
-from core.helpers import get_user_full_name
+from users.helpers import get_user_full_name
 from profiles.models import TeacherProfile
 from profiles.api.serializers import TeacherProfileSerializer
 import profiles.tests.factories as ft

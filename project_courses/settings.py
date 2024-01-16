@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'profiles',
     'reviews',
     'statistic',
-    'mailings',
     'sectionitems',
 ]
 

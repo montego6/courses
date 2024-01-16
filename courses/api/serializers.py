@@ -1,7 +1,7 @@
 from django.db.models import Avg
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from core.helpers import get_user_full_name
+from users.helpers import get_user_full_name
 
 from courses.utils import ExtraContext, get_user_from_context, make_payment_context
 from sectionitems.api.serializers import SectionItemSerializer

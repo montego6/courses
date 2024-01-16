@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 import pytest
 import factory
-from core.helpers import get_user_full_name
+from users.helpers import get_user_full_name
 from reviews.tests import factories as ft
 from courses.tests.conftest import disconnect_signals, course, user
 from reviews.api.serializers import ReviewSerializer, ReviewWithFullNameSerializer

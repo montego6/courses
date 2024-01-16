@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.helpers import get_user_full_name
+from users.helpers import get_user_full_name
 
 from courses.utils import get_user_from_context
 from ..models import Review

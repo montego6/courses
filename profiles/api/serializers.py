@@ -2,7 +2,7 @@ from django.db.models import Avg
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from core.helpers import get_user_full_name
+from users.helpers import get_user_full_name
 from ..models import TeacherProfile
 from reviews.models import Review
 from courses.models import Course
