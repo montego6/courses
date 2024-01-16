@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 import pytest
 import factory
+from core.helpers import get_user_full_name
 from reviews.tests import factories as ft
 from courses.tests.conftest import disconnect_signals, course, user
 from reviews.api.serializers import ReviewSerializer, ReviewWithFullNameSerializer
@@ -55,7 +56,7 @@ def test_review_full_name_serializer(review, disconnect_signals):
     expected_data = {
        'id': review.id,
        'course': review.course.id,
-       'student': review.student.first_name + ' ' + review.student.last_name,
+       'student': get_user_full_name(review.student),
        'comment': review.comment,
        'rating': review.rating
     }

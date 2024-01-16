@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 import pytest
 import factory
+from core.helpers import get_user_full_name
 from courses.api.serializers import CourseSearchSerializer, CourseSerializer
 from courses.tests.factories import CourseFactory, UserFactory
 from profiles.models import TeacherProfile
@@ -16,7 +17,7 @@ def test_teacher_profile_serializer(teacher_profile):
        'avatar': teacher_profile.avatar.url,
        'bio': teacher_profile.bio,
        'balance': teacher_profile.balance,
-       'name': teacher_profile.user.first_name + ' ' + teacher_profile.user.last_name,
+       'name': get_user_full_name(teacher_profile.user),
        'rating': 0,
        'students': 0,
        'courses': [],

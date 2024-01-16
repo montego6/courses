@@ -1,6 +1,8 @@
 from django.db.models import Avg
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+
+from core.helpers import get_user_full_name
 from ..models import TeacherProfile
 from reviews.models import Review
 from courses.models import Course
@@ -22,7 +24,7 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ['balance', 'rating', 'students', 'courses', 'name']
     
     def get_name(self, obj):
-        return obj.user.first_name + ' ' + obj.user.last_name
+        return get_user_full_name(obj.user)
     
     def get_rating(self, obj):
         agg = Review.objects.filter(course__author=obj.user).aggregate(Avg('rating'))['rating__avg']

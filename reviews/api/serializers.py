@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from core.helpers import get_user_full_name
 
 from courses.utils import get_user_from_context
 from ..models import Review
@@ -19,7 +20,7 @@ class ReviewWithFullNameSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField()
 
     def get_student(self, obj):
-        return obj.student.first_name + " " + obj.student.last_name
+        return get_user_full_name(obj.student)
     
     class Meta:
         model = Review

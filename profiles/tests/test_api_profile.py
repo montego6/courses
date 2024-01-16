@@ -2,6 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 import factory
 from rest_framework.test import APIClient
+from core.helpers import get_user_full_name
 from profiles.models import TeacherProfile
 from profiles.api.serializers import TeacherProfileSerializer
 import profiles.tests.factories as ft
@@ -36,7 +37,7 @@ def test_update_profile(client, teacher_profile):
        'id': teacher_profile.id,
        'bio': data['bio'],
        'balance': teacher_profile.balance,
-       'name': teacher_profile.user.first_name + ' ' + teacher_profile.user.last_name,
+       'name': get_user_full_name(teacher_profile.user),
        'rating': 0,
        'students': 0,
        'courses': [],
@@ -61,7 +62,7 @@ def test_partial_update_profile(client, teacher_profile):
        'id': teacher_profile.id,
        'bio': data['bio'],
        'balance': teacher_profile.balance,
-       'name': teacher_profile.user.first_name + ' ' + teacher_profile.user.last_name,
+       'name': get_user_full_name(teacher_profile.user),
        'rating': 0,
        'students': 0,
        'courses': [],

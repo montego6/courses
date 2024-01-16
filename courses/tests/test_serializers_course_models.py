@@ -1,6 +1,7 @@
 from unittest.mock import Mock
 import factory
 import pytest
+from core.helpers import get_user_full_name
 from courses.api.serializers import CourseProfileSerializer, CourseSearchSerializer, CourseSerializer, SectionSerializer
 from reviews.api.serializers import ReviewSerializer
 import courses.tests.factories as ft
@@ -69,7 +70,7 @@ def test_course_search_serializer(course):
        'id': course.id,
        'name': course.name,
        'short_description': course.short_description,
-       'author': {'id': course.author.id, 'name': course.author.first_name + ' ' + course.author.last_name},
+       'author': {'id': course.author.id, 'name': get_user_full_name(course.author)},
        'price': course.price,
        'duration': 0,
        'rating': 0,
