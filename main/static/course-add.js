@@ -124,12 +124,27 @@ confirmBtn.addEventListener('click', (event) => {
         }
         optionsArr.push(optionData)
     })
-    formData.append('options', JSON.stringify(optionsArr))
+    // formData.append('options', JSON.stringify(optionsArr))
     console.log(formData)
     fetch('http://127.0.0.1:8000/api/courses/', {
         method: 'post',
         body: formData
-    }).then(response => response.json()).then(data => console.log(data))
+    }).then(response => response.json()).then(data => {
+        if (data.id) {
+            optionsArr.forEach(optionEl => {
+                priceData = {
+                    'course': data.id,
+                    'option': optionEl.option,
+                    'amount': optionEl.price
+                }
+                fetch('http://127.0.0.1:8000/api/courses/prices/', {
+                    method: 'post',
+                    body: priceData
+                }).then(response => response.json()).then(data => console.log(data))
+            })
+            window.location.replace(`http://127.0.0.1:8000/mycourses/${data.id}/preview/`)
+        }
+    })
 
 })
 

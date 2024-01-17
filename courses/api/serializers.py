@@ -6,7 +6,7 @@ from users.helpers import get_user_full_name
 from courses.utils import ExtraContext, get_user_from_context, make_payment_context
 from sectionitems.api.serializers import SectionItemSerializer
 from sectionitems.models import Lesson, SectionItem
-from ..models import Course, Section
+from ..models import Course, CoursePrice, Section
 from reviews.api.serializers import ReviewWithFullNameSerializer
 from reviews.models import Review
 from functools import reduce
@@ -117,4 +117,8 @@ class CourseItemPaymentSerializer(serializers.ModelSerializer):
         fields = ('price', 'quantity')
     
 
+class CoursePriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoursePrice
+        fields = ('course', 'amount', 'option')
 

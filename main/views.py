@@ -19,6 +19,10 @@ class CourseCreateView(TemplateView):
   template_name = 'course-add.html'
 
 
+class CoursePreviewView(TemplateView):
+  template_name = 'course-preview.html'
+
+
 class CourseContentView(TemplateView):
   template_name = 'course-content.html'
 
@@ -29,6 +33,8 @@ class CourseDetailView(TemplateView):
 
 class CourseSearchView(TemplateView):
   template_name = 'search.html'
+
+
 
 
 @csrf_exempt
