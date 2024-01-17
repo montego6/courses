@@ -32,7 +32,7 @@ class Course(models.Model):
     short_description = models.CharField(max_length=200, db_index=True)
     full_description = models.CharField(max_length=3000)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='teacher_courses')
-    price = models.PositiveIntegerField(default=0)
+    # price = models.PositiveIntegerField(default=0)
     cover = models.ImageField(upload_to='media/courses/covers/')
     language = models.CharField(max_length=40)
     what_will_learn = ArrayField(models.CharField(max_length=120), size=20)
@@ -52,10 +52,35 @@ class Course(models.Model):
     statistics = statistic.managers.CategoryStatisticsManager()
 
 
+
+class CoursePrice(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='prices')
+    amount = models.PositiveIntegerField()
+    stripe = models.CharField(max_length=64)
+    option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
+
+
+class CourseUpgradePrice(models.Model):
+    class UpgradeFrom(models.TextChoices):
+        BASIC = consts.COURSE_OPTION_BASIC, 'All the basic content'
+        EXTRA = consts.COURSE_OPTION_EXTRA, 'Some additional files'
+    
+    class UpgradeTo(models.TextChoices):
+        EXTRA = consts.COURSE_OPTION_EXTRA, 'Some additional files'
+        PREMIUM = consts.COURSE_OPTION_PREMIUM, 'All the content you need'
+
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='upgrades')
+    amount = models.PositiveIntegerField()
+    stripe = models.CharField(max_length=64)
+    stripe_product = models.CharField(max_length=64)
+    from_option = models.CharField(max_length=20, choices=UpgradeFrom.choices, default=UpgradeFrom.BASIC)
+    to_option = models.CharField(max_length=20, choices=UpgradeTo.choices, default=UpgradeTo.EXTRA)
+
+
 class StripeCourse(models.Model):
     course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='stripe')
     product = models.CharField(max_length=300)
-    option_prices = models.JSONField()
+    # option_prices = models.JSONField()
 
 
 class CoursePayment(models.Model):

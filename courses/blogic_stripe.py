@@ -58,25 +58,27 @@ class StripePrice:
 
 
 def create_stripe_upgrade_prices(instance, product):
-    option_prices = {}
-    for idx, option in enumerate(instance.options):
-        option_dict = {}
-        option_dict['price'] = StripePrice(option['price'], product).create()['id']
-        if idx > 0:
-            upgrade = stripe.Product.create(name=instance.name + ' upgrade to option ' + option['option'])
-            option_dict['upgrade'] = {}
-            for upgradable_option in instance.options[:idx]:
-                upgrade_price = option['price'] - upgradable_option['price']
-                price = StripePrice(upgrade_price, upgrade).create()
-                option_dict['upgrade'][upgradable_option['option']] = price['id']
-        option_prices[option['option']] = option_dict   
-    return option_prices 
+    for option in instance.options:
+        pass
+    # option_prices = {}
+    # for idx, option in enumerate(instance.options):
+    #     option_dict = {}
+    #     option_dict['price'] = StripePrice(option['price'], product).create()['id']
+    #     if idx > 0:
+    #         upgrade = stripe.Product.create(name=instance.name + ' upgrade to option ' + option['option'])
+    #         option_dict['upgrade'] = {}
+    #         for upgradable_option in instance.options[:idx]:
+    #             upgrade_price = option['price'] - upgradable_option['price']
+    #             price = StripePrice(upgrade_price, upgrade).create()
+    #             option_dict['upgrade'][upgradable_option['option']] = price['id']
+    #     option_prices[option['option']] = option_dict   
+    # return option_prices 
 
 
 def create_stripe_course_item(instance):
     product = stripe.Product.create(name=instance.name)
-    option_prices = create_stripe_upgrade_prices(instance, product)
-    StripeCourse.objects.create(course=instance, product=product['id'], option_prices=option_prices)
+    create_stripe_upgrade_prices(instance, product)
+    StripeCourse.objects.create(course=instance, product=product['id'])
 
 def delete_stripe_course_item(instance):
     StripeCourse.objects.filter(course=instance).delete()
