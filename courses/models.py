@@ -37,7 +37,7 @@ class Course(models.Model):
     language = models.CharField(max_length=40)
     what_will_learn = ArrayField(models.CharField(max_length=120), size=20)
     requirements = ArrayField(models.CharField(max_length=60), size=12)
-    options = models.JSONField()
+    # options = ArrayField(models.CharField(max_length=12), size=3)
     students = models.ManyToManyField(User, related_name='student_courses')
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
@@ -56,7 +56,7 @@ class Course(models.Model):
 class CoursePrice(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='prices')
     amount = models.PositiveIntegerField()
-    stripe = models.CharField(max_length=64)
+    stripe = models.CharField(max_length=64, blank=True, null=True)
     option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
 
 

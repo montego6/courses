@@ -2,7 +2,7 @@ from decouple import config
 import stripe
 from django.urls import reverse
 from core import consts
-from courses.models import StripeCourse
+from courses.models import CoursePrice, CourseUpgradePrice, StripeCourse
 
 
 stripe.api_key = config('STRIPE_KEY')
@@ -56,10 +56,26 @@ class StripePrice:
     
 
 
-
-def create_stripe_upgrade_prices(instance, product):
-    for option in instance.options:
-        pass
+# Вызывать этот метод после публикации курса
+def create_stripe_upgrade_prices(course, product):
+    prices = course.prices.order_by('-amount')
+    for idx, price in enumerate(prices):
+        stripe_price = StripePrice(price.amount, product).create()['id']
+        price.stripe = stripe_price
+        if idx > 0:
+            upgrade = stripe.Product.create(name=course.name + ' upgrade to option ' + price.option)
+            for i in range(idx):
+                upgrade_amount = price.amount - prices[i].amount
+                upgrade_stripe = StripePrice(upgrade_amount, upgrade).create()['id']
+                CourseUpgradePrice.objects.create(
+                    course=course,
+                    amount=upgrade_amount,
+                    stripe=upgrade_stripe,
+                    stripe_product=upgrade['id'],
+                    from_option=prices[i].option,
+                    to_option=price.option
+                )
+    CoursePrice.objects.bulk_update(prices, ['stripe'])
     # option_prices = {}
     # for idx, option in enumerate(instance.options):
     #     option_dict = {}
@@ -75,10 +91,10 @@ def create_stripe_upgrade_prices(instance, product):
     # return option_prices 
 
 
-def create_stripe_course_item(instance):
-    product = stripe.Product.create(name=instance.name)
-    create_stripe_upgrade_prices(instance, product)
-    StripeCourse.objects.create(course=instance, product=product['id'])
+def create_stripe_course_item(course):
+    product = stripe.Product.create(name=course.name)
+    # create_stripe_upgrade_prices(instance, product)
+    StripeCourse.objects.create(course=course, product=product['id'])
 
 def delete_stripe_course_item(instance):
     StripeCourse.objects.filter(course=instance).delete()
