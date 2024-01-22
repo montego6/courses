@@ -44,6 +44,7 @@ class Course(models.Model):
     is_published = models.BooleanField(default=False)
     is_free = models.BooleanField(default=False)
     subject = models.ForeignKey('categories.Subject', on_delete=models.SET_NULL, null=True, related_name='courses')
+    slug = models.SlugField(max_length=160, unique=True)
 
     objects = models.Manager()
     custom_objects = cmanagers.CourseManager()

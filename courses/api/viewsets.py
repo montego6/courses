@@ -13,6 +13,7 @@ from courses.models import Course, CoursePayment, CoursePrice, CourseUpgradePric
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    lookup_field = 'slug'
 
     @action(methods=['get'], detail=True, url_path=r'buy/(?P<option>[^/.]+)')
     def buy(self, request, option, pk=None):
