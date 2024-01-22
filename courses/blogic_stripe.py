@@ -15,14 +15,14 @@ class StripeSession:
         self.option = option
         self.upgrade_from = upgrade_from
     
-    def buy(self, request):
-        price = self.course.stripe.option_prices[self.option]['price']
+    def buy(self, request, price_obj):
+        price = price_obj.stripe
         line_items = self.get_line_items(price)
         metadata = {'option': self.option} if self.option else {'option': consts.COURSE_OPTION_BASIC}
         return self.create_session(request, line_items, metadata)
     
-    def upgrade(self, request):
-        price = self.course.stripe.option_prices[self.option]['upgrade'][self.upgrade_from]
+    def upgrade(self, request, upgrade_obj):
+        price = upgrade_obj.stripe
         line_items = self.get_line_items(price)
         metadata = {'option': self.option, 'upgrade': True, 'course': self.course.id} 
         return self.create_session(request, line_items, metadata)

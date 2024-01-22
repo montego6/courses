@@ -7,7 +7,7 @@ from courses.blogic_stripe import StripeSession
 from reviews.models import Review
 from .serializers import CourseSerializer, SectionSerializer
 
-from courses.models import Course, CoursePayment, Section
+from courses.models import Course, CoursePayment, CoursePrice, CourseUpgradePrice, Section
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -21,9 +21,13 @@ class CourseViewSet(viewsets.ModelViewSet):
         except Course.DoesNotExist:
             return Response({'detail': 'course does not exist'}, status=status.HTTP_404_NOT_FOUND)
         else:
-            stripe_session = StripeSession(course, option)
-            session = stripe_session.buy(request)
-            return Response({'id': session['id']})
+            try:
+                price_obj = CoursePrice.objects.get(course=course, option=option)
+            except CoursePrice.DoesNotExist:
+                return Response({'detail': 'price for this course and option does not exist'}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                session = StripeSession(course, option).buy(request, price_obj)
+                return Response({'id': session['id']})
     
     @action(methods=['get'], detail=True, url_path=r'upgrade/(?P<option>[^/.]+)')
     def upgrade(self, request, option, pk=None):
@@ -37,9 +41,13 @@ class CourseViewSet(viewsets.ModelViewSet):
             except CoursePayment.DoesNotExist:
                 return Response({'detail': 'course payment does not exist'}, status=status.HTTP_404_NOT_FOUND)
             else:
-                stripe_session = StripeSession(course, option, paid_option)
-                session = stripe_session.upgrade(request)
-                return Response({'id': session['id']})
+                try:
+                    upgrade_obj = CourseUpgradePrice.objects.get(course=course, upgrade_from=paid_option, upgrade_to=option)
+                except CourseUpgradePrice.DoesNotExist:
+                    return Response({'detail': 'upgrade for this course and option does not exist'}, status=status.HTTP_404_NOT_FOUND)
+                else:
+                    session = StripeSession(course, option, paid_option).upgrade(request, upgrade_obj)
+                    return Response({'id': session['id']})
     
 
     @action(methods=['get'], detail=False, url_path=r'barsearch/(?P<query>[^/.]+)')
