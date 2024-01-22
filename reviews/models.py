@@ -16,3 +16,6 @@ class Review(models.Model):
         constraints = [
             models.CheckConstraint(check=models.Q(rating__lte=5), name='rating_lte_5')
         ]
+
+    def __str__(self) -> str:
+        return f'Review for course id={self.course.id} by student id={self.student.id}'

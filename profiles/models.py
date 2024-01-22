@@ -10,3 +10,6 @@ class TeacherProfile(models.Model):
     bio = models.CharField(max_length=2000)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     balance = models.PositiveIntegerField(default=0)
+
+    def __str__(self) -> str:
+        return f'Profile for user id={self.user.id}'

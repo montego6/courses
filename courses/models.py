@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth import get_user_model
 import core.consts as consts
 import courses.managers as cmanagers
+from users.helpers import get_user_full_name
 from .validators import FileValidator
 import statistic.managers 
 
@@ -44,13 +45,16 @@ class Course(models.Model):
     is_published = models.BooleanField(default=False)
     is_free = models.BooleanField(default=False)
     subject = models.ForeignKey('categories.Subject', on_delete=models.SET_NULL, null=True, related_name='courses')
-    slug = models.SlugField(max_length=160, unique=True)
+    slug = models.SlugField(max_length=160, unique=True, null=True)
 
     objects = models.Manager()
     custom_objects = cmanagers.CourseManager()
     
     
     statistics = statistic.managers.CategoryStatisticsManager()
+
+    def __str__(self) -> str:
+        return f'{self.name} by {get_user_full_name(self.author)}'
 
 
 
@@ -59,6 +63,9 @@ class CoursePrice(models.Model):
     amount = models.PositiveIntegerField()
     stripe = models.CharField(max_length=64, blank=True, null=True)
     option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
+
+    def __str__(self) -> str:
+        return f'Price for course with id={self.course.id} and option {self.option}'
 
 
 class CourseUpgradePrice(models.Model):
@@ -77,11 +84,17 @@ class CourseUpgradePrice(models.Model):
     from_option = models.CharField(max_length=20, choices=UpgradeFrom.choices, default=UpgradeFrom.BASIC)
     to_option = models.CharField(max_length=20, choices=UpgradeTo.choices, default=UpgradeTo.EXTRA)
 
+    def __str__(self) -> str:
+        return f'Upgrade for course id={self.course.id} from option {self.from_option} to option {self.to_option}'
+
 
 class StripeCourse(models.Model):
     course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='stripe')
     product = models.CharField(max_length=300)
     # option_prices = models.JSONField()
+
+    def __str__(self) -> str:
+        return f'Stripe for course id={self.course.id}'
 
 
 class CoursePayment(models.Model):
@@ -93,11 +106,17 @@ class CoursePayment(models.Model):
     payment_datetime = models.DateTimeField(auto_now_add=True)
     update_datetime = models.DateTimeField(auto_now=True)
 
+    def __str__(self) -> str:
+        return f'Payment for course id={self.course.id} by student id={self.student.id} option {self.option}'
+
 
 class Section(models.Model):
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=200, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='sections')
+
+    def __str__(self) -> str:
+        return f'Section for course id={self.course.id} with name={self.name}'
 
 
 

@@ -1,8 +1,8 @@
 from django.db import models
 from django.db.models import Q
 from django.contrib.postgres.fields import ArrayField
-from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
-from django.contrib.contenttypes.models import ContentType
+# from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+# from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 from django.forms import ValidationError
 from courses.models import COURSE_OPTION_CHOICES, Section
@@ -27,6 +27,9 @@ class SectionItem(models.Model):
         if sum([1 for field in fields if field]) != 1:
             raise ValidationError('One and only one section item type should be set')
 
+    def __str__(self) -> str:
+        return f'Section item for section with id={self.section.id}'
+    
     class Meta:
         constraints = [
             models.CheckConstraint(check=
@@ -58,6 +61,8 @@ class SectionItem(models.Model):
             )
         ]
 
+
+
 class Item(models.Model):
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=200, null=True)
@@ -67,11 +72,13 @@ class Item(models.Model):
     class Meta:
         abstract = True
 
+
 class Lesson(Item):
     file = models.FileField(upload_to='media/courses/lessons/')
     duration = models.PositiveIntegerField(null=True)
     
-    
+    def __str__(self) -> str:
+        return f'Lesson with name={self.name} of section with id={self.section.id}'
 
 class AdditionalFile(Item):
     # name = models.CharField(max_length=80)
@@ -81,6 +88,8 @@ class AdditionalFile(Item):
     # section_items = GenericRelation(SectionItem)
     # option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
 
+    def __str__(self) -> str:
+        return f'Additional file with name={self.name} of section with id={self.section.id} '
 
 class Test(Item):
     __test__ = False
@@ -90,6 +99,8 @@ class Test(Item):
     # section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='tests')
     # section_items = GenericRelation(SectionItem)
     # option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
+    def __str__(self) -> str:
+        return f'Test of section with id={self.section.id}'
 
 
 class TestQuestion(models.Model):
@@ -100,6 +111,9 @@ class TestQuestion(models.Model):
     options = ArrayField(models.CharField(max_length=100), size=3)
     answer = models.CharField(max_length=100)
 
+    def __str__(self) -> str:
+        return f'Test question of test with id={self.test.id} question={self.question}'
+
 
 class TestCompletion(models.Model):
     __test__ = False
@@ -107,6 +121,9 @@ class TestCompletion(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='test_completions')
     student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='test_completions')
     result = models.PositiveIntegerField()
+
+    def __str__(self) -> str:
+        return f'Test completion of test with id={self.test.id} for student with id={self.student.id}'
 
 
 class Homework(Item):
@@ -116,3 +133,6 @@ class Homework(Item):
     # section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='homeworks')
     # section_items = GenericRelation(SectionItem)
     # option = models.CharField(max_length=20, choices=COURSE_OPTION_CHOICES, default=consts.COURSE_OPTION_BASIC)
+
+    def __str__(self) -> str:
+        return f'Homework with name={self.name} of section with id={self.section.id}'
