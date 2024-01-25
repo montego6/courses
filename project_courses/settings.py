@@ -59,7 +59,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # 'core.middlewares.LogRequestsMiddleware',
+    'core.middlewares.LogRequestsMiddleware',
 ]
 
 ROOT_URLCONF = "project_courses.urls"
@@ -140,7 +140,7 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-MEDIA_ROOT = "media/"
+MEDIA_ROOT = BASE_DIR / "media/"
 MEDIA_URL = "files/"
 
 LOGIN_REDIRECT_URL = 'index'
@@ -177,16 +177,22 @@ LOGGING = {
             'backupCount': 5,
             'formatter': 'simple',
         },
+        'paymentfile': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/payment.log',
+            'formatter': 'simple',
+        },
         "console": {
             'level': 'INFO',
             "class": "logging.StreamHandler",
         },
       
     },
-     "root": {
-        "handlers": ["console"],
-        "level": "INFO",
-    },
+    #  "root": {
+    #     "handlers": ["console"],
+    #     "level": "INFO",
+    # },
     'loggers': {
         'api': {
             'handlers': ['apifile'],
@@ -198,6 +204,11 @@ LOGGING = {
             "handlers": ["debugfile"],
             "level": "DEBUG",
             "propagate": True,
+        },
+        'main.payment': {
+            'handlers': ['paymentfile'],
+            'level': 'INFO',
+            'propagate': False, 
         }
     },
     'formatters': {

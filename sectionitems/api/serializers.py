@@ -7,7 +7,7 @@ from ..utils import get_test_completion_result, has_user_full_access
 from sectionitems.models import AdditionalFile, Homework, Lesson, Test, TestCompletion, TestQuestion
 
 
-class SectionItemExcludeFieldsMixin(serializers.Serializer):
+class SectionItemExcludeFieldsMixin():
     def to_representation(self, instance):
         data =  super().to_representation(instance)
         if not has_user_full_access(self.context, instance):
@@ -93,6 +93,4 @@ class SectionItemSerializer(serializers.Serializer):
             serializer = TestSerializer(value.test, context=context)
         elif value.homework:
             serializer = HomeworkSerializer(value.homework, context=context)        
-        else:
-            raise Exception('Unexpected type of section item')
         return serializer.data
