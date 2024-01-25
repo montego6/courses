@@ -3,8 +3,8 @@
 {% block imports %}
 <link href="{% static 'search.css' %}" rel="stylesheet">
 <script src="{% static 'search.js' %}" defer></script>
-{% endblock %}
-{% block title %}Index page{% endblock %}
+{% endblock imports %}
+{% block title %}Index page{% endblock title %}
 {% block content %}
 <template id="template-course">
     <div class="course-wrapper">
@@ -172,4 +172,4 @@
         <div id="courses"></div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}

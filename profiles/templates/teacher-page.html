@@ -3,8 +3,8 @@
 {% block imports %}
 <link href="{% static 'teacher-page.css' %}" rel="stylesheet">
 <script src="{% static 'teacher-page.js' %}" defer></script>
-{% endblock %}
-{% block title %}My profile{% endblock %}
+{% endblock imports %}
+{% block title %}My profile{% endblock title %}
 {% block content %}
 <div class="main-body">
     <div class="invisible">
@@ -88,4 +88,4 @@
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock content %}

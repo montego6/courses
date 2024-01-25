@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Войти на сайт{% endblock %}
+{% block title %}Войти на сайт{% endblock title %}
 {% block imports %}
 <link href="{% static 'statistic-main.css' %}" rel="stylesheet">
 <script src="{% static 'statistic-subcategories.js' %}" defer></script>
-{% endblock %}  
+{% endblock imports %}  
 {% block content %}
 <div class="invisible">
     <p id="cat-id">{{ id }}</p>
@@ -35,4 +35,4 @@
         </div>
     </div>
 </div>
-{% endblock %} 
+{% endblock content %} 

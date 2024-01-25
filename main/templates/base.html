@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}{% endblock title %}</title>
     <link href="{% static 'shared.css' %}" rel="stylesheet">
     <link href="{% static 'forms.css' %}" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Geologica&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100&display=swap" rel="stylesheet">
     <script src="{% static 'script.js' %}" defer></script>
-    {% block imports %}{% endblock %}
+    {% block imports %}{% endblock imports %}
 </head>
 <div id="backdrop" class="invisible"></div>
 <template id="header-search-template">
@@ -68,6 +68,6 @@
 </nav>
 
 <body>
-{% block content %}{% endblock %}
+{% block content %}{% endblock content %}
 </body>
 </html>

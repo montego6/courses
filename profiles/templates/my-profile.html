@@ -3,8 +3,8 @@
 {% block imports %}
 <link href="{% static 'my-profile.css' %}" rel="stylesheet">
 <script src="{% static 'my-profile.js' %}" defer></script>
-{% endblock %}
-{% block title %}My profile{% endblock %}
+{% endblock imports %}
+{% block title %}My profile{% endblock title %}
 {% block content %}
 <div class="main-body">
     <p>Profile works</p>
@@ -39,4 +39,4 @@
     </template>
     <div id="my-courses"></div>
 </div>
-{% endblock %}
+{% endblock content %}
