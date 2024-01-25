@@ -126,7 +126,7 @@ confirmBtn.addEventListener('click', (event) => {
     })
     // formData.append('options', JSON.stringify(optionsArr))
     console.log(formData)
-    fetch('http://127.0.0.1:8000/api/courses/', {
+    fetch('/api/courses/', {
         method: 'post',
         body: formData
     }).then(response => response.json()).then(data => {
@@ -137,12 +137,12 @@ confirmBtn.addEventListener('click', (event) => {
                     'option': optionEl.option,
                     'amount': optionEl.price
                 }
-                fetch('http://127.0.0.1:8000/api/courses/prices/', {
+                fetch('/api/courses/prices/', {
                     method: 'post',
                     body: priceData
                 }).then(response => response.json()).then(data => console.log(data))
             })
-            window.location.replace(`http://127.0.0.1:8000/mycourses/${data.id}/preview/`)
+            window.location.replace(`/mycourses/${data.id}/preview/`)
         }
     })
 
@@ -163,7 +163,7 @@ form.addEventListener('submit', (event) =>
     event.preventDefault()
 })
 
-fetch('http://127.0.0.1:8000/static/langmap.json').then(response => response.json()).then(data => {
+fetch('/static/langmap.json').then(response => response.json()).then(data => {
     for (const key in data) {
         let selectEL = document.createElement('option')
         selectEL.setAttribute('value', key)
@@ -175,7 +175,7 @@ fetch('http://127.0.0.1:8000/static/langmap.json').then(response => response.jso
     }
 })
 
-fetch('http://localhost:8000/api/categories/').then(response => response.json()).
+fetch('/api/categories/').then(response => response.json()).
 then(data => {
     categoriesData = data
     initializeCategoriesSelect('category', categoriesData)

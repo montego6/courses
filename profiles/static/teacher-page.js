@@ -1,6 +1,6 @@
 const id = document.querySelector('#author-id').textContent
 
-fetch(`http://127.0.0.1:8000/api/profiles/${id}/`)
+fetch(`/api/profiles/${id}/`)
 .then(response => response.json())
 .then(data => {
     initializeBio(data)
@@ -30,7 +30,7 @@ function initializeCourses(data) {
         clone.querySelectorAll(`svg.review-star-small:nth-child(-n+${Math.round(course.rating)})`).forEach(star => star.classList.add('star-selected'))
         clone.querySelector('.course-rating-number').textContent = course.rating
         clone.querySelector('.course-subject span').textContent = course.subject
-        clone.querySelector('a').setAttribute('href', `http://127.0.0.1:8000/course/${id}`)
+        clone.querySelector('a').setAttribute('href', `/course/${id}`)
         document.querySelector('#courses').append(clone)
     })
 }

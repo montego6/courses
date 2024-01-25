@@ -15,7 +15,7 @@ class CourseStats {
         const clone = document.querySelector('#template-stats').content.cloneNode(true)
         clone.querySelector('.course-id').textContent = this.id
         clone.querySelector('.course-name').textContent = this.name
-        clone.querySelector('.course-name').setAttribute('href', `http://127.0.0.1:8000/statistic/subjects/by_subcategory/${this.id}/`)
+        clone.querySelector('.course-name').setAttribute('href', `/statistic/subjects/by_subcategory/${this.id}/`)
         clone.querySelector('.course-reviews').textContent = this.reviews
         clone.querySelector('.course-rating').textContent = this.rating
         clone.querySelector('.course-students').textContent = this.students
@@ -32,7 +32,7 @@ class CourseStats {
 
 function getStatisticsData() {
     const subjectId = document.querySelector('#subject-id').textContent
-    fetch(`http://127.0.0.1:8000/api/courses/by_subject/${subjectId}/statistics/`).then(response => response.json()).then(data => initializePage(data))
+    fetch(`/api/courses/by_subject/${subjectId}/statistics/`).then(response => response.json()).then(data => initializePage(data))
 }
 
 function initializePage(data) {

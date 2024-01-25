@@ -12,7 +12,7 @@ backdrop.addEventListener('click', event => {
 
 
 function getCourseData() {
-    fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
+    fetch(`/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
 }
 
 function initializeHeader(data) {

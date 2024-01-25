@@ -15,7 +15,7 @@ class CategoriesStats {
         const clone = document.querySelector('#template-stats').content.cloneNode(true)
         clone.querySelector('.cat-id').textContent = this.id
         clone.querySelector('.cat-name').textContent = this.name
-        clone.querySelector('.cat-name').setAttribute('href', `http://127.0.0.1:8000/statistic/subcategories/by_category/${this.id}`)
+        clone.querySelector('.cat-name').setAttribute('href', `/statistic/subcategories/by_category/${this.id}`)
         clone.querySelector('.cat-courses').textContent = this.courses
         clone.querySelector('.cat-authors').textContent = this.authors
         clone.querySelector('.cat-students').textContent = this.students
@@ -31,7 +31,7 @@ class CategoriesStats {
 
 
 function getStatisticsData() {
-    fetch(`http://127.0.0.1:8000/api/categories/statistics/`).then(response => response.json()).then(data => initializePage(data))
+    fetch(`/api/categories/statistics/`).then(response => response.json()).then(data => initializePage(data))
 }
 
 function initializePage(data) {

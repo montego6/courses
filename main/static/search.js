@@ -32,7 +32,7 @@ document.querySelectorAll('#filter-duration .filter-choice input').forEach(filte
 }))
 
 
-fetch('http://127.0.0.1:8000/api/courses/search/?' + params).then(response => response.json())
+fetch('/api/courses/search/?' + params).then(response => response.json())
         .then(data => {
             console.log(data)
             renderCourses(data)
@@ -81,7 +81,7 @@ class Course {
         clone.querySelector('.course-student-count').textContent = this.students
         clone.querySelectorAll(`svg.review-star-small:nth-child(-n+${Math.round(this.rating)})`).forEach(star => star.classList.add('star-selected'))
         clone.querySelector('.course-rating-number').textContent = this.rating
-        clone.querySelector('a').setAttribute('href', `http://127.0.0.1:8000/course/${this.id}`)
+        clone.querySelector('a').setAttribute('href', `/course/${this.id}`)
         return clone
     }
 

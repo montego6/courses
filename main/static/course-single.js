@@ -211,7 +211,7 @@ class TestInvokation {
             result: this.formatResult(),
             test: this.id
         }
-        fetch('http://127.0.0.1:8000/api/test-completions/', {
+        fetch('/api/test-completions/', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
@@ -368,7 +368,7 @@ let stripe = Stripe('pk_test_51McWQcDlPs5u4HwiXU90HVvWjuDJjOPFOoQV35sWS44HHELoef
 
 const buyBtn = document.querySelector('#buy-btn')
 buyBtn.addEventListener('click', event => {
-    fetch(`http://127.0.0.1:8000/api/courses/${courseId}/buy/${ContentManager.option}/`)
+    fetch(`/api/courses/${courseId}/buy/${ContentManager.option}/`)
             .then(response => response.json())
             .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
 }) 
@@ -429,7 +429,7 @@ function updatePlayerUI() {
 }
 
 function getCourseData() {
-    fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
+    fetch(`/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
 }
 
 function initializeHeader(data) {
@@ -565,7 +565,7 @@ function initializeSidebar(data, payment) {
         }
     }))
     document.getElementById('upgrade-btn').addEventListener('click', event => {
-        fetch(`http://127.0.0.1:8000/api/courses/${courseId}/upgrade/${ContentManager.option}/`)
+        fetch(`/api/courses/${courseId}/upgrade/${ContentManager.option}/`)
             .then(response => response.json())
             .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
     })
@@ -574,14 +574,14 @@ function initializeSidebar(data, payment) {
 }
 
 function getPaymentInfo() {
-    return fetch(`http://127.0.0.1:8000/api/courses/${courseId}/payment_info/`).then(response => response.json()).then(data => {
+    return fetch(`/api/courses/${courseId}/payment_info/`).then(response => response.json()).then(data => {
         console.log('INFO', data)
         return data
     })
 }
 
 function getReviewInfo() {
-    return fetch(`http://127.0.0.1:8000/api/courses/${courseId}/review_info/`).then(response => response.json()).then(data => {
+    return fetch(`/api/courses/${courseId}/review_info/`).then(response => response.json()).then(data => {
         console.log('INFO', data)
         return data
     })
@@ -617,7 +617,7 @@ function initializeReviewsAdd() {
             rating: rating,
             course: courseId
         }
-        fetch('http://127.0.0.1:8000/api/reviews/', {
+        fetch('/api/reviews/', {
         method: 'post',
         headers: {
             'Accept': 'application/json',

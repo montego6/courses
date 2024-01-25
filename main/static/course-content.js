@@ -25,7 +25,7 @@ backdrop.addEventListener('click', event => {
 // optionsTabLinks[0].click()
 
 
-fetch(`http://127.0.0.1:8000/api/courses/${courseId}/`).then(response => response.json()).then(data => {
+fetch(`/api/courses/${courseId}/`).then(response => response.json()).then(data => {
     courseData = data
     console.log(courseData)
     if (data.options.length) {
@@ -143,7 +143,7 @@ class Section {
     delete() {
         this.div.remove()
         const id = this.div.getAttribute('section-id')
-        fetch(`http://127.0.0.1:8000/api/sections/${id}/`, {
+        fetch(`/api/sections/${id}/`, {
         method: 'delete', 
         headers: {
             'X-CSRFToken': csrf_token,
@@ -195,7 +195,7 @@ class Item {
         let courseDataSection = courseData.sections.find(section => section.id == this.section.id)
         let index = courseDataSection.items.findIndex(item => item.id = this.id)
         courseDataSection.items.splice(index, 1)
-        fetch(`http://127.0.0.1:8000/api/${this.type}s/${this.id}/`, {
+        fetch(`/api/${this.type}s/${this.id}/`, {
             method: 'delete', 
             headers: {
                 'X-CSRFToken': csrf_token,
@@ -225,7 +225,7 @@ function deleteItem(event) {
     this.remove()
     const id = this.getAttribute('item-id')
     const type = this.getAttribute('item-type')
-    fetch(`http://127.0.0.1:8000/api/${type}s/${id}/`, {
+    fetch(`/api/${type}s/${id}/`, {
         method: 'delete', 
         headers: {
             'X-CSRFToken': csrf_token,
@@ -239,7 +239,7 @@ function postItem(itemForm, itemType, event) {
     const formData = new FormData(itemForm)
     formData.append('section', this.id)
     formData.append('option', courseOption)
-    fetch(`http://127.0.0.1:8000/api/${itemType}s/`, {
+    fetch(`/api/${itemType}s/`, {
         method: 'post',
         body: formData
     }).then(response => response.json())
@@ -270,7 +270,7 @@ function postQuestion(testId, event) {
     const options = Array.from(this.querySelectorAll('input[name=option]'), element => element.value)
     formData.append('test', testId)
     options.forEach(option => formData.append('options', option))
-    fetch(`http://127.0.0.1:8000/api/questions/`, {
+    fetch(`/api/questions/`, {
         method: 'post',
         body: formData
     }).then(response => response.json())
@@ -311,7 +311,7 @@ class Question {
 
     delete() {
         this.div.remove()
-        fetch(`http://127.0.0.1:8000/api/questions/${this.id}/`, {
+        fetch(`/api/questions/${this.id}/`, {
             method: 'delete', 
             headers: {
                 'X-CSRFToken': csrf_token,
@@ -325,7 +325,7 @@ class Question {
 
 
 function initializeTestQuestions(testId) {
-    fetch(`http://127.0.0.1:8000/api/tests/${testId}`)
+    fetch(`/api/tests/${testId}`)
     .then(response => response.json())
     .then(data => {
         if (data.id) {
@@ -345,7 +345,7 @@ formSection.addEventListener('submit', (event) =>
 {
     formData = new FormData(formSection)
     formData.append('course', courseId)
-    fetch('http://127.0.0.1:8000/api/sections/', {
+    fetch('/api/sections/', {
         method: 'post',
         body: formData
     }).then(response => response.json())
