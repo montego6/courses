@@ -55,7 +55,14 @@ class Course(models.Model):
 
     def __str__(self) -> str:
         return f'{self.name} by {get_user_full_name(self.author)}'
-
+    
+    def total_sales(self):
+        from django.db.models import Sum
+        result = CoursePayment.objects.filter(course=self).aggregate(Sum('amount'))
+        return result['amount__sum']
+    
+    def num_students(self):
+        return self.students.count()
 
 
 class CoursePrice(models.Model):
