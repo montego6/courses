@@ -33,10 +33,26 @@ class CourseAdmin(admin.ModelAdmin):
     show_students_link.short_description = 'Number of students'
     author_fullname_link.short_description = 'Author'
 
+@admin.register(Section)
+class SectionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'course_name_link', 'course_author_fullname_link']
+    list_display_links = ['id', 'name']
+    search_fields = ['name', 'course__name']
 
+    def course_name_link(self, obj):
+        name = obj.course.name
+        url = reverse('admin:courses_section_changelist') + '?' + urlencode({'course__id': obj.course.id})
+        return format_html('<a href="{}">{}</a>', url, name)
+    
+    def course_author_fullname_link(self, obj):
+        fullname = get_user_full_name(obj.course.author)
+        url = reverse('admin:auth_user_change', kwargs={'object_id': obj.course.author.id})
+        return format_html('<a href="{}">{}</a>', url, fullname)
+    
 
+    course_name_link.short_description = 'Course name'
+    course_author_fullname_link.short_description = 'Course author'
 
-admin.site.register(Section)
 
 admin.site.register(StripeCourse)
 admin.site.register(CoursePayment)
