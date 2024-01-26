@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.http import urlencode
 from .models import Category, SubCategory, Subject
-# Register your models here.
+
 
 @admin.register(SubCategory)
 class SubCategoryAdmin(admin.ModelAdmin):
