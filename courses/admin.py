@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from users.helpers import get_user_full_name
-from .models import Course, Section, StripeCourse, CoursePayment
+from .models import Course, CoursePrice, CourseUpgradePrice, Section, StripeCourse, CoursePayment
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
@@ -68,4 +68,24 @@ class StripeCourseAdmin(admin.ModelAdmin):
 
     course_author_link.short_description = 'Course author'
 
-admin.site.register(CoursePayment)
+@admin.register(CoursePayment)
+class CoursePaymentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'course_name_link', 'student_name_link' ,'status', 'option']
+    list_display_links = ['id', 'course_name_link']
+    list_filter = ['status']
+    search_fields = ['id', 'student__first_name', 'student__last_name']
+
+    def course_name_link(self, obj):
+        return obj.course.name
+
+    def student_name_link(self, obj):
+        fullname = get_user_full_name(obj.student)
+        url = reverse('admin:auth_user_change', kwargs={'object_id': obj.student.id})
+        return format_html('<a href="{}">{}</a>', url, fullname)
+    
+    course_name_link.short_description = 'Course'
+    student_name_link.short_description = 'Student'
+
+
+admin.site.register(CoursePrice)
+admin.site.register(CourseUpgradePrice)

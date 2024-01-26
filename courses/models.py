@@ -11,10 +11,10 @@ import statistic.managers
 User = get_user_model()
 
 COURSE_OPTION_CHOICES = [
-    (consts.COURSE_OPTION_FREE, 'It is a free content'),
-    (consts.COURSE_OPTION_BASIC, 'All the basic content'),
-    (consts.COURSE_OPTION_EXTRA, 'Some additional files'),
-    (consts.COURSE_OPTION_PREMIUM, 'All the content you need'),
+    (consts.COURSE_OPTION_FREE, 'Free: it is a free content'),
+    (consts.COURSE_OPTION_BASIC, 'Basic: all the basic content'),
+    (consts.COURSE_OPTION_EXTRA, 'Extra: some additional files'),
+    (consts.COURSE_OPTION_PREMIUM, 'Premium: all the content you need'),
 ]
 
 COURSE_PAYMENT_CHOICES = [
