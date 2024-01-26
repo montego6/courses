@@ -53,6 +53,19 @@ class SectionAdmin(admin.ModelAdmin):
     course_name_link.short_description = 'Course name'
     course_author_fullname_link.short_description = 'Course author'
 
+@admin.register(StripeCourse)
+class StripeCourseAdmin(admin.ModelAdmin):
+    list_display = ['id', 'course_name', 'course_author_link']
+    search_fields = ['course__name', 'course__author__first_name', 'course__author__last_name']
 
-admin.site.register(StripeCourse)
+    def course_name(self, obj):
+        return obj.course.name
+    
+    def course_author_link(self, obj):
+        fullname = get_user_full_name(obj.course.author)
+        url = reverse('admin:auth_user_change', kwargs={'object_id': obj.course.author.id})
+        return format_html('<a href="{}">{}</a>', url, fullname)
+
+    course_author_link.short_description = 'Course author'
+
 admin.site.register(CoursePayment)
