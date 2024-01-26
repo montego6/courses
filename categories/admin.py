@@ -23,5 +23,3 @@ class SubjectAdmin(admin.ModelAdmin):
         return format_html('<a href="{}">{}</a>', url, obj.parent_subcategory.name)
 
 admin.site.register(Category)
-# admin.site.register(SubCategory)
-# admin.site.register(Subject)
