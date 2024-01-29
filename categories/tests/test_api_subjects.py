@@ -1,8 +1,8 @@
 from django.urls import reverse
 from rest_framework import status
 import factory
-from categories.models import Category, SubCategory, Subject
-from categories.api.serializers import CategorySerializer, SubCategorySerializer, SubjectSerializer
+from categories.models import Subject
+from categories.api.serializers import SubjectSerializer
 import categories.tests.factories as ft
 import pytest
 
@@ -12,7 +12,7 @@ import pytest
 def test_create_subject(client, subcategory):
     data = factory.build(dict, FACTORY_CLASS=ft.SubjectFactory)
     data['parent_subcategory'] = subcategory.id
-    response = client.post(reverse('subject-list'), data)
+    response = client.post(reverse('api:subject-list'), data)
     assert response.status_code == status.HTTP_201_CREATED
     assert Subject.objects.filter(id=response.data['id']).exists()
 
@@ -21,7 +21,7 @@ def test_create_subject(client, subcategory):
 def test_update_subject(client, subject, subcategory):
     data = factory.build(dict, FACTORY_CLASS=ft.SubjectFactory)
     data['parent_subcategory'] = subcategory.id
-    response = client.put(reverse('subject-detail', kwargs={'pk': subject.id}), data)
+    response = client.put(reverse('api:subject-detail', kwargs={'pk': subject.id}), data)
     
     expected_data = {
         'id': subject.id,
@@ -39,7 +39,7 @@ def test_partial_update_subject(client, subject, subcategory):
         'parent_subcategory': subcategory.id
     }
 
-    response = client.patch(reverse('subject-detail', kwargs={'pk': subject.id}), data)
+    response = client.patch(reverse('api:subject-detail', kwargs={'pk': subject.id}), data)
 
     expected_data = {
         'id': subject.id,
@@ -53,7 +53,7 @@ def test_partial_update_subject(client, subject, subcategory):
 
 @pytest.mark.django_db
 def test_retrieve_subject(client, subject):
-    response = client.get(reverse('subject-detail', kwargs={'pk': subject.id}))
+    response = client.get(reverse('api:subject-detail', kwargs={'pk': subject.id}))
 
     expected_data = SubjectSerializer(subject).data
     assert response.status_code == status.HTTP_200_OK
@@ -64,7 +64,7 @@ def test_retrieve_subject(client, subject):
 def test_list_subject(client):
     subjects = ft.SubjectFactory.create_batch(9)
     
-    response = client.get(reverse('subject-list'))
+    response = client.get(reverse('api:subject-list'))
 
     expected_data = SubjectSerializer(subjects, many=True).data
     assert response.status_code == status.HTTP_200_OK
@@ -73,7 +73,7 @@ def test_list_subject(client):
 
 @pytest.mark.django_db
 def test_destroy_subject(client, subject):
-    response = client.delete(reverse('subject-detail', kwargs={'pk': subject.id}))
+    response = client.delete(reverse('api:subject-detail', kwargs={'pk': subject.id}))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not Subject.objects.filter(id=subject.id).exists()

@@ -12,7 +12,7 @@ import courses.tests.factories as ft
 def test_create_section(client, course):
     data = factory.build(dict, FACTORY_CLASS=ft.SectionFactory)
     data['course'] = course.id
-    response = client.post(reverse('section-list'), data)
+    response = client.post(reverse('api:section-list'), data)
     assert response.status_code == status.HTTP_201_CREATED
     assert Section.objects.filter(id=response.data['id']).exists()
 
@@ -21,7 +21,7 @@ def test_create_section(client, course):
 def test_update_section(client, course, section):
     data = factory.build(dict, FACTORY_CLASS=ft.SectionFactory)
     data['course'] = course.id
-    response = client.put(reverse('section-detail', kwargs={'pk': section.id}), data)
+    response = client.put(reverse('api:section-detail', kwargs={'pk': section.id}), data)
     
     expected_data = {
         'id': section.id,
@@ -42,7 +42,7 @@ def test_partial_update_section(client, course, section):
         'course': course.id,
     }
 
-    response = client.patch(reverse('section-detail', kwargs={'pk': section.id}), data)
+    response = client.patch(reverse('api:section-detail', kwargs={'pk': section.id}), data)
 
     expected_data = {
         'id': section.id,
@@ -58,7 +58,7 @@ def test_partial_update_section(client, course, section):
 
 @pytest.mark.django_db
 def test_retrieve_section(client, section):
-    response = client.get(reverse('section-detail', kwargs={'pk': section.id}))
+    response = client.get(reverse('api:section-detail', kwargs={'pk': section.id}))
 
     expected_data = SectionSerializer(section).data
     assert response.status_code == status.HTTP_200_OK
@@ -69,7 +69,7 @@ def test_retrieve_section(client, section):
 def test_list_section(client, disconnect_signals):
     sections = ft.SectionFactory.create_batch(9)
     
-    response = client.get(reverse('section-list'))
+    response = client.get(reverse('api:section-list'))
 
     expected_data = SectionSerializer(sections, many=True).data
     assert response.status_code == status.HTTP_200_OK
@@ -78,6 +78,6 @@ def test_list_section(client, disconnect_signals):
 
 @pytest.mark.django_db
 def test_destroy_section(client, section):
-    response = client.delete(reverse('section-detail', kwargs={'pk': section.id}))
+    response = client.delete(reverse('api:section-detail', kwargs={'pk': section.id}))
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not Section.objects.filter(id=section.id).exists()

@@ -12,7 +12,7 @@ import pytest
 def test_create_subcategory(client, category):
     data = factory.build(dict, FACTORY_CLASS=ft.SubCategoryFactory, name='подкатегория')
     data['parent_category'] = category.id
-    response = client.post(reverse('subcategory-list'), data)
+    response = client.post(reverse('api:subcategory-list'), data)
     assert response.status_code == status.HTTP_201_CREATED
     assert SubCategory.objects.filter(id=response.data['id']).exists()
 
@@ -21,7 +21,7 @@ def test_create_subcategory(client, category):
 def test_update_subcategory(client, category, subcategory):
     data = factory.build(dict, FACTORY_CLASS=ft.SubCategoryFactory, name='подкатегория')
     data['parent_category'] = category.id
-    response = client.put(reverse('subcategory-detail', kwargs={'pk': subcategory.id}), data)
+    response = client.put(reverse('api:subcategory-detail', kwargs={'pk': subcategory.id}), data)
     
     expected_data = {
         'id': subcategory.id,
@@ -40,7 +40,7 @@ def test_partial_update_subcategory(client, category, subcategory):
         'parent_category': category.id
     }
 
-    response = client.patch(reverse('subcategory-detail', kwargs={'pk': subcategory.id}), data)
+    response = client.patch(reverse('api:subcategory-detail', kwargs={'pk': subcategory.id}), data)
 
     expected_data = {
         'id': subcategory.id,
@@ -55,7 +55,7 @@ def test_partial_update_subcategory(client, category, subcategory):
 
 @pytest.mark.django_db
 def test_retrieve_subcategory(client, subcategory):
-    response = client.get(reverse('subcategory-detail', kwargs={'pk': subcategory.id}))
+    response = client.get(reverse('api:subcategory-detail', kwargs={'pk': subcategory.id}))
 
     expected_data = SubCategorySerializer(subcategory).data
     assert response.status_code == status.HTTP_200_OK
@@ -66,7 +66,7 @@ def test_retrieve_subcategory(client, subcategory):
 def test_list_subcategory(client):
     subcategories = ft.SubCategoryFactory.create_batch(9)
     
-    response = client.get(reverse('subcategory-list'))
+    response = client.get(reverse('api:subcategory-list'))
 
     expected_data = SubCategorySerializer(subcategories, many=True).data
     assert response.status_code == status.HTTP_200_OK
@@ -75,7 +75,7 @@ def test_list_subcategory(client):
 
 @pytest.mark.django_db
 def test_destroy_subcategory(client, subcategory):
-    response = client.delete(reverse('subcategory-detail', kwargs={'pk': subcategory.id}))
+    response = client.delete(reverse('api:subcategory-detail', kwargs={'pk': subcategory.id}))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not SubCategory.objects.filter(id=subcategory.id).exists()

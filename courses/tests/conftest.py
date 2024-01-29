@@ -47,8 +47,9 @@ def delete_test_files():
 @pytest.fixture
 def section(disconnect_signals):
     section = SectionFactory()
-    items = [LessonFactory(), TestFactory(), LessonFactory()]
-    section_items = [SectionItem.objects.create(content_object=item, section=section) for item in items]
+    SectionItem.objects.create(lesson=LessonFactory(), section=section)
+    SectionItem.objects.create(test=TestFactory(), section=section)
+    SectionItem.objects.create(lesson=LessonFactory(), section=section)
     return section
 
 @pytest.fixture

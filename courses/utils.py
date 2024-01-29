@@ -14,7 +14,7 @@ def get_user_from_context(context):
 def make_payment_context(course, student):
     context = {}
     try:
-        payment = CoursePayment.objects.get(course=course, student=student)
+        payment = CoursePayment.objects.get(course=course, student=student, status=consts.COURSE_PAYMENT_PAID)
     except CoursePayment.DoesNotExist:
         context['payment'] = consts.COURSE_OPTION_FREE
     else:
