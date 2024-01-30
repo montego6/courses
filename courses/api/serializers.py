@@ -108,7 +108,7 @@ class CourseSearchSerializer(serializers.ModelSerializer):
 class CourseProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
-        fields = ['name', 'cover', 'short_description', 'price']
+        fields = ['name', 'cover', 'short_description']
 
 
 class CourseItemPaymentSerializer(serializers.ModelSerializer):

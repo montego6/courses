@@ -17,12 +17,10 @@ def test_course_serializer(course):
        'short_description': course.short_description,
        'full_description': course.full_description,
        'author': course.author.id,
-       'price': course.price,
        'cover': course.cover.url,
        'language': course.language,
        'what_will_learn': course.what_will_learn,
        'requirements': course.requirements,
-       'options': course.options,
        'students': [student.id for student in course.students.all()],
        'date_created': str(course.date_created),
        'date_updated': str(course.date_updated),
@@ -44,6 +42,7 @@ def test_course_serialize_data(subject: SubjectFactory):
     assert serializer.errors == {}
 
 
+@pytest.mark.django_db
 def test_section_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.CourseFactory)
     del data['name']
@@ -71,12 +70,10 @@ def test_course_search_serializer(course):
        'name': course.name,
        'short_description': course.short_description,
        'author': {'id': course.author.id, 'name': get_user_full_name(course.author)},
-       'price': course.price,
        'duration': 0,
        'rating': 0,
        'cover': course.cover.url,
        'language': course.language,
-       'options': ['lesson', 'test'],
        'students': course.students.count(),
        'subject': course.subject.name,
     }
@@ -90,7 +87,6 @@ def test_course_profile_serializer(course):
     expected_data = {
        'name': course.name,
        'short_description': course.short_description,
-       'price': course.price,
        'cover': course.cover.url,
     }
 

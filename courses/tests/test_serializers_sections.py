@@ -29,7 +29,7 @@ def test_section_serialize_data(course):
     assert serializer.is_valid()
     assert serializer.errors == {}
 
-
+@pytest.mark.django_db
 def test_section_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.SectionFactory)
     del data['name']

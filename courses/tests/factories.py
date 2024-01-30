@@ -38,6 +38,7 @@ class CourseFactory(factory.django.DjangoModelFactory):
     subject = factory.SubFactory(SubjectFactory)
     slug = factory.LazyAttribute(lambda obj: generate_course_slug(obj))
 
+
 class SectionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = models.Section
