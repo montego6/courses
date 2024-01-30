@@ -29,7 +29,7 @@ class StripeSession:
 
     def create_session(self, request, line_items, metadata):
         session = stripe.checkout.Session.create(
-            success_url=request.build_absolute_uri(reverse('course-single', kwargs={'id': self.course.id})),
+            success_url=request.build_absolute_uri(reverse('course:single', kwargs={'id': self.course.id})),
             client_reference_id=request.user.id,
             line_items=[line_items],
             currency=consts.STRIPE_DEFAULT_CURRENCY,
@@ -46,47 +46,48 @@ class StripeSession:
 class StripePrice:
     def __init__(self, amount, product, id=False) -> None:
         self.amount = amount 
-        self.product = product
-        self.id = id
+        self.product = product['id'] if not id else product
 
     def create(self):
         return stripe.Price.create(
             unit_amount=int(self.amount * 100),
             currency=consts.STRIPE_DEFAULT_CURRENCY,
-            product=self.product['id'] if not self.id else self.product
+            product=self.product
         )
     
 def create_upgrade_price(course, _from, _to, product):
-    amount = _from.amount - _to.amount
+    amount = _to.amount - _from.amount
+    print(f'upgrade amount is {amount}')
     stripe = StripePrice(amount, product).create()['id']
     defaults = {'amount': amount, 'stripe':stripe}
     CourseUpgradePrice.objects.update_or_create(
                     course=course,
-                    stripe_product=product,
+                    stripe_product=product['id'],
                     from_option=_from.option,
                     to_option=_to.option,
                     defaults=defaults
                 )
     
-def set_upgrade_name(course_name, option):
-    return course_name + ' upgrade to option ' + option
+def set_upgrade_name(course_name, from_option, to_option):
+    return course_name + ' upgrade from ' + from_option + ' to option ' + to_option
 
 
 # Вызывать этот метод после публикации курса
 def create_stripe_upgrade_prices(course):
-    prices = course.prices.order_by('-amount')
+    prices = course.prices.order_by('amount')
     product = course.stripe.product
     for idx, price in enumerate(prices):
+        print(f'amount is {price.amount}')
         stripe_price = StripePrice(price.amount, product, id=True).create()['id']
         price.stripe = stripe_price
         if idx > 0:
-            upgrade = stripe.Product.create(name=set_upgrade_name(course.name))
             for i in range(idx):
+                upgrade = stripe.Product.create(name=set_upgrade_name(course.name, prices[i].option, price.option))
                 create_upgrade_price(
                     course=course,
-                    _from=price,
-                    _to=prices[i],
-                    product=upgrade['id'],
+                    _from=prices[i],
+                    _to=price,
+                    product=upgrade,
                 )
     CoursePrice.objects.bulk_update(prices, ['stripe'])
     # option_prices = {}
