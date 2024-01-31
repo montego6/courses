@@ -18,9 +18,9 @@ categories_router.register(r'subcategories', SubCategoryViewSet)
 categories_router.register(r'subjects', SubjectViewSet)
 
 urlpatterns += [
-    path('categories/statistics/', CategoryStatisticsView.as_view(), name='api-categories-statistics'),
-    path('subcategories/by_category/<int:id>/statistics/', SubCategoryStatisticsView.as_view(), name='api-subcategories-statistics'),
-    path('subjects/by_subcategory/<int:id>/statistics/', SubjectStatisticsView.as_view(), name='api-subjects-statistics'),
+    path('categories/statistics/', CategoryStatisticsView.as_view(), name='categories-statistics'),
+    path('subcategories/by_category/<int:id>/statistics/', SubCategoryStatisticsView.as_view(), name='subcategories-statistics'),
+    path('subjects/by_subcategory/<int:id>/statistics/', SubjectStatisticsView.as_view(), name='subjects-statistics'),
     path('courses/by_subject/<int:id>/statistics/', CourseStatisticsView.as_view(), name='course-statistics'),
 ]
 urlpatterns += categories_router.urls

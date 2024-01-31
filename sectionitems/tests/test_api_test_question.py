@@ -12,7 +12,7 @@ import pytest
 def test_create_test_question(client, test):
     data = factory.build(dict, FACTORY_CLASS=ft.TestQuestionFactory)
     data['test'] = test.id
-    response = client.post(reverse('testquestion-list'), data)
+    response = client.post(reverse('api:testquestion-list'), data)
     assert response.status_code == status.HTTP_201_CREATED
     assert TestQuestion.objects.filter(id=response.data['id']).exists()
 
@@ -21,7 +21,7 @@ def test_create_test_question(client, test):
 def test_update_test_question(client, test, test_question):
     data = factory.build(dict, FACTORY_CLASS=ft.TestQuestionFactory)
     data['test'] = test.id
-    response = client.put(reverse('testquestion-detail', kwargs={'pk': test_question.id}), data)
+    response = client.put(reverse('api:testquestion-detail', kwargs={'pk': test_question.id}), data)
     
     expected_data = {
         'id': test_question.id,
@@ -42,7 +42,7 @@ def test_partial_update_test(client, test, test_question):
         'test': test.id,
     }
 
-    response = client.patch(reverse('testquestion-detail', kwargs={'pk': test_question.id}), data)
+    response = client.patch(reverse('api:testquestion-detail', kwargs={'pk': test_question.id}), data)
 
     expected_data = {
         'id': test_question.id,
@@ -58,7 +58,7 @@ def test_partial_update_test(client, test, test_question):
 
 @pytest.mark.django_db
 def test_retrieve_test_question(client, test_question):
-    response = client.get(reverse('testquestion-detail', kwargs={'pk': test_question.id}))
+    response = client.get(reverse('api:testquestion-detail', kwargs={'pk': test_question.id}))
 
     expected_data = TestQuestionSerializer(test_question).data
     assert response.status_code == status.HTTP_200_OK
@@ -69,7 +69,7 @@ def test_retrieve_test_question(client, test_question):
 def test_list_test_question(client, disconnect_signals):
     test_questions = ft.TestQuestionFactory.create_batch(9)
     
-    response = client.get(reverse('testquestion-list'))
+    response = client.get(reverse('api:testquestion-list'))
 
     expected_data = TestQuestionSerializer(test_questions, many=True).data
     assert response.status_code == status.HTTP_200_OK
@@ -78,7 +78,7 @@ def test_list_test_question(client, disconnect_signals):
 
 @pytest.mark.django_db
 def test_destroy_test_question(client, test_question):
-    response = client.delete(reverse('testquestion-detail', kwargs={'pk': test_question.id}))
+    response = client.delete(reverse('api:testquestion-detail', kwargs={'pk': test_question.id}))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not TestQuestion.objects.filter(id=test_question.id).exists()

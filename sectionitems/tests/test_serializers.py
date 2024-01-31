@@ -7,27 +7,29 @@ from sectionitems.models import SectionItem
 import sectionitems.tests.factories as ft
 
 
-@pytest.mark.parametrize('model, serializer', [
-    (ft.LessonFactory, LessonSerializer),
-    (ft.AdditinalFileFactory, AdditionalFileSerializer),
-    (ft.TestFactory, TestSerializer),
-    (ft.HomeworkFactory, HomeworkSerializer)
+@pytest.mark.parametrize('model, serializer, attr', [
+    (ft.LessonFactory, LessonSerializer, 'lesson'),
+    (ft.AdditinalFileFactory, AdditionalFileSerializer, 'additional_file'),
+    (ft.TestFactory, TestSerializer, 'test'),
+    (ft.HomeworkFactory, HomeworkSerializer, 'homework')
 ])
 @pytest.mark.django_db
-def test_section_item_serializer(disconnect_signals, model, serializer):
+def test_section_item_serializer(disconnect_signals, model, serializer, attr):
     section = ft.SectionFactory()
+    kwarg = {}
     instance = model()
-    section_item = SectionItem.objects.create(content_object=instance, section=section)
+    kwarg[attr] = instance
+    section_item = SectionItem.objects.create(**kwarg, section=section)
     assert SectionItemSerializer(section_item).data == serializer(instance).data
 
 
-@pytest.mark.django_db
-def test_section_item_serializer_exception(disconnect_signals):
-    course = CourseFactory()
-    section = ft.SectionFactory()
-    section_item = SectionItem.objects.create(content_object=course, section=section)
-    with pytest.raises(Exception):
-        data = SectionItemSerializer(section_item).data
+# @pytest.mark.django_db
+# def test_section_item_serializer_exception(disconnect_signals):
+#     course = CourseFactory()
+#     section = ft.SectionFactory()
+#     section_item = SectionItem.objects.create(content_object=course, section=section)
+#     with pytest.raises(Exception):
+#         data = SectionItemSerializer(section_item).data
 
 
 @pytest.mark.django_db
@@ -53,6 +55,7 @@ def test_lesson_serialize_data(section):
     assert serializer.errors == {}
 
 
+@pytest.mark.django_db
 def test_lesson_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.LessonFactory)
     serializer = LessonSerializer(data=data)
@@ -99,6 +102,7 @@ def test_additional_file_serialize_data(section):
     assert serializer.errors == {}
 
 
+@pytest.mark.django_db
 def test_additional_file_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.AdditinalFileFactory)
     serializer = AdditionalFileSerializer(data=data)
@@ -147,6 +151,7 @@ def test_test_serialize_data(section):
     assert serializer.errors == {}
 
 
+@pytest.mark.django_db
 def test_test_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.TestFactory)
     serializer = TestSerializer(data=data)
@@ -196,7 +201,7 @@ def test_homework_serialize_data(section):
     assert serializer.is_valid()
     assert serializer.errors == {}
 
-
+@pytest.mark.django_db
 def test_homework_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.HomeworkFactory)
     serializer = HomeworkSerializer(data=data)

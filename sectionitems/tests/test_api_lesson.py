@@ -12,7 +12,7 @@ import pytest
 def test_create_lesson(client, section):
     data = factory.build(dict, FACTORY_CLASS=ft.LessonFactory)
     data['section'] = section.id
-    response = client.post(reverse('lesson-list'), data)
+    response = client.post(reverse('api:lesson-list'), data)
     assert response.status_code == status.HTTP_201_CREATED
     assert Lesson.objects.filter(id=response.data['id']).exists()
 
@@ -21,7 +21,7 @@ def test_create_lesson(client, section):
 def test_update_lesson(client, section, lesson):
     data = factory.build(dict, FACTORY_CLASS=ft.LessonFactory)
     data['section'] = section.id
-    response = client.put(reverse('lesson-detail', kwargs={'pk': lesson.id}), data)
+    response = client.put(reverse('api:lesson-detail', kwargs={'pk': lesson.id}), data)
     
     expected_data = {
         'id': lesson.id,
@@ -43,7 +43,7 @@ def test_partial_update_lesson(client, section, lesson):
         'section': section.id,
     }
 
-    response = client.patch(reverse('lesson-detail', kwargs={'pk': lesson.id}), data)
+    response = client.patch(reverse('api:lesson-detail', kwargs={'pk': lesson.id}), data)
 
     expected_data = {
         'id': lesson.id,
@@ -61,7 +61,7 @@ def test_partial_update_lesson(client, section, lesson):
 
 @pytest.mark.django_db
 def test_retrieve_lesson(client, lesson):
-    response = client.get(reverse('lesson-detail', kwargs={'pk': lesson.id}))
+    response = client.get(reverse('api:lesson-detail', kwargs={'pk': lesson.id}))
 
     expected_data = LessonSerializer(lesson).data
     assert response.status_code == status.HTTP_200_OK
@@ -72,7 +72,7 @@ def test_retrieve_lesson(client, lesson):
 def test_list_lesson(client, disconnect_signals):
     lessons = ft.LessonFactory.create_batch(9)
     
-    response = client.get(reverse('lesson-list'))
+    response = client.get(reverse('api:lesson-list'))
 
     expected_data = LessonSerializer(lessons, many=True).data
     assert response.status_code == status.HTTP_200_OK
@@ -81,7 +81,7 @@ def test_list_lesson(client, disconnect_signals):
 
 @pytest.mark.django_db
 def test_destroy_lesson(client, lesson):
-    response = client.delete(reverse('lesson-detail', kwargs={'pk': lesson.id}))
+    response = client.delete(reverse('api:lesson-detail', kwargs={'pk': lesson.id}))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not Lesson.objects.filter(id=lesson.id).exists()

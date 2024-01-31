@@ -23,7 +23,7 @@ def client_with_user(user):
 @pytest.mark.django_db
 def test_create_profile(client_logged):
     data = factory.build(dict, FACTORY_CLASS=ft.TeacherProfileFactory)
-    response = client_logged.post(reverse('teacherprofile-list'), data)
+    response = client_logged.post(reverse('api:teacherprofile-list'), data)
     assert response.status_code == status.HTTP_201_CREATED
     assert TeacherProfile.objects.filter(id=response.data['id']).exists()
 
@@ -31,7 +31,7 @@ def test_create_profile(client_logged):
 @pytest.mark.django_db
 def test_update_profile(client, teacher_profile):
     data = factory.build(dict, FACTORY_CLASS=ft.TeacherProfileFactory)
-    response = client.put(reverse('teacherprofile-detail', kwargs={'pk': teacher_profile.id}), data)
+    response = client.put(reverse('api:teacherprofile-detail', kwargs={'pk': teacher_profile.id}), data)
     
     expected_data = {
        'id': teacher_profile.id,
@@ -56,7 +56,7 @@ def test_partial_update_profile(client, teacher_profile):
         'bio': 'test',
     }
 
-    response = client.patch(reverse('teacherprofile-detail', kwargs={'pk': teacher_profile.id}), data)
+    response = client.patch(reverse('api:teacherprofile-detail', kwargs={'pk': teacher_profile.id}), data)
 
     expected_data = {
        'id': teacher_profile.id,
@@ -77,7 +77,7 @@ def test_partial_update_profile(client, teacher_profile):
 
 @pytest.mark.django_db
 def test_retrieve_profile(client, teacher_profile):
-    response = client.get(reverse('teacherprofile-detail', kwargs={'pk': teacher_profile.id}))
+    response = client.get(reverse('api:teacherprofile-detail', kwargs={'pk': teacher_profile.id}))
 
     expected_data = TeacherProfileSerializer(teacher_profile, context={'request': response.wsgi_request}).data
     assert response.status_code == status.HTTP_200_OK
@@ -88,7 +88,7 @@ def test_retrieve_profile(client, teacher_profile):
 def test_list_lesson(client):
     profiles = ft.TeacherProfileFactory.create_batch(9)
     
-    response = client.get(reverse('teacherprofile-list'))
+    response = client.get(reverse('api:teacherprofile-list'))
 
     expected_data = TeacherProfileSerializer(profiles, many=True, context={'request': response.wsgi_request}).data
     assert response.status_code == status.HTTP_200_OK
@@ -97,7 +97,7 @@ def test_list_lesson(client):
 
 @pytest.mark.django_db
 def test_destroy_profile(client, teacher_profile):
-    response = client.delete(reverse('teacherprofile-detail', kwargs={'pk': teacher_profile.id}))
+    response = client.delete(reverse('api:teacherprofile-detail', kwargs={'pk': teacher_profile.id}))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert not TeacherProfile.objects.filter(id=teacher_profile.id).exists()
@@ -107,7 +107,7 @@ def test_destroy_profile(client, teacher_profile):
 def test_has_user_profile_yes(client_with_user):
     client, user = client_with_user
     profile = ft.TeacherProfileFactory(user=user)
-    response = client.get(reverse('has-teacher-profile'))
+    response = client.get(reverse('api:has-teacher-profile'))
 
     expected_data = {
         'profile': True,
@@ -119,7 +119,7 @@ def test_has_user_profile_yes(client_with_user):
 
 @pytest.mark.django_db
 def test_has_user_profile_no(client_logged):
-    response = client_logged.get(reverse('has-teacher-profile'))
+    response = client_logged.get(reverse('api:has-teacher-profile'))
 
     expected_data = {
         'profile': False,

@@ -27,7 +27,7 @@ def test_create_review(client_with_user, course, disconnect_signals):
     client, user = client_with_user
     data = factory.build(dict, FACTORY_CLASS=ft.ReviewFactory)
     data['course'] = course.id
-    response = client.post(reverse('review-create'), data)
+    response = client.post(reverse('api:review-create'), data)
     assert response.status_code == status.HTTP_201_CREATED
     assert Review.objects.filter(id=response.data['id']).exists()
     assert Review.objects.get(id=response.data['id']).student == user
@@ -36,7 +36,7 @@ def test_create_review(client_with_user, course, disconnect_signals):
 @pytest.mark.django_db
 def test_list_reviews(client, course):
     reviews = ft.ReviewFactory.create_batch(9, course=course)
-    response = client.get(reverse('review-list', kwargs={'pk': course.id}))
+    response = client.get(reverse('api:review-list', kwargs={'pk': course.id}))
     expected_data = ReviewSerializer(reviews, many=True).data
     
     assert response.status_code == status.HTTP_200_OK

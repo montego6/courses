@@ -28,6 +28,7 @@ def test_question_test_serialize_data(test):
     assert serializer.errors == {}
 
 
+@pytest.mark.django_db
 def test_question_test_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.TestQuestionFactory)
     del data['question']
@@ -77,6 +78,7 @@ def test_test_completion_serialize_data(test):
     assert serializer.errors == {}
 
 
+@pytest.mark.django_db
 def test_test_completion_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.TestCompletionFactory)
     del data['test']

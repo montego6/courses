@@ -93,14 +93,16 @@ def test_calculate_video_length(lesson):
     assert lesson.duration == 63
 
 
-@pytest.mark.parametrize('model', [
-    ft.LessonFactory,
-    ft.AdditinalFileFactory,
-    ft.TestFactory,
-    ft.HomeworkFactory
+@pytest.mark.parametrize('model, attr', [
+    (ft.LessonFactory, 'lesson'),
+    (ft.AdditinalFileFactory, 'additional_file'),
+    (ft.TestFactory, 'test'),
+    (ft.HomeworkFactory, 'homework')
 ])
 @pytest.mark.django_db
-def test_create_section_item(model, disconnect_signals):
+def test_create_section_item(model, attr, disconnect_signals):
     instance = model()
+    kwarg = {}
+    kwarg[attr] = instance
     create_section_item(instance)
-    assert SectionItem.objects.filter(content_type=get_content_type_for_model(instance), object_id=instance.id, section=instance.section)
+    assert SectionItem.objects.filter(**kwarg, section=instance.section).exists()

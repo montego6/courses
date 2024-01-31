@@ -30,6 +30,7 @@ def test_review_serialize_data(course, user, disconnect_signals):
     assert serializer.errors == {}
 
 
+@pytest.mark.django_db
 def test_review_serialize_data_fails():
     data = factory.build(dict, FACTORY_CLASS=ft.ReviewFactory)
     serializer = ReviewSerializer(data=data)
