@@ -1,5 +1,6 @@
 import time
 import logging
+import copy
 
 from core.helpers import get_client_ip
 
@@ -26,10 +27,10 @@ class LogRequestsMiddleware:
 
     def log(self, request, response, delta):
         user = 'anonymous' if not request.user.is_authenticated else request.user.id
-        response_body = response.data if hasattr(response, 'data') else None
+        response_body = response.content if hasattr(response, 'data') else None
         ip = get_client_ip(request)
-        logger.info('API call from ip=%s user=%s method=%s uri=%s time=%s params=%s data=%s response=%s' % (
+        logger.info('API call from ip=%s user=%s method=%s uri=%s time=%s params=%s response=%s' % (
             ip, user, request.method, request.path, 
-            delta, request.META['QUERY_STRING'], request.body, 
+            delta, request.META['QUERY_STRING'],  
             response_body
         ))

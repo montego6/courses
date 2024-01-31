@@ -44,7 +44,7 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'short_description', 'full_description', 'author', 'cover', 
                   'language', 'what_will_learn', 'requirements', 'students', 
                   'date_created', 'date_updated', 'is_published', 
-                  'is_free', 'subject', 'sections', 'reviews']
+                  'is_free', 'subject', 'sections', 'reviews', 'slug']
         read_only_fields = ['author', 'students', 'date_created', 'date_updated']
 
     def create(self, validated_data):

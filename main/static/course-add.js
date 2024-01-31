@@ -21,6 +21,9 @@ const optionRreverseDependencies = {
     'premium': []
 }
 
+const csrf_token = document.querySelector('#csrf-token input').value 
+
+
 function initializeCategoriesSelect(mode, data) {
     const select = document.querySelector(`#select-${mode}`)
     select.querySelectorAll('option:not(:disabled)').forEach(option => option.remove())
@@ -131,22 +134,35 @@ confirmBtn.addEventListener('click', (event) => {
         body: formData
     }).then(response => response.json()).then(data => {
         if (data.id) {
+            let pricesPromises = []
             optionsArr.forEach(optionEl => {
                 priceData = {
                     'course': data.id,
                     'option': optionEl.option,
                     'amount': optionEl.price
                 }
-                fetch('/api/courses/prices/', {
-                    method: 'post',
-                    body: priceData
-                }).then(response => response.json()).then(data => console.log(data))
+                pricesPromises.push(postPrice(priceData))
             })
-            window.location.replace(`/mycourses/${data.id}/preview/`)
+            Promise.all(pricesPromises).then(([data1, data2, data3]) => {
+                console.log(data)
+                window.location.replace(`/mycourses/${data.slug}/`)
+            })
+            
         }
     })
 
 })
+
+function postPrice(priceObj) {
+    return fetch('/api/courses/prices/', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrf_token,
+        },
+        body: JSON.stringify(priceObj)
+    }).then(response => response.json()).then(data => console.log(data))
+}
 
 document.querySelector('#course-third-step-btn').addEventListener('click', event => {
     courseAddSecondStep.classList.add('invisible')

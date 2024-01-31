@@ -189,10 +189,10 @@ LOGGING = {
         },
       
     },
-    #  "root": {
-    #     "handlers": ["console"],
-    #     "level": "INFO",
-    # },
+     "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
     'loggers': {
         'api': {
             'handlers': ['apifile'],
