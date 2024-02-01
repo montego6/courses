@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from core import consts
 
-from courses.blogic_stripe import StripeSession
+from courses.blogic_stripe import StripeSession, create_stripe_upgrade_prices
 from reviews.models import Review
 from .serializers import CourseSerializer, SectionSerializer
 
@@ -24,14 +24,18 @@ class CourseViewSet(viewsets.ModelViewSet):
 #         course.save()
 #         return Response({'detail': 'course is published'}, status=status.HTTP_200_OK)
     
-    @action(methods=['get'], detail=True, url_path='publish/')
+    @action(methods=['get'], detail=True, url_path='publish')
     def publish(self, request, slug=None):
-        course = Course.objects
+        course = Course.objects.get(slug=slug)
+        create_stripe_upgrade_prices(course)
+        course.is_published = True
+        course.save()
+        return Response({'detail': 'course is published'}, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, url_path=r'buy/(?P<option>[^/.]+)')
-    def buy(self, request, option, pk=None):
+    def buy(self, request, option, slug=None):
         try:
-            course = Course.objects.get(id=pk)
+            course = Course.objects.get(slug=slug)
         except Course.DoesNotExist:
             return Response({'detail': 'course does not exist'}, status=status.HTTP_404_NOT_FOUND)
         else:
@@ -44,9 +48,9 @@ class CourseViewSet(viewsets.ModelViewSet):
                 return Response({'id': session['id']})
     
     @action(methods=['get'], detail=True, url_path=r'upgrade/(?P<option>[^/.]+)')
-    def upgrade(self, request, option, pk=None):
+    def upgrade(self, request, option, slug=None):
         try:
-            course = Course.objects.get(id=pk)
+            course = Course.objects.get(slug=slug)
         except Course.DoesNotExist:
             return Response({'detail': 'course does not exist'}, status=status.HTTP_404_NOT_FOUND)
         else:
@@ -71,21 +75,21 @@ class CourseViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     @action(methods=['get'], detail=True)
-    def payment_info(self, request, pk=None):
+    def payment_info(self, request, slug=None):
         user = request.user
         if not user.is_authenticated:
             return Response({'payment': consts.COURSE_PAYMENT_NOT_PAID, 'option': consts.COURSE_OPTION_FREE}, status=status.HTTP_200_OK)
         try:
-            payment = CoursePayment.objects.get(course_id=pk, student=user)
+            payment = CoursePayment.objects.get(course__slug=slug, student=user)
         except CoursePayment.DoesNotExist:
             return Response({'payment': consts.COURSE_PAYMENT_NOT_PAID, 'option': consts.COURSE_OPTION_FREE}, status=status.HTTP_200_OK)
         else:
             return Response({'payment': consts.COURSE_PAYMENT_PAID, 'option': payment.option}, status=status.HTTP_200_OK)
     
     @action(methods=['get'], detail=True)
-    def review_info(self, request, pk=None):
+    def review_info(self, request, slug=None):
         user = request.user
-        if user.is_authenticated and Review.objects.filter(student=user, course__id=pk).exists():
+        if user.is_authenticated and Review.objects.filter(student=user, course__slug=slug).exists():
             return Response({'review': True})
         return Response({'review': False})
     

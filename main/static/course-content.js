@@ -14,6 +14,14 @@ backdrop.addEventListener('click', event => {
     document.querySelector('dialog[open]').close()
 })
 
+
+document.querySelector('#btn-publish-course').addEventListener('click', event => {
+    fetch(`/api/courses/${slug}/publish/`).then(response => response.json()).then(data => {
+        console.log(data)
+        window.location.href = `/course/${slug}/`
+    })
+})
+
 // const optionsTabLinks = document.querySelectorAll('.course-option-link')
 // optionsTabLinks.forEach(link => link.addEventListener('click', event => {
 //     optionsTabLinks.forEach(link => link.classList.remove('course-option-link-selected'))
