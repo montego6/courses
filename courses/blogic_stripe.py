@@ -77,9 +77,9 @@ def create_stripe_upgrade_prices(course):
     prices = course.prices.order_by('amount')
     product = course.stripe.product
     for idx, price in enumerate(prices):
-        print(f'amount is {price.amount}')
-        stripe_price = StripePrice(price.amount, product).create()['id']
-        price.stripe = stripe_price
+        if not price.stripe:
+            stripe_price = StripePrice(price.amount, product).create()['id']
+            price.stripe = stripe_price
         if idx > 0:
             for i in range(idx):
                 if CourseUpgradePrice.objects.filter(course=course).exists():

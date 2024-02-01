@@ -143,8 +143,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_ROOT = BASE_DIR / "media/"
 MEDIA_URL = "files/"
 
-LOGIN_REDIRECT_URL = 'index'
-LOGOUT_REDIRECT_URL = 'index'
+LOGIN_REDIRECT_URL = 'course:index'
+LOGOUT_REDIRECT_URL = 'course:index'
 
 class CustomFormRenderer(TemplatesSetting):
     form_template_name = "form_snippet.html"

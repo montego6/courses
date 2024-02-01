@@ -1,4 +1,4 @@
-const courseId = document.getElementById('course-id').textContent
+const slug = document.getElementById('course-slug').textContent
 const csrf_token = document.querySelector('#csrf-token input').value 
 
 getCourseData()
@@ -368,7 +368,7 @@ let stripe = Stripe('pk_test_51McWQcDlPs5u4HwiXU90HVvWjuDJjOPFOoQV35sWS44HHELoef
 
 const buyBtn = document.querySelector('#buy-btn')
 buyBtn.addEventListener('click', event => {
-    fetch(`/api/courses/${courseId}/buy/${ContentManager.option}/`)
+    fetch(`/api/courses/${slug}/buy/${ContentManager.option}/`)
             .then(response => response.json())
             .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
 }) 
@@ -429,7 +429,7 @@ function updatePlayerUI() {
 }
 
 function getCourseData() {
-    fetch(`/api/courses/${courseId}/`).then(response => response.json()).then(data => initializePage(data))
+    fetch(`/api/courses/${slug}/`).then(response => response.json()).then(data => initializePage(data))
 }
 
 function initializeHeader(data) {
@@ -565,7 +565,7 @@ function initializeSidebar(data, payment) {
         }
     }))
     document.getElementById('upgrade-btn').addEventListener('click', event => {
-        fetch(`/api/courses/${courseId}/upgrade/${ContentManager.option}/`)
+        fetch(`/api/courses/${slug}/upgrade/${ContentManager.option}/`)
             .then(response => response.json())
             .then(session => stripe.redirectToCheckout({ sessionId: session.id }))
     })
@@ -574,14 +574,14 @@ function initializeSidebar(data, payment) {
 }
 
 function getPaymentInfo() {
-    return fetch(`/api/courses/${courseId}/payment_info/`).then(response => response.json()).then(data => {
+    return fetch(`/api/courses/${slug}/payment_info/`).then(response => response.json()).then(data => {
         console.log('INFO', data)
         return data
     })
 }
 
 function getReviewInfo() {
-    return fetch(`/api/courses/${courseId}/review_info/`).then(response => response.json()).then(data => {
+    return fetch(`/api/courses/${slug}/review_info/`).then(response => response.json()).then(data => {
         console.log('INFO', data)
         return data
     })
@@ -615,7 +615,7 @@ function initializeReviewsAdd() {
         let body = {
             comment: comment,
             rating: rating,
-            course: courseId
+            course_slug: slug,
         }
         fetch('/api/reviews/', {
         method: 'post',

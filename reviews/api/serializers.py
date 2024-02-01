@@ -8,8 +8,13 @@ from ..models import Review
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = ['course', 'student', 'comment', 'rating']
         read_only_fields = ['student']
+        extra_kwargs = {
+            'course': {
+                'write_only': True,
+            }
+        }
 
     def create(self, validated_data):
         validated_data['student'] = get_user_from_context(self.context)

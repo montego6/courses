@@ -14,7 +14,7 @@ def registration(request):
 			if(form.cleaned_data['is_teacher']):
 				teachers_group = Group.objects.get(name='teachers') 
 				teachers_group.user_set.add(request.user)
-			return redirect("index")
+			return redirect("course:index")
 		else: 
 			print(form.errors)
 	else:
