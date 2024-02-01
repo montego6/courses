@@ -44,9 +44,9 @@ class StripeSession:
     
 
 class StripePrice:
-    def __init__(self, amount, product, id=False) -> None:
+    def __init__(self, amount, product) -> None:
         self.amount = amount 
-        self.product = product['id'] if not id else product
+        self.product = product
 
     def create(self):
         return stripe.Price.create(
@@ -62,7 +62,7 @@ def create_upgrade_price(course, _from, _to, product):
     defaults = {'amount': amount, 'stripe':stripe}
     CourseUpgradePrice.objects.update_or_create(
                     course=course,
-                    stripe_product=product['id'],
+                    stripe_product=product,
                     from_option=_from.option,
                     to_option=_to.option,
                     defaults=defaults
@@ -78,11 +78,14 @@ def create_stripe_upgrade_prices(course):
     product = course.stripe.product
     for idx, price in enumerate(prices):
         print(f'amount is {price.amount}')
-        stripe_price = StripePrice(price.amount, product, id=True).create()['id']
+        stripe_price = StripePrice(price.amount, product).create()['id']
         price.stripe = stripe_price
         if idx > 0:
             for i in range(idx):
-                upgrade = stripe.Product.create(name=set_upgrade_name(course.name, prices[i].option, price.option))
+                if CourseUpgradePrice.objects.filter(course=course).exists():
+                    upgrade = CourseUpgradePrice.objects.get(course=course, from_option=prices[i].option, to_option=price.option).stripe_product
+                else:
+                    upgrade = stripe.Product.create(name=set_upgrade_name(course.name, prices[i].option, price.option))['id']
                 create_upgrade_price(
                     course=course,
                     _from=prices[i],

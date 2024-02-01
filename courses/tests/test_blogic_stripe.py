@@ -85,7 +85,7 @@ class TestStripePrice:
     @pytest.mark.stripe
     def test_create(self):
         product = stripe.Product.create(name='test product')
-        stripe_price = StripePrice(1200, product)
+        stripe_price = StripePrice(1200, product['id'])
         price = stripe_price.create()
         assert 'id' in price
         assert isinstance(price['id'], str)
