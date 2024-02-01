@@ -19,8 +19,8 @@ class LogRequestsMiddleware:
         return response
     
     def process_exception(self, request, exception):
-        logger.error('Exception %s for API call method=%s uri=%s params=%s data=%s' % (
-            exception, request.method, request.path, request.META['QUERY_STRING'], request.body
+        logger.error('Exception %s for API call method=%s uri=%s params=%s' % (
+            exception, request.method, request.path, request.META['QUERY_STRING']
         ))
         logger.error(exception, exc_info=True)
         return None

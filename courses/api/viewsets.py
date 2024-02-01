@@ -15,6 +15,19 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     lookup_field = 'slug'
 
+    # class CoursePublishView(APIView):
+#     def get(self, request):
+#         id = self.kwargs.get('id')
+#         course = Course.objects.get(id=id)
+#         create_stripe_upgrade_prices(course)
+#         course.is_published = True
+#         course.save()
+#         return Response({'detail': 'course is published'}, status=status.HTTP_200_OK)
+    
+    @action(methods=['get'], detail=True, url_path='publish/')
+    def publish(self, request, slug=None):
+        course = Course.objects
+
     @action(methods=['get'], detail=True, url_path=r'buy/(?P<option>[^/.]+)')
     def buy(self, request, option, pk=None):
         try:
@@ -80,3 +93,17 @@ class CourseViewSet(viewsets.ModelViewSet):
 class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
+
+    def create(self, request, *args, **kwargs):
+        course_slug = request.data.get('course-slug')
+        course = Course.objects.get(slug=course_slug)
+        data = {
+            'name': request.data.get('name'),
+            'description': request.data.get('description'),
+            'course': course.id
+        }
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

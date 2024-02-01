@@ -6,6 +6,9 @@
 <script src="{% static 'course-content.js' %}" defer></script>
 {% endblock imports %}  
 {% block content %}
+<div class="invisible">
+    <p id="course-slug">{{ slug }}</p>
+</div>
 <div class="main-body">
     <div class="main-wrapper">
         <dialog id="dialog-questions">
@@ -190,6 +193,7 @@
         </template>
         <div id="course-sections"></div>
         <button id="btn-add-section" class="form-button">Добавить секцию</button>
+        <button id="btn-publish-course" class="form-button">Опубликовать курс</button>
         <div class="invisible" id="section-add">
             <form name="section-add" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}

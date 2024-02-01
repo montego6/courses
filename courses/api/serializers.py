@@ -26,7 +26,12 @@ class SectionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Section
-        fields = '__all__'
+        fields = ['id', 'name', 'description', 'course', 'items']
+        extra_kwargs = {
+            'course': {
+                'write_only': True,
+            }
+        }
 
     def get_items(self, obj):
         items = SectionItem.objects.filter(section=obj)
@@ -38,13 +43,14 @@ class SectionSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
     reviews = ReviewWithFullNameSerializer(many=True, read_only=True)
+    options = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
         fields = ['id', 'name', 'short_description', 'full_description', 'author', 'cover', 
                   'language', 'what_will_learn', 'requirements', 'students', 
                   'date_created', 'date_updated', 'is_published', 
-                  'is_free', 'subject', 'sections', 'reviews', 'slug']
+                  'is_free', 'subject', 'sections', 'reviews', 'slug', 'options']
         read_only_fields = ['author', 'students', 'date_created', 'date_updated']
 
     def create(self, validated_data):
@@ -58,6 +64,13 @@ class CourseSerializer(serializers.ModelSerializer):
         context = ExtraContext(context, user, obj).update_context()
         serializer = SectionSerializer(sections, many=True, read_only=True, context=context)
         return serializer.data
+    
+    def get_options(self, obj):
+        options = []
+        prices = CoursePrice.objects.filter(course=obj)
+        for price in prices:
+            options.append(price.option)
+        return options
     
 
 

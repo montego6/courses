@@ -26,11 +26,11 @@ class CoursePriceCreateView(generics.CreateAPIView):
     serializer_class = CoursePriceSerializer
 
 
-class CoursePublishView(APIView):
-    def get(self, request):
-        id = self.kwargs.get('id')
-        course = Course.objects.get(id=id)
-        create_stripe_upgrade_prices(course)
-        course.is_published = True
-        course.save()
-        return Response({'detail': 'course is published'}, status=status.HTTP_200_OK)
+# class CoursePublishView(APIView):
+#     def get(self, request):
+#         id = self.kwargs.get('id')
+#         course = Course.objects.get(id=id)
+#         create_stripe_upgrade_prices(course)
+#         course.is_published = True
+#         course.save()
+#         return Response({'detail': 'course is published'}, status=status.HTTP_200_OK)

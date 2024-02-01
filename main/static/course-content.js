@@ -2,7 +2,7 @@ let courseData
 let courseOption
 const courseOptions = ['basic', 'extra', 'premium']
 const csrf_token = document.querySelector('#csrf-token input').value 
-const courseId = document.getElementById('course-id').textContent
+const slug = document.getElementById('course-slug').textContent
 
 const formSection = document.forms.namedItem('section-add')
 const addSectionForm = document.getElementById('section-add')
@@ -25,7 +25,7 @@ backdrop.addEventListener('click', event => {
 // optionsTabLinks[0].click()
 
 
-fetch(`/api/courses/${courseId}/`).then(response => response.json()).then(data => {
+fetch(`/api/courses/${slug}/`).then(response => response.json()).then(data => {
     courseData = data
     console.log(courseData)
     if (data.options.length) {
@@ -39,8 +39,8 @@ function initializeOptionsTab(data) {
     const tab = document.querySelector('#course-options-tab')
     data.forEach(option => {
         const element = document.createElement('span')
-        element.setAttribute('course-option', option.option)
-        element.textContent = option.option
+        element.setAttribute('course-option', option)
+        element.textContent = option
         element.classList.add('course-option-link')
         element.addEventListener('click', event => {
             document.querySelector('.course-option-link-selected').classList.remove('course-option-link-selected')
@@ -344,14 +344,13 @@ function initializeTestQuestions(testId) {
 formSection.addEventListener('submit', (event) => 
 {
     formData = new FormData(formSection)
-    formData.append('course', courseId)
+    formData.append('course-slug', slug)
     fetch('/api/sections/', {
         method: 'post',
         body: formData
     }).then(response => response.json())
     .then(data => {
         if (data.id) {
-            // createSection(data)
             let section = new Section(data)
             section.renderSection()
         }
