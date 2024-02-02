@@ -56,7 +56,7 @@ function initializePage() {
 
 class Course {
     constructor (data) {
-        this.id = data.id
+        this.slug = data.slug
         this.name = data.name
         this.description = data.short_description
         this.author = data.author
@@ -81,7 +81,7 @@ class Course {
         clone.querySelector('.course-student-count').textContent = this.students
         clone.querySelectorAll(`svg.review-star-small:nth-child(-n+${Math.round(this.rating)})`).forEach(star => star.classList.add('star-selected'))
         clone.querySelector('.course-rating-number').textContent = this.rating
-        clone.querySelector('a').setAttribute('href', `/course/${this.id}`)
+        clone.querySelector('a').setAttribute('href', `/course/${this.slug}`)
         return clone
     }
 

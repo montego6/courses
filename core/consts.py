@@ -9,6 +9,12 @@ COURSE_OPTION_EXTRA = 'extra'
 COURSE_OPTION_PREMIUM = 'premium'
 COURSE_OPTIONS = [COURSE_OPTION_FREE, COURSE_OPTION_BASIC, COURSE_OPTION_EXTRA, COURSE_OPTION_PREMIUM]
 
+SECTION_ITEMS_TYPES = ['lesson', 'additional_file', 'test', 'homework']
+SECTION_ITEM_LESSON = 'lesson'
+SECTION_ITEM_ADDITIONAL_FILE = 'additional_file'
+SECTION_ITEM_TEST = 'test'
+SECTION_ITEM_HOMEWORK = 'homework'
+
 AUTHOR_PAYMENT_RATE = 0,25
 
 EXCLUDE_FIELDS = ('file', 'section', 'questions', 'completed', 'task')

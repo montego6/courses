@@ -1,6 +1,9 @@
 from django.db.models import Avg
+from requests import options
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from core import consts
+from courses.helpers import make_course_options
 from users.helpers import get_user_full_name
 
 from courses.utils import ExtraContext, get_user_from_context, make_payment_context
@@ -62,15 +65,8 @@ class CourseSerializer(serializers.ModelSerializer):
         return serializer.data
     
     def get_options(self, obj):
-        options = []
         prices = CoursePrice.objects.filter(course=obj).order_by('amount')
-        for price in prices:
-            option = {
-                'option': price.option,
-                'amount': price.amount
-            }
-            options.append(option)
-        return options
+        return make_course_options(prices)
     
 
 
@@ -90,29 +86,47 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 class CourseSearchSerializer(serializers.ModelSerializer):
     duration = serializers.SerializerMethodField()
-    # options = serializers.SerializerMethodField()
+    options = serializers.SerializerMethodField()
     subject = serializers.SlugRelatedField(slug_field='name', read_only=True)
     rating = serializers.SerializerMethodField()
     author = AuthorSerializer()
     students = serializers.IntegerField(source='students.count')
     cover = serializers.ImageField(use_url=True)
+    price = serializers.SerializerMethodField()
     
     class Meta:
         model = Course
-        fields = ['id', 'name', 'cover', 'short_description', 'author', 'language', 'duration', 'subject', 'rating', 'students']
-        read_only_fields = ['id', 'name', 'cover', 'short_description', 'author', 'language', 'duration', 'subject', 'rating', 'students']
+        fields = ['slug', 'name', 'cover', 'short_description', 'author', 'language', 'duration', 'subject', 'rating', 'students', 'price', 'options']
+        read_only_fields = ['slug', 'name', 'cover', 'short_description', 'author', 'language', 'duration', 'subject', 'rating', 'students', 'price', 'options']
 
     def get_duration(self, obj):
         lessons = Lesson.objects.filter(section__course=obj)
         duration = reduce(lambda x,y: x+y.duration, lessons, lessons[0].duration) if lessons else 0
         return duration
     
-    # def get_options(self, obj):
-    #     options_set = set()
-    #     for course_option in obj.options:
-    #         content = course_option.get("content", [])
-    #         options_set.update(content)
-    #     return sorted(list(options_set))
+    def get_price(self, obj):
+        price = CoursePrice.objects.get(course=obj, option=consts.COURSE_OPTION_BASIC)
+        return price.amount
+    
+    def get_options(self, obj):
+        options_list = []
+        option_types = consts.SECTION_ITEMS_TYPES
+        for item in SectionItem.objects.filter(section__course=obj):
+            if item.lesson:
+                options_list.append(consts.SECTION_ITEM_LESSON)
+                option_types.remove(consts.SECTION_ITEM_LESSON)
+            if item.additional_file:
+                options_list.append(consts.SECTION_ITEM_ADDITIONAL_FILE)
+                option_types.remove(consts.SECTION_ITEM_ADDITIONAL_FILE)
+            if item.test:
+                options_list.append(consts.SECTION_ITEM_TEST)
+                option_types.remove(consts.SECTION_ITEM_TEST)
+            if item.homework:
+                options_list.append(consts.SECTION_ITEM_HOMEWORK)
+                option_types.remove(consts.SECTION_ITEM_HOMEWORK)
+            if not option_types:
+                break
+        return set(options_list)
     
     def get_rating(self, obj):
         return round(Review.objects.filter(course=obj).aggregate(Avg('rating', default=0))['rating__avg'], 2)
