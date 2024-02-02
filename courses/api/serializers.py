@@ -23,15 +23,11 @@ User = get_user_model()
 
 class SectionSerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField()
+    course = serializers.SlugRelatedField(slug_field='slug', queryset=Course.objects.all())
     
     class Meta:
         model = Section
         fields = ['id', 'name', 'description', 'course', 'items']
-        extra_kwargs = {
-            'course': {
-                'write_only': True,
-            }
-        }
 
     def get_items(self, obj):
         items = SectionItem.objects.filter(section=obj)
@@ -67,9 +63,13 @@ class CourseSerializer(serializers.ModelSerializer):
     
     def get_options(self, obj):
         options = []
-        prices = CoursePrice.objects.filter(course=obj)
+        prices = CoursePrice.objects.filter(course=obj).order_by('amount')
         for price in prices:
-            options.append(price.option)
+            option = {
+                'option': price.option,
+                'amount': price.amount
+            }
+            options.append(option)
         return options
     
 

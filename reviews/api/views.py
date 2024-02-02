@@ -12,18 +12,19 @@ class ReviewCreateView(generics.GenericAPIView, CreateModelMixin):
     serializer_class = ReviewSerializer
 
     def post(self, request):
-        course_slug = request.data.get('course_slug')
-        course = Course.objects.get(slug=course_slug)
-        data = {
-            'comment': request.data.get('comment'),
-            'rating': request.data.get('rating'),
-            'course': course.id,
-        }
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return self.create(request)
+        # course_slug = request.data.get('course_slug')
+        # course = Course.objects.get(slug=course_slug)
+        # data = {
+        #     'comment': request.data.get('comment'),
+        #     'rating': request.data.get('rating'),
+        #     'course': course.id,
+        # }
+        # serializer = self.get_serializer(data=data)
+        # serializer.is_valid(raise_exception=True)
+        # self.perform_create(serializer)
+        # headers = self.get_success_headers(serializer.data)
+        # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 # class ReviewListView(generics.ListAPIView):

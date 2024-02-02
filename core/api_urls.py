@@ -5,7 +5,7 @@ from courses.api.views import CourseSearchView, CoursePriceCreateView
 from courses.api.viewsets import CourseViewSet, SectionViewSet
 from profiles.api.views import HasTeacherProfile
 from profiles.api.viewsets import TeacherProfileViewSet
-from reviews.api.views import ReviewCreateView, ReviewListView
+from reviews.api.views import ReviewCreateView
 from sectionitems.api.views import TestCompletionView
 from sectionitems.api.viewsets import AdditionalFileViewSet, HomeworkViewSet, LessonViewSet, TestQuestionViewSet, TestViewSet
 from statistic.api.views import CategoryStatisticsView, CourseStatisticsView, SubCategoryStatisticsView, SubjectStatisticsView
@@ -49,7 +49,7 @@ urlpatterns += profiles_router.urls
 
 urlpatterns += [
     path('reviews/', ReviewCreateView.as_view(), name='review-create'),
-    path('reviews/<int:pk>/', ReviewListView.as_view(), name='review-list'),
+    # path('reviews/<int:pk>/', ReviewListView.as_view(), name='review-list'),
 ]
 
 

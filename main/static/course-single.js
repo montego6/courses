@@ -350,7 +350,7 @@ class ContentManager {
         element.innerHTML = ''
         let optionPrice = optionPrices.find(option => option.option === this.option)
         if (optionPrice) {
-            document.querySelector('#side-menu-price').textContent = `${optionPrice.price} руб.`
+            document.querySelector('#side-menu-price').textContent = `${optionPrice.amount} руб.`
         }
         Object.keys(this.str_mappings).forEach(type => {
             if (this.getItemsCount(type, this.option)) {
@@ -493,6 +493,7 @@ class SideBar {
     static render(paymentOption, data) {
         this.paymentOption = paymentOption
         this.data = data
+        this.price = this.data.options.find(el => el.option == 'basic')
         switch (paymentOption) {
             case 'free':
                 this.renderNotPaid()
@@ -506,7 +507,7 @@ class SideBar {
     }
     
     static renderNotPaid() {
-        document.getElementById('side-menu-price').textContent = this.data.price + '. руб.'
+        // document.getElementById('side-menu-price').textContent = this.price.amount + '. руб.'
         ContentManager.renderSidemenuContent(ContentManager.getNextOption(this.paymentOption), false)
     }
 
@@ -553,14 +554,14 @@ function initializeSidebar(data, payment) {
         document.getElementById('side-menu-options-header').innerHTML += spanEl
     })
     if (paidIndex + 1 && paidIndex + 1 < data.options.length) {
-        const upgradePrice = filteredOptions[0].price - data.options[paidIndex].price
+        const upgradePrice = filteredOptions[0].price - data.options[paidIndex].amount
         document.getElementById('side-menu-upgrade-price').textContent = `${upgradePrice} руб.`
     }
     document.querySelectorAll('#side-menu-options-header span').forEach(option => option.addEventListener('click', event => {
         const selectedOption = event.target.getAttribute('data-option')
         ContentManager.renderSidemenuContent(selectedOption, false)
         if (paidIndex + 1 && paidIndex + 1 < data.options.length) {
-            const upgradePrice = filteredOptions.find(option => option.option == selectedOption).price - data.options[paidIndex].price
+            const upgradePrice = filteredOptions.find(option => option.option == selectedOption).amount - data.options[paidIndex].amount
             document.getElementById('side-menu-upgrade-price').textContent = `${upgradePrice} руб.`
         }
     }))
@@ -615,7 +616,7 @@ function initializeReviewsAdd() {
         let body = {
             comment: comment,
             rating: rating,
-            course_slug: slug,
+            course: slug,
         }
         fetch('/api/reviews/', {
         method: 'post',
@@ -635,7 +636,7 @@ function initializeReviews(data) {
     let ratingSum =  data.reduce((acc, val) => acc + val.rating, initialVal)
     let rating = ratingSum / data.length
     document.querySelector('#course-reviews-count').textContent = data.length
-    document.querySelector('#course-reviews-rating').textContent = Math.round(rating * 100) / 100
+    document.querySelector('#course-reviews-rating').textContent = rating ? Math.round(rating * 100) / 100 : 'Нет отзывов'
     document.querySelector('#course-reviews-btn').addEventListener('click', event => {
         backdrop.classList.remove('invisible')
         document.querySelector('#dialog-reviews').show()
@@ -652,6 +653,7 @@ function initializeReviews(data) {
 let optionPrices 
 
 function initializePage(data) {
+    console.log(data)
     document.getElementById('video-player-course-title').textContent = data.name
     document.getElementById('course-sections').innerHTML = ''
     initializeHeader(data)

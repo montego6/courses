@@ -352,7 +352,7 @@ function initializeTestQuestions(testId) {
 formSection.addEventListener('submit', (event) => 
 {
     formData = new FormData(formSection)
-    formData.append('course-slug', slug)
+    formData.append('course', slug)
     fetch('/api/sections/', {
         method: 'post',
         body: formData
