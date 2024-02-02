@@ -51,7 +51,7 @@ class Course(models.Model):
     custom_objects = cmanagers.CourseManager()
     
     
-    statistics = statistic.managers.CategoryStatisticsManager()
+    statistics = statistic.managers.CourseStatisticsManager()
 
     def __str__(self) -> str:
         return f'{self.name} by {get_user_full_name(self.author)}'

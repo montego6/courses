@@ -2,7 +2,7 @@ class CourseStats {
     block = document.querySelector('#stats')
     
     constructor(data) {
-        this.id = data.id
+        this.slug = data.slug
         this.name = data.name
         this.reviews = data.num_reviews
         this.rating = data.rating
@@ -15,7 +15,7 @@ class CourseStats {
         const clone = document.querySelector('#template-stats').content.cloneNode(true)
         clone.querySelector('.course-id').textContent = this.id
         clone.querySelector('.course-name').textContent = this.name
-        clone.querySelector('.course-name').setAttribute('href', `/statistic/subjects/by_subcategory/${this.id}/`)
+        clone.querySelector('.course-name').setAttribute('href', `/course/${this.slug}/`)
         clone.querySelector('.course-reviews').textContent = this.reviews
         clone.querySelector('.course-rating').textContent = this.rating
         clone.querySelector('.course-students').textContent = this.students

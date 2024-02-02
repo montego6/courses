@@ -105,27 +105,29 @@ class CourseSearchSerializer(serializers.ModelSerializer):
         return duration
     
     def get_price(self, obj):
-        price = CoursePrice.objects.get(course=obj, option=consts.COURSE_OPTION_BASIC)
-        return price.amount
+        try:
+            price = CoursePrice.objects.get(course=obj, option=consts.COURSE_OPTION_BASIC)
+        except CoursePrice.DoesNotExist:
+            return 0
+        else:
+            return price.amount
     
     def get_options(self, obj):
         options_list = []
-        option_types = consts.SECTION_ITEMS_TYPES
+        # option_types = consts.SECTION_ITEMS_TYPES
         for item in SectionItem.objects.filter(section__course=obj):
             if item.lesson:
                 options_list.append(consts.SECTION_ITEM_LESSON)
-                option_types.remove(consts.SECTION_ITEM_LESSON)
             if item.additional_file:
                 options_list.append(consts.SECTION_ITEM_ADDITIONAL_FILE)
-                option_types.remove(consts.SECTION_ITEM_ADDITIONAL_FILE)
             if item.test:
                 options_list.append(consts.SECTION_ITEM_TEST)
-                option_types.remove(consts.SECTION_ITEM_TEST)
+                # option_types.remove(consts.SECTION_ITEM_TEST)
             if item.homework:
                 options_list.append(consts.SECTION_ITEM_HOMEWORK)
-                option_types.remove(consts.SECTION_ITEM_HOMEWORK)
-            if not option_types:
-                break
+                # option_types.remove(consts.SECTION_ITEM_HOMEWORK)
+            # if not option_types:
+                # break
         return set(options_list)
     
     def get_rating(self, obj):

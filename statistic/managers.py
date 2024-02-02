@@ -93,7 +93,7 @@ class CourseStatisticsManager(models.Manager):
         rating = rmodels.Review.objects.filter(course=models.OuterRef('id')).\
             annotate(avg_rating=models.Func(models.F('rating'), function='AVG', output_field=models.DecimalField())).values('avg_rating')
 
-        num_students = self.\
+        num_students = self.filter(id=models.OuterRef('id')).\
             annotate(students_count=models.Func(models.F('students'), function='COUNT')).values('students_count')
         
         query = self.filter(subject_id=subject_id).only('id', 'name').annotate(

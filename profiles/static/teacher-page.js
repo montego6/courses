@@ -30,7 +30,7 @@ function initializeCourses(data) {
         clone.querySelectorAll(`svg.review-star-small:nth-child(-n+${Math.round(course.rating)})`).forEach(star => star.classList.add('star-selected'))
         clone.querySelector('.course-rating-number').textContent = course.rating
         clone.querySelector('.course-subject span').textContent = course.subject
-        clone.querySelector('a').setAttribute('href', `/course/${id}`)
+        clone.querySelector('a').setAttribute('href', `/course/${course.slug}`)
         document.querySelector('#courses').append(clone)
     })
 }

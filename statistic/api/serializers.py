@@ -41,4 +41,4 @@ class CourseStatisticsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'num_reviews', 'rating', 'total_payments', 'cur_month_payments', 'num_students']
+        fields = ['slug', 'name', 'num_reviews', 'rating', 'total_payments', 'cur_month_payments', 'num_students']
