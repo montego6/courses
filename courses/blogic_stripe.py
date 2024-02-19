@@ -29,7 +29,7 @@ class StripeSession:
 
     def create_session(self, request, line_items, metadata):
         session = stripe.checkout.Session.create(
-            success_url=request.build_absolute_uri(reverse('course:single', kwargs={'id': self.course.id})),
+            success_url=request.build_absolute_uri(reverse('course:single', kwargs={'slug': self.course.slug})),
             client_reference_id=request.user.id,
             line_items=[line_items],
             currency=consts.STRIPE_DEFAULT_CURRENCY,

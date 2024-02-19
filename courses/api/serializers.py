@@ -43,13 +43,15 @@ class CourseSerializer(serializers.ModelSerializer):
     sections = serializers.SerializerMethodField()
     reviews = ReviewWithFullNameSerializer(many=True, read_only=True)
     options = serializers.SerializerMethodField()
+    author_name = serializers.SerializerMethodField()
+    author_profile = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ['id', 'name', 'short_description', 'full_description', 'author', 'cover', 
+        fields = ['id', 'name', 'short_description', 'full_description', 'author_profile', 'cover', 
                   'language', 'what_will_learn', 'requirements', 'students', 
                   'date_created', 'date_updated', 'is_published', 
-                  'is_free', 'subject', 'sections', 'reviews', 'slug', 'options']
+                  'is_free', 'subject', 'sections', 'reviews', 'slug', 'options', 'author_name']
         read_only_fields = ['author', 'students', 'date_created', 'date_updated']
 
     def create(self, validated_data):
@@ -68,7 +70,11 @@ class CourseSerializer(serializers.ModelSerializer):
         prices = CoursePrice.objects.filter(course=obj).order_by('amount')
         return make_course_options(prices)
     
-
+    def get_author_name(self, obj):
+        return get_user_full_name(obj.author)
+    
+    def get_author_profile(self, obj):
+        return obj.author.profile.id
 
     
 

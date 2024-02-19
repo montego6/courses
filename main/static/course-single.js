@@ -435,6 +435,8 @@ function getCourseData() {
 function initializeHeader(data) {
     document.getElementById('course-name').textContent = data.name
     document.getElementById('course-short_description').textContent = data.short_description
+    document.getElementById('author-name').textContent = data.author_name
+    document.getElementById('author-name').setAttribute('href', `/teacher/${data.author_profile}/`)
     document.getElementById('course-date_updated').textContent = data.date_updated
     document.getElementById('course-language').textContent = data.language
 }
