@@ -26,6 +26,8 @@ function createMenuElements(catList, menu) {
             clone.querySelector('a').setAttribute('href', `/courses/by_subject/${catElement.id}/`)
         } else if (menu === popoverSubMenu) {
             clone.querySelector('a').setAttribute('href', `/courses/by_subcategory/${catElement.id}/`)
+        } else {
+            clone.querySelector('a').setAttribute('href', `/courses/by_category/${catElement.id}/`)
         }
         const divEl = clone.querySelector('div')
         if (!(menu === popoverSubjects)) 

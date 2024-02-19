@@ -42,6 +42,9 @@ class CoursesBySubject(TemplateView):
 class CoursesBySubcategory(TemplateView):
   template_name = 'by_subcategory.html'
 
+class CoursesByCategory(TemplateView):
+  template_name = 'by_category.html'
+
 
 @csrf_exempt
 def my_webhook_view(request):
