@@ -1,4 +1,3 @@
-from django.db.models.functions import TruncSecond
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -21,9 +20,15 @@ class CourseViewSet(viewsets.ModelViewSet):
         courses = Course.objects.filter(subject_id=subject_id)
         data = CourseSearchSerializer(courses, many=True).data
         return Response(data, status=status.HTTP_200_OK)
+    
+    @action(methods=['get'], detail=False, url_path=r'by_subcategory/(?P<subcategory_id>[^/.]+)')
+    def courses_by_subject(self, request, subcategory_id):
+        courses = Course.objects.filter(subject__parent_subcategory__id=subcategory_id)
+        data = CourseSearchSerializer(courses, many=True).data
+        return Response(data, status=status.HTTP_200_OK)
 
   
-    @action(methods=['get'], detail=TruncSecond, url_path='publish')
+    @action(methods=['get'], detail=True, url_path='publish')
     def publish(self, request, slug=None):
         course = Course.objects.get(slug=slug)
         create_stripe_upgrade_prices(course)

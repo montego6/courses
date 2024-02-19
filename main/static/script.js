@@ -22,6 +22,11 @@ function createMenuElements(catList, menu) {
     catList.forEach(catElement => {
         const clone = popoverTemplate.content.cloneNode(true)
         clone.querySelector('a').textContent = catElement.name
+        if (menu === popoverSubjects) {
+            clone.querySelector('a').setAttribute('href', `/courses/by_subject/${catElement.id}/`)
+        } else if (menu === popoverSubMenu) {
+            clone.querySelector('a').setAttribute('href', `/courses/by_subcategory/${catElement.id}/`)
+        }
         const divEl = clone.querySelector('div')
         if (!(menu === popoverSubjects)) 
         {

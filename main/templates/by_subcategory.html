@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+{% block imports %}
+<link href="{% static 'search.css' %}" rel="stylesheet">
+<link href="{% static 'courses.css' %}" rel="stylesheet">
+<script src="{% static 'by-subcategory.js' %}" type="module" defer></script>
+{% endblock imports %}
+{% block title %}By subcategory{% endblock title %}
+{% block content %}
+<div class="invisible">
+    <p id="subcategory-id">{{ subcategory_id }}</p>
+</div>
+<template id="template-course">
+    <div class="course-wrapper">
+        <div class="course-cover">
+            <img>
+        </div>
+        <div class="course-body">
+            <a><h3 class="course-name"></h3></a>
+            <p class="course-description"></p>
+            <span class="course-author"></span>
+            <span>Студентов: <span class="course-student-count"></span></span>
+            <div class="course-rating">
+                <svg class="review-star-small">
+                    <use href="#icon-star"></use>
+                </svg>
+                <svg class="review-star-small">
+                    <use href="#icon-star"></use>
+                </svg>
+                <svg class="review-star-small">
+                    <use href="#icon-star"></use>
+                </svg>
+                <svg class="review-star-small">
+                    <use href="#icon-star"></use>
+                </svg>
+                <svg class="review-star-small">
+                    <use href="#icon-star"></use>
+                </svg>
+                <span class="course-rating-number"></span>
+            </div>
+        </div>
+        <div class="course-price">
+            <span></span>
+        </div>
+    </div>
+</template>
+<div class="invisible">
+    <svg id="icon-star" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+</div>
+<div class="main-body-block">
+    <p>Курсы по подкатегории <span id="subcategory-name"></span></p>  
+    <div id="test-wrapper">
+        <div id="courses"></div>
+    </div>
+    <div id="paging">
+    </div>
+</div>
+{% endblock content %}
