@@ -35,6 +35,8 @@ class CourseSearchView(TemplateView):
   template_name = 'search.html'
 
 
+class CoursesBySubject(TemplateView):
+  template_name = 'by_subject.html'
 
 
 @csrf_exempt

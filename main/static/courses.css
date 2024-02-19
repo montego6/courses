@@ -1,0 +1,15 @@
+#paging {
+    margin: 0 auto;
+    width: 200px;
+    display: flex;
+    column-gap: 12px;
+}
+
+#paging a {
+    border-radius: 16px;
+    background-color: aqua;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    font-size: large;
+}
