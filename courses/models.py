@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
@@ -24,6 +25,12 @@ COURSE_PAYMENT_CHOICES = [
     (consts.COURSE_PAYMENT_REFUND, 'Course is refunded'),
 ]
 
+COURSE_LEVEL_CHOICES = [
+    (consts.COURSE_LEVEL_BEGINNER, 'Beginner level'),
+    (consts.COURSE_LEVEL_ADVANCED, 'Advanced level'),
+    (consts.COURSE_LEVEL_EXPERT, 'Expert level'),
+]
+
 validate_file = FileValidator(max_size=1024 * 100, 
                              content_types=('application/xml',))
 
@@ -46,6 +53,7 @@ class Course(models.Model):
     is_free = models.BooleanField(default=False)
     subject = models.ForeignKey('categories.Subject', on_delete=models.SET_NULL, null=True, related_name='courses')
     slug = models.SlugField(max_length=160, unique=True, null=True)
+    level = models.CharField(max_length=16, choices=COURSE_LEVEL_CHOICES, default=consts.COURSE_LEVEL_BEGINNER)
 
     objects = models.Manager()
     custom_objects = cmanagers.CourseManager()

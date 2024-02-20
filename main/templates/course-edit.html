@@ -13,7 +13,7 @@
     </div>
     <div class="main-content">
         <h1>Изменение данных курса</h1>
-        <div id="course-edit-first-step">
+        <div id="course-edit-first-step" class="invisible">
             <div class="form-wrapper">
                 <div class="form-field">
                     <label for="cover">Обложка курса</label>
@@ -45,7 +45,7 @@
             </div>
             <button class="form-button">Следующий шаг</button>
         </div>
-        <div id="course-edit-second-step">
+        <div id="course-edit-second-step" class="invisible">
             <p>Добавьте пункты, чему обучатся студенты в процессе и начальные навыки, необходимые для начала обучения</p>
             <div id="what-will-learn">
                 <div id="div-btn-what-will-learn">
@@ -53,8 +53,8 @@
                     <button class="form-button" id="btn-what-will-learn">Добавить what will learn</button>
                 </div>
                     <template id="template-what-will-learn">
-                        <div class="form-wrapper form-field-half">
-                            <input type="text" class="what-will-learn-option">
+                        <div class="form-wrapper form-field">
+                            <input type="text" class="what-will-learn-option" disabled>
                         </div>
                     </template>
             </div>
@@ -64,7 +64,7 @@
                     <button class="form-button" id="btn-requirements">Добавить requirements</button>
                 </div>
                     <template id="template-requirements">
-                        <div class="form-wrapper form-field-half">
+                        <div class="form-wrapper form-field">
                             <input type="text" class="requirements-option">
                         </div>
                     </template>
@@ -72,7 +72,7 @@
             <button class="form-button" id="course-backwards-btn">Назад</button>
             <button class="form-button" id="course-third-step-btn">Следующий шаг</button>
         </div>
-        <div id="course-edit-third-step" class="invisible">
+        <div id="course-edit-third-step">
             <p>Выберите уровень сложности вашего курса, а также укажите опции, которые будут доступны для студентов</p>
             <div class="form-wrapper">
                 <div id="div-category" class="form-field">
@@ -81,13 +81,13 @@
                         <option disabled selected value>-- Выберите категорию --</option>
                     </select>
                 </div>
-                <div id="div-subcategory" class="form-field invisible">
+                <div id="div-subcategory" class="form-field">
                     <label for="subcategory">Подкатегория</label>
                     <select name="subcategory" id="select-subcategory">
                         <option disabled selected value>-- Выберите подкатегорию --</option>
                     </select>
                 </div>
-                <div id="div-subject" class="form-field invisible">
+                <div id="div-subject" class="form-field">
                     <label for="subject">Тема</label>
                     <select name="subject" id="select-subject">
                         <option disabled selected value>-- Выберите тему --</option>

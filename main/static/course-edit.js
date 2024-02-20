@@ -48,9 +48,48 @@ function initializeInputs(courseData) {
     if (courseData.is_free) {
         document.querySelector('input[name=is_free]').setAttribute('checked', 'true')
     }
+
+    courseData.what_will_learn.forEach(learnOption => {
+        const clone = document.querySelector('#template-what-will-learn').content.cloneNode(true)
+        clone.querySelector('input').value = learnOption
+        document.querySelector('#what-will-learn').append(clone)
+    })
+
+    courseData.requirements.forEach(reqOption => {
+        const clone = document.querySelector('#template-requirements').content.cloneNode(true)
+        clone.querySelector('input').value = reqOption
+        document.querySelector('#requirements').append(clone)
+    })
+
+    fetch('/api/categories/').then(response => response.json()).
+    then(data => {
+    console.log('CATEGORIES', data)
+    categoriesData = data
+    initializeCategories(categoriesData, courseData)
+})
 }
 
-function initializeCategoriesSelect(mode, data) {
+function initializeCategories(data, courseData) {
+    console.log('DATA', data)
+    for (category of data) {
+        for (subcategory of category.subcategories) {
+            for (subject of subcategory.subjects) {
+                if (subject.id == courseData.subject) {
+                    initializeCategoriesValues(data, category, subcategory, subject)
+                    return
+                }
+            }
+        }
+    }
+}
+
+function initializeCategoriesValues(data, category, subcategory, subject) {
+    initializeCategoriesSelect('category', data, category)
+    initializeCategoriesSelect('subcategory', category.subcategories, subcategory)
+    initializeCategoriesSelect('subject', subcategory.subjects, subject)
+}
+
+function initializeCategoriesSelect(mode, data, selected) {
     const select = document.querySelector(`#select-${mode}`)
     select.querySelectorAll('option:not(:disabled)').forEach(option => option.remove())
     select.value = ''
@@ -58,6 +97,9 @@ function initializeCategoriesSelect(mode, data) {
         let categoryEl = document.createElement('option')
         categoryEl.setAttribute('value', category.id)
         categoryEl.textContent = category.name
+        if (category == selected) {
+            categoryEl.setAttribute('selected', true)
+        }
         select.append(categoryEl)
     })
 }
@@ -77,6 +119,14 @@ document.querySelector('#select-subcategory').addEventListener('change', event =
     initializeCategoriesSelect('subject', chosenSubCategory.subjects)
 })
 
+
+// fetch('/api/categories/').then(response => response.json()).
+// then(data => {
+//     console.log('CATEGORIES', data)
+//     categoriesData = data
+//     // initializeCategoriesSelect('category', categoriesData)
+//     initializeCategories(categoriesData)
+// })
 
 document.querySelectorAll('#options-checkboxes input[type=checkbox]').forEach(checkBox => checkBox.addEventListener('change', event => {
     const option = event.target.getAttribute('name')
@@ -207,8 +257,3 @@ document.querySelector('#course-third-step-btn').addEventListener('click', event
 
 
 
-fetch('/api/categories/').then(response => response.json()).
-then(data => {
-    categoriesData = data
-    initializeCategoriesSelect('category', categoriesData)
-})
