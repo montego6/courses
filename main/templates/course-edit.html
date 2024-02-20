@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Войти на сайт{% endblock title %}
+{% block imports %}
+<link href="{% static 'course-add.css' %}" rel="stylesheet">
+<script src="{% static 'course-edit.js' %}" defer></script>
+{% endblock imports %}  
+{% block content %}
+<div class="main-body">
+    <div class="invisible">
+        <p id="csrf-token">{% csrf_token %}</p>
+        <p id="course-slug">{{ slug }}</p>
+    </div>
+    <div class="main-content">
+        <h1>Изменение данных курса</h1>
+        <div id="course-edit-first-step">
+            <div class="form-wrapper">
+                <div class="form-field">
+                    <label for="cover">Обложка курса</label>
+                    <input type="file" name="cover">
+                </div>
+                <div class="form-field">
+                    <label for="name">Название курса</label>
+                    <input type="text" name="name" disabled>
+                </div>
+                <div class="form-field">
+                    <label for="short_description">Короткое описание</label>
+                    <input type="text" name="short_description" disabled>
+                </div>
+                <div class="form-field">
+                    <label for="full_description">Подробное описание</label>
+                    <textarea name="full_description" cols="50" rows="8" disabled></textarea>
+                </div>  
+                <div class="form-field-half">
+                    <label for="language">Язык</label>
+                </div>
+                <div class="form-field-half">
+                    <select name="language" id="select-language">
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label for="is_free">Сделать курс бесплатным</label>
+                    <input type="checkbox" name="is_free"  id="is_free-checkbox">
+                </div>  
+            </div>
+            <button class="form-button">Следующий шаг</button>
+        </div>
+        <div id="course-edit-second-step">
+            <p>Добавьте пункты, чему обучатся студенты в процессе и начальные навыки, необходимые для начала обучения</p>
+            <div id="what-will-learn">
+                <div id="div-btn-what-will-learn">
+                    <div class="tooltip">Нажмите для добавления нового пункта и введите значение,при необходимости повторите.</div>
+                    <button class="form-button" id="btn-what-will-learn">Добавить what will learn</button>
+                </div>
+                    <template id="template-what-will-learn">
+                        <div class="form-wrapper form-field-half">
+                            <input type="text" class="what-will-learn-option">
+                        </div>
+                    </template>
+            </div>
+            <div id="requirements">
+                <div id="div-btn-requirements">
+                    <div class="tooltip">Нажмите для добавления нового пункта и введите значение,при необходимости повторите.</div>
+                    <button class="form-button" id="btn-requirements">Добавить requirements</button>
+                </div>
+                    <template id="template-requirements">
+                        <div class="form-wrapper form-field-half">
+                            <input type="text" class="requirements-option">
+                        </div>
+                    </template>
+            </div>
+            <button class="form-button" id="course-backwards-btn">Назад</button>
+            <button class="form-button" id="course-third-step-btn">Следующий шаг</button>
+        </div>
+        <div id="course-edit-third-step" class="invisible">
+            <p>Выберите уровень сложности вашего курса, а также укажите опции, которые будут доступны для студентов</p>
+            <div class="form-wrapper">
+                <div id="div-category" class="form-field">
+                    <label for="category">Категория</label>
+                    <select name="category" id="select-category">
+                        <option disabled selected value>-- Выберите категорию --</option>
+                    </select>
+                </div>
+                <div id="div-subcategory" class="form-field invisible">
+                    <label for="subcategory">Подкатегория</label>
+                    <select name="subcategory" id="select-subcategory">
+                        <option disabled selected value>-- Выберите подкатегорию --</option>
+                    </select>
+                </div>
+                <div id="div-subject" class="form-field invisible">
+                    <label for="subject">Тема</label>
+                    <select name="subject" id="select-subject">
+                        <option disabled selected value>-- Выберите тему --</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label for="level">Уровень</label>
+                    <select name="level" id="select-level">
+                        <option value="beginner">Начинающий</option>
+                        <option value="intermediate">Средний уровень</option>
+                        <option value="expert">Эксперт</option>
+                    </select>
+                </div>
+                <div>
+                    <fieldset>
+                        <legend>Выберите опции и укажите цену:</legend>
+                      
+                        <div id="options-checkboxes">
+                            <div class="options-row" id="options-basic">
+                                <div>
+                                    <input type="checkbox" id="checkbox-basic" name="basic">
+                                    <label for="basic">Basic</label>
+                                </div>
+                                <div class="options-input hidden" id="price-basic">
+                                    <label for="basic-price">Стоимость</label>
+                                    <input type="number" name="basic-price">
+                                </div>
+                            </div>
+                        
+                            <div class="options-row" id="options-extra">
+                                <div>
+                                    <input type="checkbox" id="checkbox-extra" name="extra">
+                                    <label for="extra">Extra</label>
+                                </div>
+                                <div class="options-input hidden" id="price-extra">
+                                    <label for="basic-price">Стоимость</label>
+                                    <input type="number" name="extra-price">
+                                </div>
+                                <div class="options-error hidden">
+                                    <span>Вы не можете добавить эту опцию, пока не будет выбрана предыдущая</span>
+                                </div>
+                            </div>
+
+                            <div class="options-row" id="options-premium">
+                                <div>
+                                    <input type="checkbox" id="checkbox-premium" name="premium">
+                                    <label for="premium">Premium</label>
+                                </div>
+                                <div class="options-input hidden" id="price-premium">
+                                    <label for="basic-price">Стоимость</label>
+                                    <input type="number" name="premium-price">
+                                </div>
+                                <div class="options-error hidden">
+                                    <span>Вы не можете добавить эту опцию, пока не будет выбрана предыдущая</span>
+                                </div>
+                            </div>
+                        </div>
+                      </fieldset>
+                </div>
+            </div>
+            <button class="form-button" id="course-back-to-2step-btn">Назад</button>
+            <button class="form-button" id="course-confirm-btn">Подтвердить</button>
+        </div>
+    </div>
+</div>
+{% endblock content %}
