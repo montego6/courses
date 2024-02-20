@@ -6,8 +6,10 @@
 {% endblock imports %}
 {% block title %}My profile{% endblock title %}
 {% block content %}
+<div class="invisible">
+    <p id="csrf-token">{% csrf_token %}</p>
+</div>
 <div class="main-body">
-    <p>Profile works</p>
     <div id="profile-create" class="invisible">
         <form name="profile-form" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -26,7 +28,16 @@
     </div>
     <div id="profile">
         <img id="profile-avatar">
-        <p id="profile-bio"></p>
+        <div>
+            <h3 id="author-name"></h3>
+            <p id="profile-bio">Изменить био</p>
+            <p>Общий рейтинг всех курсов: <span id="courses-rating"></span></p>
+            <p>Общее количество студентов: <span id="courses-students"></span></p>
+        </div>
+        <div>
+            <p>Баланс: <span id="balance"></span></p>
+        </div>
+        
     </div>
     <template id="template-course">
         <div class="course-wrapper">
@@ -38,7 +49,8 @@
                 <p>Рейтинг: <span class="course-rating"></span></p>
             </div>
             <div class="course-buttons">
-                <button class="form-button btn-unpublish">Снять с публикации</button>
+                <button class="form-button btn-unpublish invisible">Снять с публикации</button>
+                <button class="form-button btn-publish invisible">Опубликовать</button>
                 <button class="form-button btn-content">Изменить контент</button>
                 <button class="form-button btn-edit">Изменить информацию</button>
             </div>

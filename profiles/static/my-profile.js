@@ -1,3 +1,5 @@
+const csrf_token = document.querySelector('#csrf-token input').value 
+
 fetch('/api/profiles/has_profile/')
 .then(response => response.json())
 .then(data => {
@@ -10,13 +12,19 @@ fetch('/api/profiles/has_profile/')
     }
 })
 
+
+
 function showProfileForm() {
     document.getElementById('profile-create').classList.remove('invisible')
 }
 
 function renderProfile(data) {
     document.getElementById('profile-avatar').setAttribute('src', data.avatar)
-    document.getElementById('profile-bio').textContent = data.bio
+    // document.getElementById('profile-bio').textContent = data.bio
+    document.getElementById('author-name').textContent = data.name
+    document.getElementById('courses-rating').textContent = data.rating
+    document.getElementById('courses-students').textContent = data.students
+    document.getElementById('balance').textContent = data.balance
 }
 
 function renderCourses(data) {
@@ -29,6 +37,41 @@ function renderCourses(data) {
             clone.querySelector('.course-rating').textContent = course.rating
             clone.querySelector('.btn-content').addEventListener('click', event => {
                 window.location.href = `/mycourses/${course.slug}/`
+            })
+            if (course.is_published) {
+                clone.querySelector('.btn-unpublish').classList.remove('invisible')
+            } else {
+                clone.querySelector('.btn-publish').classList.remove('invisible')
+            }
+
+            clone.querySelector('.btn-unpublish').addEventListener('click', event => {
+                obj = {
+                    is_published: false
+                }
+                fetch(`/api/courses/${course.slug}/`,
+                {
+                    method: 'PATCH',
+                    body: JSON.stringify(obj),
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrf_token,
+                    },
+                }).then(response => {
+                    if (response.status == 200) {
+                        event.target.closest('div').querySelector('.btn-unpublish').classList.toggle('invisible')
+                        event.target.closest('div').querySelector('.btn-publish').classList.toggle('invisible')
+                    }
+                })
+                
+            })
+
+            clone.querySelector('.btn-publish').addEventListener('click', event => {
+                fetch(`/api/courses/${course.slug}/publish/`).then(response => {
+                    if (response.status == 200) {
+                        event.target.closest('div').querySelector('.btn-unpublish').classList.toggle('invisible')
+                        event.target.closest('div').querySelector('.btn-publish').classList.toggle('invisible')
+                    }
+                })
             })
             document.getElementById('my-courses').append(clone)
     });
