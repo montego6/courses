@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from ..models import TeacherProfile
 from .serializers import TeacherProfileSerializer
 from courses.models import Course
-from courses.api.serializers import CourseProfileSerializer
+from courses.api.serializers import CourseSearchSerializer
 
 
 class HasTeacherProfile(APIView):
@@ -12,7 +12,7 @@ class HasTeacherProfile(APIView):
         if teacher_profile.exists():
             serializer = TeacherProfileSerializer(teacher_profile[0])
             courses = Course.objects.filter(author=request.user)
-            courses_data = CourseProfileSerializer(courses, many=True).data
+            courses_data = CourseSearchSerializer(courses, many=True).data
             return Response({'profile': True, 'content': serializer.data, 'courses': courses_data})
         else:
             return Response({'profile': False})

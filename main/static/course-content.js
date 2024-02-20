@@ -47,8 +47,8 @@ function initializeOptionsTab(data) {
     const tab = document.querySelector('#course-options-tab')
     data.forEach(option => {
         const element = document.createElement('span')
-        element.setAttribute('course-option', option)
-        element.textContent = option
+        element.setAttribute('course-option', option.option)
+        element.textContent = option.option
         element.classList.add('course-option-link')
         element.addEventListener('click', event => {
             document.querySelector('.course-option-link-selected').classList.remove('course-option-link-selected')

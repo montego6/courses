@@ -25,6 +25,11 @@ function renderCourses(data) {
             clone.querySelector('.course-cover').setAttribute('src', course.cover)
             clone.querySelector('.course-title').textContent = course.name
             clone.querySelector('.course-description').textContent = course.short_description
+            clone.querySelector('.course-students').textContent = course.students
+            clone.querySelector('.course-rating').textContent = course.rating
+            clone.querySelector('.btn-content').addEventListener('click', event => {
+                window.location.href = `/mycourses/${course.slug}/`
+            })
             document.getElementById('my-courses').append(clone)
     });
 }
