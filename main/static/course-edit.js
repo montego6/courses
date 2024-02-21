@@ -1,4 +1,6 @@
-const form = document.forms.namedItem('course-add')
+const form = document.forms.namedItem('form-cover')
+let formData = null
+let courseChanges = {}
 let categoriesData
 const courseAddFirstStep = document.getElementById('course-add-first-step')
 const courseAddSecondStep = document.getElementById('course-add-second-step')
@@ -26,6 +28,42 @@ const slug = document.querySelector('#course-slug').textContent
 fetch(`/api/courses/${slug}/`).then(response => response.json()).then(data => {
     console.log('DATA', data)
     initializeInputs(data)
+})
+
+document.querySelectorAll('.input-change').forEach(changeSpan => {
+    changeSpan.addEventListener('click', event => {
+        event.target.previousElementSibling.disabled = false
+        event.target.classList.toggle('invisible')
+        event.target.nextElementSibling.classList.toggle('invisible')
+    })
+})
+
+document.querySelector('#cover-change').addEventListener('click', event => {
+    document.querySelector('#course-cover').classList.add('invisible')
+    event.target.previousElementSibling.querySelector('input[name=cover]').classList.remove('invisible')
+    event.target.previousElementSibling.querySelector('input[name=cover]').disabled = false
+    event.target.classList.toggle('invisible')
+    event.target.nextElementSibling.classList.toggle('invisible')
+})
+
+document.querySelectorAll('.save-changes').forEach(saveSpan => {
+    saveSpan.addEventListener('click', event => {
+        const input = event.target.previousElementSibling.previousElementSibling
+        input.disabled = true
+        event.target.classList.toggle('invisible')
+        event.target.previousElementSibling.classList.toggle('invisible')
+        const field = input.getAttribute('name')
+        courseChanges[field] = input.value
+        console.log(courseChanges)
+    })
+})
+
+document.querySelector('.save-changes-cover').addEventListener('click', event => {
+    event.target.classList.toggle('invisible')
+    event.target.previousElementSibling.classList.toggle('invisible')
+    formData = new FormData(form)
+    console.log(formData)
+    event.target.previousElementSibling.previousElementSibling.querySelector('input[name=cover]').disabled = true
 })
 
 function initializeLanguages(courseData) {
@@ -177,14 +215,14 @@ document.querySelector('#course-back-to-2step-btn').addEventListener('click', ev
     courseAddThirdStep.classList.add('invisible')
 })
 
-document.querySelector('#is_free-checkbox').addEventListener('change', event => {
-    if (event.target.checked) {
-        document.querySelector('input[name=price]').value = 0
-        document.querySelector('input[name=price]').disabled = true
-    } else {
-        document.querySelector('input[name=price]').disabled = false
-    }
-})
+// document.querySelector('#is_free-checkbox').addEventListener('change', event => {
+//     if (event.target.checked) {
+//         document.querySelector('input[name=price]').value = 0
+//         document.querySelector('input[name=price]').disabled = true
+//     } else {
+//         document.querySelector('input[name=price]').disabled = false
+//     }
+// })
 
 
 whatWillLearnBtn.addEventListener('click', (event) => {
