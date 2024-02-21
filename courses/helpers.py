@@ -15,6 +15,7 @@ def make_course_options(prices):
     options = []
     for price in prices:
         option = {
+            'id': price.id,
             'option': price.option,
             'amount': price.amount
         }

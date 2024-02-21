@@ -28,11 +28,7 @@ fetch(`/api/courses/${slug}/`).then(response => response.json()).then(data => {
     initializeInputs(data)
 })
 
-function initializeInputs(courseData) {
-    document.querySelector('input[name=name]').value = courseData.name
-    document.querySelector('input[name=short_description]').value = courseData.short_description
-    document.querySelector('textarea[name=full_description]').value = courseData.full_description
-
+function initializeLanguages(courseData) {
     fetch('/static/langmap.json').then(response => response.json()).then(data => {
         for (const key in data) {
             let selectEL = document.createElement('option')
@@ -44,11 +40,9 @@ function initializeInputs(courseData) {
             document.querySelector('#select-language').append(selectEL)
         }
     })
+}
 
-    if (courseData.is_free) {
-        document.querySelector('input[name=is_free]').setAttribute('checked', 'true')
-    }
-
+function initializeReqs(courseData) {
     courseData.what_will_learn.forEach(learnOption => {
         const clone = document.querySelector('#template-what-will-learn').content.cloneNode(true)
         clone.querySelector('input').value = learnOption
@@ -60,17 +54,44 @@ function initializeInputs(courseData) {
         clone.querySelector('input').value = reqOption
         document.querySelector('#requirements').append(clone)
     })
+}
+
+function initializeInputs(courseData) {
+    document.querySelector('img#course-cover').setAttribute('src', courseData.cover)
+    document.querySelector('input[name=name]').value = courseData.name
+    document.querySelector('input[name=short_description]').value = courseData.short_description
+    document.querySelector('textarea[name=full_description]').value = courseData.full_description
+
+    initializeLanguages(courseData)
+
+    if (courseData.is_free) {
+        document.querySelector('input[name=is_free]').setAttribute('checked', 'true')
+    }
+
+    initializeReqs(courseData)
 
     fetch('/api/categories/').then(response => response.json()).
     then(data => {
-    console.log('CATEGORIES', data)
     categoriesData = data
     initializeCategories(categoriesData, courseData)
-})
+    })
+
+    document.querySelector(`option[value=${courseData.level}]`).setAttribute('selected', true)
+
+    initializePrices(courseData)
+
+}
+
+function initializePrices(courseData) {
+    courseData.options.forEach(option => {
+        document.querySelector(`input[name=${option.option}-price]`).value = option.amount
+        document.querySelector(`input[name=${option.option}-price]`).setAttribute('price-id', option.id)
+        document.querySelector(`#price-${option.option}`).classList.remove('hidden')
+        document.querySelector(`input[name=${option.option}]`).setAttribute('checked', true)
+    })
 }
 
 function initializeCategories(data, courseData) {
-    console.log('DATA', data)
     for (category of data) {
         for (subcategory of category.subcategories) {
             for (subject of subcategory.subjects) {

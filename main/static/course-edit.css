@@ -1,0 +1,34 @@
+img {
+    width: 200px;
+}
+
+.form-field {
+    grid-template-columns: 0.8fr 2.5fr 1fr;
+    column-gap: 12px;
+}
+
+.form-wrapper input,
+.form-field textarea,
+.form-wrapper select {
+    height: 2rem;
+    width: auto;
+    padding: 0px 6px;
+    border: 1px solid var(--forms-border-color);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 100;
+    color: var(--forms-text-color)
+}
+
+.form-field-half select {
+    width: 18rem;
+}
+
+.form-field textarea {
+    height: 12rem;
+}
+
+.course-free {
+    grid-template-columns: 0.5fr 2fr;
+}

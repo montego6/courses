@@ -51,7 +51,7 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'short_description', 'full_description', 'author_profile', 'cover', 
                   'language', 'what_will_learn', 'requirements', 'students', 
                   'date_created', 'date_updated', 'is_published', 
-                  'is_free', 'subject', 'sections', 'reviews', 'slug', 'options', 'author_name']
+                  'is_free', 'subject', 'sections', 'reviews', 'slug', 'options', 'author_name', 'level']
         read_only_fields = ['author', 'students', 'date_created', 'date_updated']
 
     def create(self, validated_data):
@@ -119,22 +119,22 @@ class CourseSearchSerializer(serializers.ModelSerializer):
             return price.amount
     
     def get_options(self, obj):
-        options_list = []
+        options_set = set()
         # option_types = consts.SECTION_ITEMS_TYPES
         for item in SectionItem.objects.filter(section__course=obj):
             if item.lesson:
-                options_list.append(consts.SECTION_ITEM_LESSON)
+                options_set.add(consts.SECTION_ITEM_LESSON)
             if item.additional_file:
-                options_list.append(consts.SECTION_ITEM_ADDITIONAL_FILE)
+                options_set.add(consts.SECTION_ITEM_ADDITIONAL_FILE)
             if item.test:
-                options_list.append(consts.SECTION_ITEM_TEST)
+                options_set.add(consts.SECTION_ITEM_TEST)
                 # option_types.remove(consts.SECTION_ITEM_TEST)
             if item.homework:
-                options_list.append(consts.SECTION_ITEM_HOMEWORK)
+                options_set.add(consts.SECTION_ITEM_HOMEWORK)
                 # option_types.remove(consts.SECTION_ITEM_HOMEWORK)
             # if not option_types:
                 # break
-        return set(options_list)
+        return options_set
     
     def get_rating(self, obj):
         return round(Review.objects.filter(course=obj).aggregate(Avg('rating', default=0))['rating__avg'], 2)

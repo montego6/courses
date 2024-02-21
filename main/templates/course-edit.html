@@ -3,6 +3,7 @@
 {% block title %}Войти на сайт{% endblock title %}
 {% block imports %}
 <link href="{% static 'course-add.css' %}" rel="stylesheet">
+<link href="{% static 'course-edit.css' %}" rel="stylesheet">
 <script src="{% static 'course-edit.js' %}" defer></script>
 {% endblock imports %}  
 {% block content %}
@@ -13,23 +14,28 @@
     </div>
     <div class="main-content">
         <h1>Изменение данных курса</h1>
-        <div id="course-edit-first-step" class="invisible">
+        <div id="course-edit-first-step" class="">
             <div class="form-wrapper">
                 <div class="form-field">
                     <label for="cover">Обложка курса</label>
-                    <input type="file" name="cover">
+                    <img src="" alt="" id="course-cover">
+                    <input type="file" name="cover" class="invisible">
+                    <span>Изменить</span>
                 </div>
                 <div class="form-field">
                     <label for="name">Название курса</label>
                     <input type="text" name="name" disabled>
+                    <span>Изменить</span>
                 </div>
                 <div class="form-field">
                     <label for="short_description">Короткое описание</label>
                     <input type="text" name="short_description" disabled>
+                    <span>Изменить</span>
                 </div>
                 <div class="form-field">
                     <label for="full_description">Подробное описание</label>
-                    <textarea name="full_description" cols="50" rows="8" disabled></textarea>
+                    <textarea name="full_description" cols="40" rows="8" disabled></textarea>
+                    <span>Изменить</span>
                 </div>  
                 <div class="form-field-half">
                     <label for="language">Язык</label>
@@ -37,10 +43,12 @@
                 <div class="form-field-half">
                     <select name="language" id="select-language">
                     </select>
+                    <span>Изменить</span>
                 </div>
-                <div class="form-field">
+                <div class="form-field course-free">
                     <label for="is_free">Сделать курс бесплатным</label>
                     <input type="checkbox" name="is_free"  id="is_free-checkbox">
+                    <span>Изменить</span>
                 </div>  
             </div>
             <button class="form-button">Следующий шаг</button>
@@ -72,7 +80,7 @@
             <button class="form-button" id="course-backwards-btn">Назад</button>
             <button class="form-button" id="course-third-step-btn">Следующий шаг</button>
         </div>
-        <div id="course-edit-third-step">
+        <div id="course-edit-third-step" class="invisible">
             <p>Выберите уровень сложности вашего курса, а также укажите опции, которые будут доступны для студентов</p>
             <div class="form-wrapper">
                 <div id="div-category" class="form-field">
@@ -97,7 +105,7 @@
                     <label for="level">Уровень</label>
                     <select name="level" id="select-level">
                         <option value="beginner">Начинающий</option>
-                        <option value="intermediate">Средний уровень</option>
+                        <option value="advanced">Средний уровень</option>
                         <option value="expert">Эксперт</option>
                     </select>
                 </div>
