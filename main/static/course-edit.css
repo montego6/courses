@@ -3,15 +3,21 @@ img {
 }
 
 .form-field {
-    grid-template-columns: 0.8fr 2.5fr 1fr;
+    /* grid-template-columns: 0.8fr 2.5fr 1fr; */
+    /* column-gap: 12px; */
+    display: flex;
     column-gap: 12px;
+}
+
+.form-label {
+    width: 200px;
 }
 
 .form-wrapper input,
 .form-field textarea,
 .form-wrapper select {
     height: 2rem;
-    width: auto;
+    width: 40rem;
     padding: 0px 6px;
     border: 1px solid var(--forms-border-color);
     border-radius: 4px;
@@ -21,7 +27,7 @@ img {
     color: var(--forms-text-color)
 }
 
-.form-field-half select {
+#select-language {
     width: 18rem;
 }
 
@@ -31,4 +37,10 @@ img {
 
 .course-free {
     grid-template-columns: 0.5fr 2fr;
+}
+
+.text-underline {
+    text-decoration: underline;
+    color: cornflowerblue;
+    cursor: pointer;
 }

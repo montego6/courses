@@ -17,38 +17,46 @@
         <div id="course-edit-first-step" class="">
             <div class="form-wrapper">
                 <div class="form-field">
-                    <label for="cover">Обложка курса</label>
+                    <div class="form-label">
+                        <label for="cover">Обложка курса</label>
+                    </div>
                     <img src="" alt="" id="course-cover">
                     <input type="file" name="cover" class="invisible">
-                    <span>Изменить</span>
+                    <span class="text-underline">Изменить</span>
                 </div>
                 <div class="form-field">
-                    <label for="name">Название курса</label>
+                    <div class="form-label">
+                        <label for="name">Название курса</label>
+                    </div>
                     <input type="text" name="name" disabled>
-                    <span>Изменить</span>
+                    <span class="text-underline">Изменить</span>
                 </div>
                 <div class="form-field">
-                    <label for="short_description">Короткое описание</label>
+                    <div class="form-label">
+                        <label for="short_description">Короткое описание</label>
+                    </div>
                     <input type="text" name="short_description" disabled>
-                    <span>Изменить</span>
+                    <span class="text-underline">Изменить</span>
                 </div>
                 <div class="form-field">
-                    <label for="full_description">Подробное описание</label>
+                    <div class="form-label">
+                        <label for="full_description">Подробное описание</label>
+                    </div>
                     <textarea name="full_description" cols="40" rows="8" disabled></textarea>
-                    <span>Изменить</span>
+                    <span class="text-underline">Изменить</span>
                 </div>  
                 <div class="form-field-half">
                     <label for="language">Язык</label>
                 </div>
-                <div class="form-field-half">
-                    <select name="language" id="select-language">
+                <div class="form-field">
+                    <select name="language" id="select-language" disabled>
                     </select>
-                    <span>Изменить</span>
+                    <span class="text-underline">Изменить</span>
                 </div>
                 <div class="form-field course-free">
                     <label for="is_free">Сделать курс бесплатным</label>
-                    <input type="checkbox" name="is_free"  id="is_free-checkbox">
-                    <span>Изменить</span>
+                    <input type="checkbox" name="is_free"  id="is_free-checkbox" disabled>
+                    <span class="text-underline">Изменить</span>
                 </div>  
             </div>
             <button class="form-button">Следующий шаг</button>
