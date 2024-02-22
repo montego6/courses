@@ -1,9 +1,9 @@
-from email.policy import default
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
 from django.contrib.auth import get_user_model
 import core.consts as consts
+import courses.blogic_stripe as blogic
 import courses.managers as cmanagers
 from users.helpers import get_user_full_name
 from .validators import FileValidator
@@ -62,6 +62,19 @@ class Course(models.Model):
     
     
     statistics = statistic.managers.CourseStatisticsManager()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__prev_name = self.name
+
+    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        if self.name != self.__prev_name:
+            blogic.delete_stripe_course_item(self)
+            blogic.create_stripe_course_item(self)
+        super().save(force_insert, force_update, *args, **kwargs)
+        if self._state.adding:
+            blogic.create_stripe_course_item(self)
+        self.__prev_name = self.name
 
     def __str__(self) -> str:
         return f'{self.name} by {get_user_full_name(self.author)}'

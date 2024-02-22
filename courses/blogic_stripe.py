@@ -3,7 +3,7 @@ from django.conf.locale import de
 import stripe
 from django.urls import reverse
 from core import consts
-from courses.models import CoursePrice, CourseUpgradePrice, StripeCourse
+import courses.models as cmodels
 
 
 stripe.api_key = config('STRIPE_KEY')
@@ -60,7 +60,7 @@ def create_upgrade_price(course, _from, _to, product):
     print(f'upgrade amount is {amount}')
     stripe = StripePrice(amount, product).create()['id']
     defaults = {'amount': amount, 'stripe':stripe}
-    CourseUpgradePrice.objects.update_or_create(
+    cmodels.CourseUpgradePrice.objects.update_or_create(
                     course=course,
                     stripe_product=product,
                     from_option=_from.option,
@@ -82,8 +82,8 @@ def create_stripe_upgrade_prices(course):
             price.stripe = stripe_price
         if idx > 0:
             for i in range(idx):
-                if CourseUpgradePrice.objects.filter(course=course).exists():
-                    upgrade = CourseUpgradePrice.objects.get(course=course, from_option=prices[i].option, to_option=price.option).stripe_product
+                if cmodels.CourseUpgradePrice.objects.filter(course=course).exists():
+                    upgrade = cmodels.CourseUpgradePrice.objects.get(course=course, from_option=prices[i].option, to_option=price.option).stripe_product
                 else:
                     upgrade = stripe.Product.create(name=set_upgrade_name(course.name, prices[i].option, price.option))['id']
                 create_upgrade_price(
@@ -92,7 +92,7 @@ def create_stripe_upgrade_prices(course):
                     _to=price,
                     product=upgrade,
                 )
-    CoursePrice.objects.bulk_update(prices, ['stripe'])
+    cmodels.CoursePrice.objects.bulk_update(prices, ['stripe'])
     # option_prices = {}
     # for idx, option in enumerate(instance.options):
     #     option_dict = {}
@@ -111,7 +111,7 @@ def create_stripe_upgrade_prices(course):
 def create_stripe_course_item(course):
     product = stripe.Product.create(name=course.name)
     # create_stripe_upgrade_prices(instance, product)
-    StripeCourse.objects.create(course=course, product=product['id'])
+    cmodels.StripeCourse.objects.create(course=course, product=product['id'])
 
 def delete_stripe_course_item(instance):
-    StripeCourse.objects.filter(course=instance).delete()
+    cmodels.StripeCourse.objects.filter(course=instance).delete()
