@@ -36,6 +36,8 @@ validate_file = FileValidator(max_size=1024 * 100,
 
 
 class Course(models.Model):
+    __prev_name = None
+    
     name = models.CharField(max_length=80, db_index=True)
     short_description = models.CharField(max_length=200, db_index=True)
     full_description = models.CharField(max_length=3000)

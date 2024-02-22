@@ -7,9 +7,22 @@ from courses.blogic_stripe import delete_stripe_course_item, create_stripe_cours
 
 @receiver(post_save, sender=Course)
 def create_stripe_course_item_handler(sender, instance, created, **kwargs):
-    if not created:
+    if instance.name != instance.__prev_name:
         delete_stripe_course_item(instance)
-    create_stripe_course_item(instance)
+        create_stripe_course_item(instance)
+    if created:
+        create_stripe_course_item(instance)
+    # if not created:
+    #     delete_stripe_course_item(instance)
+    # create_stripe_course_item(instance)
+
+
+@receiver(pre_save, sender=Course)
+def create_stripe_course_item_handler(sender, instance, **kwargs):
+    prev_name = None
+    if instance.id:
+        prev_name = Course.objects.get(id=instance.id).name
+    instance.__prev_name = prev_name
 
 
 @receiver(pre_save, sender=Course)

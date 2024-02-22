@@ -14,7 +14,7 @@
     </div>
     <div class="main-content">
         <h1>Изменение данных курса</h1>
-        <div id="course-edit-first-step" class="invisible">
+        <div id="course-edit-first-step">
             <div class="form-wrapper">
                 <div class="form-field">
                     <div class="form-label">
@@ -68,9 +68,9 @@
                     <span class="text-underline invisible save-changes">Сохранить</span>
                 </div>  
             </div>
-            <button class="form-button">Следующий шаг</button>
+            <button id="second-step-btn" class="form-button">Следующий шаг</button>
         </div>
-        <div id="course-edit-second-step" class="">
+        <div id="course-edit-second-step" class="invisible">
             <p>Добавьте пункты, чему обучатся студенты в процессе и начальные навыки, необходимые для начала обучения</p>
             <div id="what-will-learn">
                 <div id="div-btn-what-will-learn">
@@ -107,25 +107,33 @@
             <p>Выберите уровень сложности вашего курса, а также укажите опции, которые будут доступны для студентов</p>
             <div class="form-wrapper">
                 <div id="div-category" class="form-field">
-                    <label for="category">Категория</label>
+                    <div class="form-label">
+                        <label for="category">Категория</label>
+                    </div>
                     <select name="category" id="select-category">
                         <option disabled selected value>-- Выберите категорию --</option>
                     </select>
                 </div>
                 <div id="div-subcategory" class="form-field">
-                    <label for="subcategory">Подкатегория</label>
+                    <div class="form-label">
+                        <label for="subcategory">Подкатегория</label>
+                    </div>
                     <select name="subcategory" id="select-subcategory">
                         <option disabled selected value>-- Выберите подкатегорию --</option>
                     </select>
                 </div>
                 <div id="div-subject" class="form-field">
-                    <label for="subject">Тема</label>
+                    <div class="form-label">
+                        <label for="subject">Тема</label>
+                    </div>
                     <select name="subject" id="select-subject">
                         <option disabled selected value>-- Выберите тему --</option>
                     </select>
                 </div>
                 <div class="form-field">
-                    <label for="level">Уровень</label>
+                    <div class="form-label">
+                        <label for="level">Уровень</label>
+                    </div>
                     <select name="level" id="select-level">
                         <option value="beginner">Начинающий</option>
                         <option value="advanced">Средний уровень</option>

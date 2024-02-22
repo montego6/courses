@@ -2,10 +2,9 @@ const form = document.forms.namedItem('form-cover')
 let formData = null
 let courseChanges = {}
 let categoriesData
-let wwlIsChanged = false
-const courseAddFirstStep = document.getElementById('course-add-first-step')
-const courseAddSecondStep = document.getElementById('course-add-second-step')
-const courseAddThirdStep = document.getElementById('course-add-third-step')
+const courseEditFirstStep = document.getElementById('course-edit-first-step')
+const courseEditSecondStep = document.getElementById('course-edit-second-step')
+const courseEditThirdStep = document.getElementById('course-edit-third-step')
 const whatWillLearnBtn = document.getElementById('btn-what-will-learn')
 const requirementsBtn = document.getElementById('btn-requirements')
 const confirmBtn = document.getElementById('course-confirm-btn')
@@ -134,7 +133,6 @@ function setSecondStepListenerChange(element) {
 
 function setSecondStepListenerSave(element) {
     element.addEventListener('click', event => {
-        wwlIsChanged = true
         event.target.classList.toggle('invisible')
         event.target.previousElementSibling.classList.toggle('invisible')
         event.target.parentNode.querySelector('input').disabled = true
@@ -143,7 +141,6 @@ function setSecondStepListenerSave(element) {
 
 function setSecondStepListenerDelete(element) {
     element.addEventListener('click', event => {
-        wwlIsChanged = true
         event.target.closest('div').remove()
     })
 }
@@ -245,8 +242,13 @@ document.querySelectorAll('#options-checkboxes input[type=checkbox]').forEach(ch
 }))
 
 document.querySelector('#course-back-to-2step-btn').addEventListener('click', event => {
-    courseAddSecondStep.classList.remove('invisible')
-    courseAddThirdStep.classList.add('invisible')
+    courseEditSecondStep.classList.remove('invisible')
+    courseEditThirdStep.classList.add('invisible')
+})
+
+document.querySelector('#second-step-btn').addEventListener('click', event => {
+    courseEditSecondStep.classList.remove('invisible')
+    courseEditFirstStep.classList.add('invisible')
 })
 
 // document.querySelector('#is_free-checkbox').addEventListener('change', event => {
@@ -276,55 +278,99 @@ requirementsBtn.addEventListener('click', (event) => {
 })
 
 backwardsBtn.addEventListener('click', (event) => {
-    courseAddFirstStep.classList.remove('invisible')
-    courseAddSecondStep.classList.add('invisible')
+    courseEditFirstStep.classList.remove('invisible')
+    courseEditSecondStep.classList.add('invisible')
 })
 
-confirmBtn.addEventListener('click', (event) => {
-    formData.set('is_free', document.querySelector('input[name=is_free]').checked)
-    learnOptions = document.querySelectorAll('.what-will-learn-option')
+function getWwlList() {
+    const learnOptions = document.querySelectorAll('.what-will-learn-option')
     const learnList = Array.from(learnOptions, option => option.value).filter(value => value != '')
-    requirementsOptions = document.querySelectorAll('.requirements-option')
+    return learnList
+}
+
+function getReqList() {
+    const requirementsOptions = document.querySelectorAll('.requirements-option')
     const requirementsList = Array.from(requirementsOptions, option => option.value).filter(value => value != '')
-    learnList.forEach(learn => formData.append('what_will_learn', learn))
-    requirementsList.forEach(requirement => formData.append('requirements', requirement))
-    const subject = document.querySelector('#select-subject').value
-    formData.append('subject', subject)
-    const level = document.getElementById('select-level').value
-    formData.append('level', level)
-    let optionsArr = []
-    document.querySelectorAll('.options-row input:checked').forEach(optionCheckbox => {
-        const option = optionCheckbox.getAttribute('name')
-        const price = Number(document.querySelector(`input[name=${option}-price]`).value)
-        const optionData = {
-            option: option,
-            price: price
-        }
-        optionsArr.push(optionData)
-    })
+    return requirementsList
+}
+
+
+confirmBtn.addEventListener('click', (event) => {
+    // formData.set('is_free', document.querySelector('input[name=is_free]').checked)
+    // learnOptions = document.querySelectorAll('.what-will-learn-option')
+    // const learnList = Array.from(learnOptions, option => option.value).filter(value => value != '')
+    // requirementsOptions = document.querySelectorAll('.requirements-option')
+    // const requirementsList = Array.from(requirementsOptions, option => option.value).filter(value => value != '')
+    // learnList.forEach(learn => formData.append('what_will_learn', learn))
+    // requirementsList.forEach(requirement => formData.append('requirements', requirement))
+    
+    courseChanges['subject'] = document.querySelector('#select-subject').value
+    courseChanges['level'] = document.querySelector('#select-level').value
+    
+    console.log(courseChanges)
+    console.log('FORM', formData)
+    
+    let fetches = []
+
+    fetch1 = fetch(`/api/courses/${slug}/`, {
+        method: 'PATCH',
+        headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrf_token,
+        },
+        body: JSON.stringify(courseChanges)
+    }).then(response => response.json()).then(data => console.log(data))
+
+    fetches.push(fetch1)
+    if (formData) {
+        fetch2 = fetch(`/api/courses/${slug}/`, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRFToken': csrf_token,
+        },
+            body: formData
+        }).then(response => response.json()).then(data => console.log(data))
+        fetches.push(fetch2)
+    }
+
+    Promise.all(fetches).then(data => console.log(data))
+    // const subject = document.querySelector('#select-subject').value
+    // formData.append('subject', subject)
+    // const level = document.getElementById('select-level').value
+    // formData.append('level', level)
+    // let optionsArr = []
+    // document.querySelectorAll('.options-row input:checked').forEach(optionCheckbox => {
+    //     const option = optionCheckbox.getAttribute('name')
+    //     const price = Number(document.querySelector(`input[name=${option}-price]`).value)
+    //     const optionData = {
+    //         option: option,
+    //         price: price
+    //     }
+    //     optionsArr.push(optionData)
+    // })
     // formData.append('options', JSON.stringify(optionsArr))
-    console.log(formData)
-    fetch('/api/courses/', {
-        method: 'post',
-        body: formData
-    }).then(response => response.json()).then(data => {
-        if (data.id) {
-            let pricesPromises = []
-            optionsArr.forEach(optionEl => {
-                priceData = {
-                    'course': data.id,
-                    'option': optionEl.option,
-                    'amount': optionEl.price
-                }
-                pricesPromises.push(postPrice(priceData))
-            })
-            Promise.all(pricesPromises).then(([data1, data2, data3]) => {
-                console.log(data)
-                window.location.replace(`/mycourses/`)
-            })
+    // console.log(formData)
+    // fetch('/api/courses/', {
+    //     method: 'post',
+    //     body: formData
+    // }).then(response => response.json()).then(data => {
+    //     if (data.id) {
+    //         let pricesPromises = []
+    //         optionsArr.forEach(optionEl => {
+    //             priceData = {
+    //                 'course': data.id,
+    //                 'option': optionEl.option,
+    //                 'amount': optionEl.price
+    //             }
+    //             pricesPromises.push(postPrice(priceData))
+    //         })
+    //         Promise.all(pricesPromises).then(([data1, data2, data3]) => {
+    //             console.log(data)
+    //             window.location.replace(`/mycourses/`)
+    //         })
             
-        }
-    })
+    //     }
+    // })
 
 })
 
@@ -340,8 +386,10 @@ function postPrice(priceObj) {
 }
 
 document.querySelector('#course-third-step-btn').addEventListener('click', event => {
-    courseAddSecondStep.classList.add('invisible')
-    courseAddThirdStep.classList.remove('invisible')
+    courseEditSecondStep.classList.add('invisible')
+    courseEditThirdStep.classList.remove('invisible')
+    courseChanges['what_will_learn'] = getWwlList()
+    courseChanges['requirements'] = getReqList()
 })
 
 
@@ -349,8 +397,8 @@ document.querySelector('#course-third-step-btn').addEventListener('click', event
 // form.addEventListener('submit', (event) => 
 // {
 //     formData = new FormData(form)
-//     courseAddFirstStep.classList.add('invisible')
-//     courseAddSecondStep.classList.remove('invisible')
+//     courseEditFirstStep.classList.add('invisible')
+//     courseEditSecondStep.classList.remove('invisible')
 //     event.preventDefault()
 // })
 
