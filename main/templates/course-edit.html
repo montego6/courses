@@ -14,7 +14,7 @@
     </div>
     <div class="main-content">
         <h1>Изменение данных курса</h1>
-        <div id="course-edit-first-step" class="">
+        <div id="course-edit-first-step" class="invisible">
             <div class="form-wrapper">
                 <div class="form-field">
                     <div class="form-label">
@@ -70,7 +70,7 @@
             </div>
             <button class="form-button">Следующий шаг</button>
         </div>
-        <div id="course-edit-second-step" class="invisible">
+        <div id="course-edit-second-step" class="">
             <p>Добавьте пункты, чему обучатся студенты в процессе и начальные навыки, необходимые для начала обучения</p>
             <div id="what-will-learn">
                 <div id="div-btn-what-will-learn">
@@ -78,8 +78,11 @@
                     <button class="form-button" id="btn-what-will-learn">Добавить what will learn</button>
                 </div>
                     <template id="template-what-will-learn">
-                        <div class="form-wrapper form-field">
+                        <div class="form-wrapper form-field wwlearn">
                             <input type="text" class="what-will-learn-option" disabled>
+                            <span class="text-underline wwl-change">Изменить</span>
+                            <span class="text-underline invisible wwl-save">Сохранить</span>
+                            <span class="text-underline wwl-delete">Удалить</span>
                         </div>
                     </template>
             </div>
@@ -90,7 +93,10 @@
                 </div>
                     <template id="template-requirements">
                         <div class="form-wrapper form-field">
-                            <input type="text" class="requirements-option">
+                            <input type="text" class="requirements-option" disabled>
+                            <span class="text-underline req-change">Изменить</span>
+                            <span class="text-underline invisible req-save">Сохранить</span>
+                            <span class="text-underline req-delete">Удалить</span>
                         </div>
                     </template>
             </div>

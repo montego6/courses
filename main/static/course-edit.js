@@ -2,6 +2,7 @@ const form = document.forms.namedItem('form-cover')
 let formData = null
 let courseChanges = {}
 let categoriesData
+let wwlIsChanged = false
 const courseAddFirstStep = document.getElementById('course-add-first-step')
 const courseAddSecondStep = document.getElementById('course-add-second-step')
 const courseAddThirdStep = document.getElementById('course-add-third-step')
@@ -118,6 +119,39 @@ function initializeInputs(courseData) {
 
     initializePrices(courseData)
 
+    setWWLListeners()
+
+}
+
+function setSecondStepListenerChange(element) {
+    element.addEventListener('click', event => {
+        event.target.previousElementSibling.disabled = false
+        event.target.nextElementSibling.classList.toggle('invisible')
+        event.target.classList.toggle('invisible') 
+    })
+}
+
+
+function setSecondStepListenerSave(element) {
+    element.addEventListener('click', event => {
+        wwlIsChanged = true
+        event.target.classList.toggle('invisible')
+        event.target.previousElementSibling.classList.toggle('invisible')
+        event.target.parentNode.querySelector('input').disabled = true
+    })
+}
+
+function setSecondStepListenerDelete(element) {
+    element.addEventListener('click', event => {
+        wwlIsChanged = true
+        event.target.closest('div').remove()
+    })
+}
+
+function setWWLListeners() {
+    document.querySelectorAll('.wwl-change, .req-change').forEach(wwlChange => setSecondStepListenerChange(wwlChange))
+    document.querySelectorAll('.wwl-save, .req-save').forEach(wwlSave => setSecondStepListenerSave(wwlSave))
+    document.querySelectorAll('.wwl-delete, .req-delete').forEach(wwlDelete => setSecondStepListenerDelete(wwlDelete))
 }
 
 function initializePrices(courseData) {
@@ -227,11 +261,17 @@ document.querySelector('#course-back-to-2step-btn').addEventListener('click', ev
 
 whatWillLearnBtn.addEventListener('click', (event) => {
     const clone = document.getElementById('template-what-will-learn').content.cloneNode(true)
+    setSecondStepListenerChange(clone.querySelector('.wwl-change'))
+    setSecondStepListenerSave(clone.querySelector('.wwl-save'))
+    setSecondStepListenerDelete(clone.querySelector('.wwl-delete'))
     document.getElementById('what-will-learn').append(clone)
 })
 
 requirementsBtn.addEventListener('click', (event) => {
     const clone = document.getElementById('template-requirements').content.cloneNode(true)
+    setSecondStepListenerChange(clone.querySelector('.req-change'))
+    setSecondStepListenerSave(clone.querySelector('.req-save'))
+    setSecondStepListenerDelete(clone.querySelector('.req-delete'))
     document.getElementById('requirements').append(clone)
 })
 
