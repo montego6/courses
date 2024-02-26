@@ -26,6 +26,11 @@ class CoursePriceCreateView(generics.CreateAPIView):
     serializer_class = CoursePriceSerializer
 
 
+class CoursePriceDeleteView(generics.UpdateAPIView):
+    queryset = CoursePrice.objects.all()
+    serializer_class = CoursePriceSerializer
+
+
 # class CoursePublishView(APIView):
 #     def get(self, request):
 #         id = self.kwargs.get('id')

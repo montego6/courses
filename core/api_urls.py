@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework import routers
 from categories.api.viewsets import CategoryViewSet, SubCategoryViewSet, SubjectViewSet
-from courses.api.views import CourseSearchView, CoursePriceCreateView
+from courses.api.views import CoursePriceDeleteView, CourseSearchView, CoursePriceCreateView
 from courses.api.viewsets import CourseViewSet, SectionViewSet
 from profiles.api.views import HasTeacherProfile
 from profiles.api.viewsets import TeacherProfileViewSet
@@ -31,7 +31,8 @@ courses_router.register(r'sections', SectionViewSet)
 
 urlpatterns += [
     path('courses/search/', CourseSearchView.as_view(), name='course-search'),
-    path('courses/prices/', CoursePriceCreateView.as_view(), name='course-price-add')
+    path('courses/prices/', CoursePriceCreateView.as_view(), name='course-price-add'),
+    path('courses/prices/<int:pk>', CoursePriceDeleteView.as_view(), name='course-price-delete'),
 ]
 
 urlpatterns += courses_router.urls

@@ -72,14 +72,13 @@ def set_upgrade_name(course_name, from_option, to_option):
     return course_name + ' upgrade from ' + from_option + ' to option ' + to_option
 
 
-# Вызывать этот метод после публикации курса
 def create_stripe_upgrade_prices(course):
     prices = course.prices.order_by('amount')
     product = course.stripe.product
     for idx, price in enumerate(prices):
-        if not price.stripe:
-            stripe_price = StripePrice(price.amount, product).create()['id']
-            price.stripe = stripe_price
+        # if not price.stripe:
+        stripe_price = StripePrice(price.amount, product).create()['id']
+        price.stripe = stripe_price
         if idx > 0:
             for i in range(idx):
                 if cmodels.CourseUpgradePrice.objects.filter(course=course).exists():

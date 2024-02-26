@@ -2,6 +2,7 @@ const form = document.forms.namedItem('form-cover')
 let formData = null
 let courseChanges = {}
 let categoriesData
+let pricesData
 const courseEditFirstStep = document.getElementById('course-edit-first-step')
 const courseEditSecondStep = document.getElementById('course-edit-second-step')
 const courseEditThirdStep = document.getElementById('course-edit-third-step')
@@ -27,6 +28,7 @@ const slug = document.querySelector('#course-slug').textContent
 
 fetch(`/api/courses/${slug}/`).then(response => response.json()).then(data => {
     console.log('DATA', data)
+    pricesData = data.options
     initializeInputs(data)
 })
 
@@ -319,7 +321,7 @@ confirmBtn.addEventListener('click', (event) => {
                 'X-CSRFToken': csrf_token,
         },
         body: JSON.stringify(courseChanges)
-    }).then(response => response.json()).then(data => console.log(data))
+    })
 
     fetches.push(fetch1)
     if (formData) {
@@ -329,11 +331,37 @@ confirmBtn.addEventListener('click', (event) => {
                 'X-CSRFToken': csrf_token,
         },
             body: formData
-        }).then(response => response.json()).then(data => console.log(data))
+        })
+
         fetches.push(fetch2)
     }
 
-    Promise.all(fetches).then(data => console.log(data))
+    document.querySelectorAll('.options-input input').forEach(priceOption => {
+        let id = priceOption.getAttribute('price-id')
+        let element = pricesData.find((el, index, arr) => el.id == id)
+        if (element.amount != priceOption.value) {
+            let priceObj = {
+                'amount': priceOption.value
+            }
+            let fetch3 = fetch(`/api/courses/prices/${priceOption.getAttribute('price-id')}`, {
+                method: 'patch',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrf_token,
+                },
+                body: JSON.stringify(priceObj)
+            })
+            fetches.push(fetch3)
+        } 
+    })
+
+    Promise.all(fetches).then(data => {
+        console.log(data)
+        let errors = data.filter(response => response.status != 200)
+        if (!errors.length) {
+            fetch(`/api/courses/${slug}/publish/`).then(response => response.json()).then(data => console.log(data))
+        }
+    })
     // const subject = document.querySelector('#select-subject').value
     // formData.append('subject', subject)
     // const level = document.getElementById('select-level').value
