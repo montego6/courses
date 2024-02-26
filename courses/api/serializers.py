@@ -1,4 +1,5 @@
 from django.db.models import Avg
+from django.urls import reverse
 from requests import options
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -99,11 +100,12 @@ class CourseSearchSerializer(serializers.ModelSerializer):
     students = serializers.IntegerField(source='students.count')
     cover = serializers.ImageField(use_url=True)
     price = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
     
     class Meta:
         model = Course
-        fields = ['slug', 'name', 'cover', 'short_description', 'author', 'language', 'duration', 'subject', 'rating', 'students', 'price', 'options', 'is_published']
-        read_only_fields = ['slug', 'name', 'cover', 'short_description', 'author', 'language', 'duration', 'subject', 'rating', 'students', 'price', 'options', 'is_published']
+        fields = ['slug', 'name', 'cover', 'short_description', 'author', 'language', 'duration', 'subject', 'rating', 'students', 'price', 'options', 'is_published', 'url']
+        read_only_fields = ['slug', 'name', 'cover', 'short_description', 'author', 'language', 'duration', 'subject', 'rating', 'students', 'price', 'options', 'is_published', 'url']
 
     def get_duration(self, obj):
         lessons = Lesson.objects.filter(section__course=obj)
@@ -138,6 +140,9 @@ class CourseSearchSerializer(serializers.ModelSerializer):
     
     def get_rating(self, obj):
         return round(Review.objects.filter(course=obj).aggregate(Avg('rating', default=0))['rating__avg'], 2)
+    
+    def get_url(self, obj):
+        return reverse('course:single', kwargs={'slug': obj.slug})
     
 
 class CourseProfileSerializer(serializers.ModelSerializer):

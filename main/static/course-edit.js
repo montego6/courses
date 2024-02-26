@@ -298,23 +298,19 @@ function getReqList() {
 
 
 confirmBtn.addEventListener('click', (event) => {
-    // formData.set('is_free', document.querySelector('input[name=is_free]').checked)
-    // learnOptions = document.querySelectorAll('.what-will-learn-option')
-    // const learnList = Array.from(learnOptions, option => option.value).filter(value => value != '')
-    // requirementsOptions = document.querySelectorAll('.requirements-option')
-    // const requirementsList = Array.from(requirementsOptions, option => option.value).filter(value => value != '')
-    // learnList.forEach(learn => formData.append('what_will_learn', learn))
-    // requirementsList.forEach(requirement => formData.append('requirements', requirement))
-    
     courseChanges['subject'] = document.querySelector('#select-subject').value
     courseChanges['level'] = document.querySelector('#select-level').value
+    
+    if (courseChanges.hasOwnProperty('is_free')) {
+        courseChanges['is_free'] = courseChanges['is_free'] === 'on' ? true : false
+    }
     
     console.log(courseChanges)
     console.log('FORM', formData)
     
     let fetches = []
 
-    fetch1 = fetch(`/api/courses/${slug}/`, {
+    let fetch1 = fetch(`/api/courses/${slug}/`, {
         method: 'PATCH',
         headers: {
                 'Content-Type': 'application/json',
@@ -325,7 +321,7 @@ confirmBtn.addEventListener('click', (event) => {
 
     fetches.push(fetch1)
     if (formData) {
-        fetch2 = fetch(`/api/courses/${slug}/`, {
+        let fetch2 = fetch(`/api/courses/${slug}/`, {
             method: 'PATCH',
             headers: {
                 'X-CSRFToken': csrf_token,
@@ -359,7 +355,10 @@ confirmBtn.addEventListener('click', (event) => {
         console.log(data)
         let errors = data.filter(response => response.status != 200)
         if (!errors.length) {
-            fetch(`/api/courses/${slug}/publish/`).then(response => response.json()).then(data => console.log(data))
+            fetch(`/api/courses/${slug}/publish/`).then(response => response.json()).then(data => {
+                console.log(data)
+                window.location.href = '/myprofile/'
+            })
         }
     })
     // const subject = document.querySelector('#select-subject').value
@@ -402,16 +401,6 @@ confirmBtn.addEventListener('click', (event) => {
 
 })
 
-function postPrice(priceObj) {
-    return fetch('/api/courses/prices/', {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrf_token,
-        },
-        body: JSON.stringify(priceObj)
-    }).then(response => response.json()).then(data => console.log(data))
-}
 
 document.querySelector('#course-third-step-btn').addEventListener('click', event => {
     courseEditSecondStep.classList.add('invisible')

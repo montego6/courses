@@ -38,6 +38,9 @@ function renderCourses(data) {
             clone.querySelector('.btn-content').addEventListener('click', event => {
                 window.location.href = `/mycourses/${course.slug}/`
             })
+            clone.querySelector('.btn-edit').addEventListener('click', event => {
+                window.location.href = `/mycourses/${course.slug}/edit/`
+            })
             if (course.is_published) {
                 clone.querySelector('.btn-unpublish').classList.remove('invisible')
             } else {

@@ -81,7 +81,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False, url_path=r'barsearch/(?P<query>[^/.]+)')
     def bar_search(self, request, query):
         courses = Course.custom_objects.search_by_query(query)
-        serializer = self.serializer_class(courses, many=True)
+        serializer = CourseSearchSerializer(courses, many=True)
         return Response(serializer.data)
     
     @action(methods=['get'], detail=True)

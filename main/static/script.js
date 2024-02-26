@@ -75,7 +75,10 @@ searchInput.addEventListener('input', event => {
     if (element.value.length > 1) {
         document.getElementById('header-search-body').classList.remove('invisible')
         fetch(`/api/courses/barsearch/${element.value}/`).then(response => response.json())
-        .then(data => renderSearchResults(data))
+        .then(data => {
+            console.log(data)
+            renderSearchResults(data)
+        })
     } else {
         document.getElementById('header-search-body').classList.add('invisible')
     }
@@ -87,6 +90,7 @@ function renderSearchResults(data) {
         const clone = document.getElementById('header-search-template').content.cloneNode(true)
         clone.querySelector('img').setAttribute('src', course.cover)
         clone.querySelector('.search-element-name').textContent = course.name
+        clone.querySelector('.search-element-name').setAttribute('href', course.url)
         clone.querySelector('.search-element-price').textContent = course.price + ' руб.'
         document.querySelector('.search-elements').append(clone)
     })
