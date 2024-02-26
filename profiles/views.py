@@ -7,3 +7,7 @@ class MyProfileView(TemplateView):
 
 class TeacherProfileView(TemplateView):
     template_name = 'teacher-page.html'
+
+
+class MyCoursesView(TemplateView):
+    template_name = 'my-courses.html'

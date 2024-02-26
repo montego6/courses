@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+{% block imports %}
+<link href="{% static 'my-profile.css' %}" rel="stylesheet">
+<script src="{% static 'my-courses.js' %}" defer></script>
+{% endblock imports %}
+{% block title %}My profile{% endblock title %}
+{% block content %}
+<div class="main-body">
+    <template id="template-course">
+        <div class="course-wrapper">
+            <img class="course-cover">
+            <div class="course-info">
+                <a class="course-link"><h3 class="course-title"></h3><a>
+                <p class="course-description"></p>
+                <p>Рейтинг: <span class="course-rating"></span></p>
+                <p>Студентов: <span class="course-students"></span></p>
+            </div>
+            <div class="course-buttons">
+            </div>
+        </div>
+    </template>
+    <div id="my-courses"></div>
+</div>
+{% endblock content %}

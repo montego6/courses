@@ -56,7 +56,11 @@
             </li>
             {% if request.user|has_group:"teachers" %} 
             <li class="header-item">
-                <a href="/myprofile">Мой профиль</a>
+                <a href="/myprofile/">Мой профиль</a>
+            </li>
+            {% elif user.is_authenticated %}
+            <li class="header-item">
+                <a href="/mycourses/">Мои курсы</a>
             </li>
             {% endif %}
             <li class="header-item">

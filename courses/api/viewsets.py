@@ -1,3 +1,4 @@
+from django.db.models import Subquery
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -103,22 +104,19 @@ class CourseViewSet(viewsets.ModelViewSet):
             return Response({'review': True})
         return Response({'review': False})
     
+    @action(methods=['get'], detail=False)
+    def my_courses(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'detail': 'user should be logged in'}, status=status.HTTP_401_UNAUTHORIZED)
+        paid_courses_subq = CoursePayment.objects.filter(student=user, status=consts.COURSE_PAYMENT_PAID).values('course')
+        my_courses = Course.objects.filter(id__in=Subquery(paid_courses_subq))
+        serializer = CourseSearchSerializer(my_courses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
 class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
 
-    # def create(self, request, *args, **kwargs):
-    #     course_slug = request.data.get('course-slug')
-    #     course = Course.objects.get(slug=course_slug)
-    #     data = {
-    #         'name': request.data.get('name'),
-    #         'description': request.data.get('description'),
-    #         'course': course.id
-    #     }
-    #     serializer = self.get_serializer(data=data)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     headers = self.get_success_headers(serializer.data)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
