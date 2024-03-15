@@ -3,6 +3,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from core import consts
+from core.permissions import IsSectionAuthor
 
 from courses.blogic_stripe import StripeSession, create_stripe_upgrade_prices
 from reviews.models import Review
@@ -118,5 +119,6 @@ class CourseViewSet(viewsets.ModelViewSet):
 class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.all()
     serializer_class = SectionSerializer
+    permission_classes = [IsSectionAuthor]
 
     

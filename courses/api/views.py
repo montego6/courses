@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 
+from core.permissions import IsCoursePriceOwner
+
 from ..models import Course, CoursePrice
 from .serializers import CoursePriceSerializer, CourseSearchSerializer
 from rest_framework import generics
@@ -21,11 +23,13 @@ class CourseSearchView(generics.ListAPIView):
 class CoursePriceCreateView(generics.CreateAPIView):
     queryset = CoursePrice.objects.all()
     serializer_class = CoursePriceSerializer
+    permission_classes = [IsCoursePriceOwner]
 
 
 class CoursePriceDeleteView(generics.UpdateAPIView):
     queryset = CoursePrice.objects.all()
     serializer_class = CoursePriceSerializer
+    permission_classes = [IsCoursePriceOwner]
 
 
 
