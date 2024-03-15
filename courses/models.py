@@ -42,12 +42,10 @@ class Course(models.Model):
     short_description = models.CharField(max_length=200, db_index=True)
     full_description = models.CharField(max_length=3000)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='teacher_courses')
-    # price = models.PositiveIntegerField(default=0)
     cover = models.ImageField(upload_to='media/courses/covers/')
     language = models.CharField(max_length=40)
     what_will_learn = ArrayField(models.CharField(max_length=120), size=20)
     requirements = ArrayField(models.CharField(max_length=60), size=12)
-    # options = ArrayField(models.CharField(max_length=12), size=3)
     students = models.ManyToManyField(User, related_name='student_courses')
     date_created = models.DateField(auto_now_add=True)
     date_updated = models.DateField(auto_now=True)
@@ -121,7 +119,6 @@ class CourseUpgradePrice(models.Model):
 class StripeCourse(models.Model):
     course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='stripe')
     product = models.CharField(max_length=300)
-    # option_prices = models.JSONField()
 
     def __str__(self) -> str:
         return f'Stripe for course id={self.course.id}'

@@ -50,7 +50,6 @@ urlpatterns += profiles_router.urls
 
 urlpatterns += [
     path('reviews/', ReviewCreateView.as_view(), name='review-create'),
-    # path('reviews/<int:pk>/', ReviewListView.as_view(), name='review-list'),
 ]
 
 

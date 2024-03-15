@@ -18,5 +18,3 @@ class HasTeacherProfile(APIView):
             return Response({'profile': False})
 
 
-
-# Create your views here.

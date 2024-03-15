@@ -127,7 +127,6 @@ confirmBtn.addEventListener('click', (event) => {
         }
         optionsArr.push(optionData)
     })
-    // formData.append('options', JSON.stringify(optionsArr))
     console.log(formData)
     fetch('/api/courses/', {
         method: 'post',

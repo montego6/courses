@@ -212,14 +212,6 @@ document.querySelector('#select-subcategory').addEventListener('change', event =
 })
 
 
-// fetch('/api/categories/').then(response => response.json()).
-// then(data => {
-//     console.log('CATEGORIES', data)
-//     categoriesData = data
-//     // initializeCategoriesSelect('category', categoriesData)
-//     initializeCategories(categoriesData)
-// })
-
 document.querySelectorAll('#options-checkboxes input[type=checkbox]').forEach(checkBox => checkBox.addEventListener('change', event => {
     const option = event.target.getAttribute('name')
     if (event.target.checked) {
@@ -252,15 +244,6 @@ document.querySelector('#second-step-btn').addEventListener('click', event => {
     courseEditSecondStep.classList.remove('invisible')
     courseEditFirstStep.classList.add('invisible')
 })
-
-// document.querySelector('#is_free-checkbox').addEventListener('change', event => {
-//     if (event.target.checked) {
-//         document.querySelector('input[name=price]').value = 0
-//         document.querySelector('input[name=price]').disabled = true
-//     } else {
-//         document.querySelector('input[name=price]').disabled = false
-//     }
-// })
 
 
 whatWillLearnBtn.addEventListener('click', (event) => {
@@ -361,44 +344,6 @@ confirmBtn.addEventListener('click', (event) => {
             })
         }
     })
-    // const subject = document.querySelector('#select-subject').value
-    // formData.append('subject', subject)
-    // const level = document.getElementById('select-level').value
-    // formData.append('level', level)
-    // let optionsArr = []
-    // document.querySelectorAll('.options-row input:checked').forEach(optionCheckbox => {
-    //     const option = optionCheckbox.getAttribute('name')
-    //     const price = Number(document.querySelector(`input[name=${option}-price]`).value)
-    //     const optionData = {
-    //         option: option,
-    //         price: price
-    //     }
-    //     optionsArr.push(optionData)
-    // })
-    // formData.append('options', JSON.stringify(optionsArr))
-    // console.log(formData)
-    // fetch('/api/courses/', {
-    //     method: 'post',
-    //     body: formData
-    // }).then(response => response.json()).then(data => {
-    //     if (data.id) {
-    //         let pricesPromises = []
-    //         optionsArr.forEach(optionEl => {
-    //             priceData = {
-    //                 'course': data.id,
-    //                 'option': optionEl.option,
-    //                 'amount': optionEl.price
-    //             }
-    //             pricesPromises.push(postPrice(priceData))
-    //         })
-    //         Promise.all(pricesPromises).then(([data1, data2, data3]) => {
-    //             console.log(data)
-    //             window.location.replace(`/mycourses/`)
-    //         })
-            
-    //     }
-    // })
-
 })
 
 
@@ -409,15 +354,8 @@ document.querySelector('#course-third-step-btn').addEventListener('click', event
     courseChanges['requirements'] = getReqList()
 })
 
+  
 
-   
-// form.addEventListener('submit', (event) => 
-// {
-//     formData = new FormData(form)
-//     courseEditFirstStep.classList.add('invisible')
-//     courseEditSecondStep.classList.remove('invisible')
-//     event.preventDefault()
-// })
 
 
 

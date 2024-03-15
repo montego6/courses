@@ -76,7 +76,6 @@ def create_stripe_upgrade_prices(course):
     prices = course.prices.order_by('amount')
     product = course.stripe.product
     for idx, price in enumerate(prices):
-        # if not price.stripe:
         stripe_price = StripePrice(price.amount, product).create()['id']
         price.stripe = stripe_price
         if idx > 0:
@@ -92,24 +91,10 @@ def create_stripe_upgrade_prices(course):
                     product=upgrade,
                 )
     cmodels.CoursePrice.objects.bulk_update(prices, ['stripe'])
-    # option_prices = {}
-    # for idx, option in enumerate(instance.options):
-    #     option_dict = {}
-    #     option_dict['price'] = StripePrice(option['price'], product).create()['id']
-    #     if idx > 0:
-    #         upgrade = stripe.Product.create(name=instance.name + ' upgrade to option ' + option['option'])
-    #         option_dict['upgrade'] = {}
-    #         for upgradable_option in instance.options[:idx]:
-    #             upgrade_price = option['price'] - upgradable_option['price']
-    #             price = StripePrice(upgrade_price, upgrade).create()
-    #             option_dict['upgrade'][upgradable_option['option']] = price['id']
-    #     option_prices[option['option']] = option_dict   
-    # return option_prices 
 
 
 def create_stripe_course_item(course):
     product = stripe.Product.create(name=course.name)
-    # create_stripe_upgrade_prices(instance, product)
     cmodels.StripeCourse.objects.create(course=course, product=product['id'])
 
 def delete_stripe_course_item(instance):

@@ -83,7 +83,6 @@ class HomeworkSerializer(SectionItemExcludeFieldsMixin, serializers.ModelSeriali
 
 class SectionItemSerializer(serializers.Serializer):
     def to_representation(self, value):
-        # item = value.content_object
         context = self.context
         if value.lesson:
             serializer = LessonSerializer(value.lesson, context=context)

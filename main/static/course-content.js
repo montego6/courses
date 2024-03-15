@@ -22,17 +22,6 @@ document.querySelector('#btn-publish-course').addEventListener('click', event =>
     })
 })
 
-// const optionsTabLinks = document.querySelectorAll('.course-option-link')
-// optionsTabLinks.forEach(link => link.addEventListener('click', event => {
-//     optionsTabLinks.forEach(link => link.classList.remove('course-option-link-selected'))
-//     courseOption = event.target.getAttribute('course-option')
-//     event.target.classList.add('course-option-link-selected')
-//     getCourseData()
-// }))
-
-// optionsTabLinks[0].click()
-
-
 fetch(`/api/courses/${slug}/`).then(response => response.json()).then(data => {
     courseData = data
     console.log(courseData)
@@ -339,7 +328,6 @@ function initializeTestQuestions(testId) {
         if (data.id) {
             document.getElementById('test-questions').innerHTML = ''
             data.questions.forEach(question => {
-                // createQuestion(question)
                 let newQuestion = new Question(question)
                 newQuestion.renderElement()
             })

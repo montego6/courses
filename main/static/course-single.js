@@ -679,47 +679,12 @@ function initializePage(data) {
 
     initializeReviewsAdd()
     initializeReviews(data.reviews)
-    // ContentManager.renderSidemenuContent('basic')
-
-    // ContentManager.renderBuyElements()
 }
 
 
-// function expandSection(event) {
-//     this.classList.toggle('invisible')
-// }
-
-
-
-// function createSection(section) {
-//     const clone = document.getElementById('template-course-section').content.cloneNode(true)
-//     // const sectionDiv = clone.querySelector('div.course-section')
-//     clone.querySelector('span.section-name').textContent = section.name
-//     // sectionDiv.setAttribute('section-id', section.id)
-//     clone.querySelector('svg.section-header-icon-expand').addEventListener('click', expandSection.bind(clone.querySelector('div.course-section-body')))
-    
-//     // const filteredItems = section.items.filter(item => {
-//     //     const optionIndex = courseOptions.findIndex(el => el === courseOption)
-//     //     const slicedArr = courseOptions.slice(0, optionIndex + 1)
-//     //     return slicedArr.includes(item.option)
-//     // })
-//     section.items.forEach(item => createItem(clone.querySelector('div.course-section'), item))
-//     document.getElementById('course-sections').append(clone)
-// }
 
 
 
 
 
-// function createItem(section, item) {
-//     const itemTemplate = document.getElementById('template-section-item')
-//     const clone = itemTemplate.content.cloneNode(true)
-//     clone.querySelector('.item-name').textContent = item.name
-//     // clone.querySelector('.section-item').setAttribute('item-id', item.id)
-//     // clone.querySelector('.section-item').setAttribute('item-type', item.type)
-//     clone.querySelector('svg use').setAttribute('href', `#icon-${item.type}`)
-//     if (item.type === 'lesson') {
-//         clone.querySelector('.item-name').classList.add('lesson-link')
-//     }
-//     section.querySelector('.section-items').append(clone)
-// }
+

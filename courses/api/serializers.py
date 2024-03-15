@@ -1,6 +1,5 @@
 from django.db.models import Avg
 from django.urls import reverse
-from requests import options
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from core import consts
@@ -122,7 +121,6 @@ class CourseSearchSerializer(serializers.ModelSerializer):
     
     def get_options(self, obj):
         options_set = set()
-        # option_types = consts.SECTION_ITEMS_TYPES
         for item in SectionItem.objects.filter(section__course=obj):
             if item.lesson:
                 options_set.add(consts.SECTION_ITEM_LESSON)
@@ -130,12 +128,8 @@ class CourseSearchSerializer(serializers.ModelSerializer):
                 options_set.add(consts.SECTION_ITEM_ADDITIONAL_FILE)
             if item.test:
                 options_set.add(consts.SECTION_ITEM_TEST)
-                # option_types.remove(consts.SECTION_ITEM_TEST)
             if item.homework:
                 options_set.add(consts.SECTION_ITEM_HOMEWORK)
-                # option_types.remove(consts.SECTION_ITEM_HOMEWORK)
-            # if not option_types:
-                # break
         return options_set
     
     def get_rating(self, obj):
