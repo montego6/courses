@@ -5,7 +5,7 @@ from .serializers import CategorySerializer, SubCategorySerializer, SubjectSeria
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().prefetch_related('subcategories').prefetch_related('subcategories__subjects')
     serializer_class = CategorySerializer
     permission_classes = [IsAdminForPOST]
 

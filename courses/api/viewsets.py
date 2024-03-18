@@ -1,3 +1,4 @@
+from functools import reduce
 from django.db.models import Subquery
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -6,7 +7,9 @@ from core import consts
 from core.permissions import IsSectionAuthor
 
 from courses.blogic_stripe import StripeSession, create_stripe_upgrade_prices
+from courses.helpers import get_course_section_items_types
 from reviews.models import Review
+from sectionitems.models import Lesson
 from .serializers import CourseSearchSerializer, CourseSerializer, SectionSerializer
 
 from courses.models import Course, CoursePayment, CoursePrice, CourseUpgradePrice, Section
@@ -25,7 +28,8 @@ class CourseViewSet(viewsets.ModelViewSet):
     
     @action(methods=['get'], detail=False, url_path=r'by_subcategory/(?P<subcategory_id>[^/.]+)')
     def courses_by_subcategory(self, request, subcategory_id):
-        courses = Course.objects.filter(subject__parent_subcategory__id=subcategory_id)
+        # courses = Course.objects.filter(subject__parent_subcategory__id=subcategory_id).select_related('subject')
+        courses = Course.custom_objects.by_subcategory(subcategory_id=subcategory_id)
         data = CourseSearchSerializer(courses, many=True).data
         return Response(data, status=status.HTTP_200_OK)
     
@@ -41,6 +45,10 @@ class CourseViewSet(viewsets.ModelViewSet):
         course = Course.objects.get(slug=slug)
         create_stripe_upgrade_prices(course)
         course.is_published = True
+        lessons = Lesson.objects.filter(section__course=course)
+        course.duration = reduce(lambda x,y: x+y.duration, lessons, lessons[0].duration) if lessons else 0
+        sectionitems_types = get_course_section_items_types(course)
+        course.options = list(sectionitems_types)
         course.save()
         return Response({'detail': 'course is published'}, status=status.HTTP_200_OK)
 

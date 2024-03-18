@@ -91,14 +91,12 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class CourseSearchSerializer(serializers.ModelSerializer):
-    duration = serializers.SerializerMethodField()
-    options = serializers.SerializerMethodField()
     subject = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    rating = serializers.SerializerMethodField()
+    rating = serializers.DecimalField(max_digits=3, decimal_places=2)
     author = AuthorSerializer()
     students = serializers.IntegerField(source='students.count')
     cover = serializers.ImageField(use_url=True)
-    price = serializers.SerializerMethodField()
+    price = serializers.IntegerField()
     url = serializers.SerializerMethodField()
     
     class Meta:
@@ -106,34 +104,34 @@ class CourseSearchSerializer(serializers.ModelSerializer):
         fields = ['slug', 'name', 'cover', 'short_description', 'author', 'language', 'duration', 'subject', 'rating', 'students', 'price', 'options', 'is_published', 'url']
         read_only_fields = ['slug', 'name', 'cover', 'short_description', 'author', 'language', 'duration', 'subject', 'rating', 'students', 'price', 'options', 'is_published', 'url']
 
-    def get_duration(self, obj):
-        lessons = Lesson.objects.filter(section__course=obj)
-        duration = reduce(lambda x,y: x+y.duration, lessons, lessons[0].duration) if lessons else 0
-        return duration
+    # def get_duration(self, obj):
+    #     lessons = Lesson.objects.filter(section__course=obj)
+    #     duration = reduce(lambda x,y: x+y.duration, lessons, lessons[0].duration) if lessons else 0
+    #     return duration
     
-    def get_price(self, obj):
-        try:
-            price = CoursePrice.objects.get(course=obj, option=consts.COURSE_OPTION_BASIC)
-        except CoursePrice.DoesNotExist:
-            return 0
-        else:
-            return price.amount
+    # def get_price(self, obj):
+    #     try:
+    #         price = CoursePrice.objects.get(course=obj, option=consts.COURSE_OPTION_BASIC)
+    #     except CoursePrice.DoesNotExist:
+    #         return 0
+    #     else:
+    #         return price.amount
     
-    def get_options(self, obj):
-        options_set = set()
-        for item in SectionItem.objects.filter(section__course=obj):
-            if item.lesson:
-                options_set.add(consts.SECTION_ITEM_LESSON)
-            if item.additional_file:
-                options_set.add(consts.SECTION_ITEM_ADDITIONAL_FILE)
-            if item.test:
-                options_set.add(consts.SECTION_ITEM_TEST)
-            if item.homework:
-                options_set.add(consts.SECTION_ITEM_HOMEWORK)
-        return options_set
+    # def get_options(self, obj):
+    #     options_set = set()
+    #     for item in SectionItem.objects.filter(section__course=obj):
+    #         if item.lesson:
+    #             options_set.add(consts.SECTION_ITEM_LESSON)
+    #         if item.additional_file:
+    #             options_set.add(consts.SECTION_ITEM_ADDITIONAL_FILE)
+    #         if item.test:
+    #             options_set.add(consts.SECTION_ITEM_TEST)
+    #         if item.homework:
+    #             options_set.add(consts.SECTION_ITEM_HOMEWORK)
+    #     return options_set
     
-    def get_rating(self, obj):
-        return round(Review.objects.filter(course=obj).aggregate(Avg('rating', default=0))['rating__avg'], 2)
+    # def get_rating(self, obj):
+    #     return round(Review.objects.filter(course=obj).aggregate(Avg('rating', default=0))['rating__avg'], 2)
     
     def get_url(self, obj):
         return reverse('course:single', kwargs={'slug': obj.slug})

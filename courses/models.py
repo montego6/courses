@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 
@@ -54,6 +55,8 @@ class Course(models.Model):
     subject = models.ForeignKey('categories.Subject', on_delete=models.SET_NULL, null=True, related_name='courses')
     slug = models.SlugField(max_length=160, unique=True, null=True)
     level = models.CharField(max_length=16, choices=COURSE_LEVEL_CHOICES, default=consts.COURSE_LEVEL_BEGINNER)
+    duration = models.PositiveIntegerField(null=True, default=None)
+    options = ArrayField(models.CharField(max_length=24), size=12)
 
     objects = models.Manager()
     custom_objects = cmanagers.CourseManager()

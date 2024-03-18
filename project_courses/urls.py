@@ -27,4 +27,5 @@ urlpatterns = [
     path('auth/', include(('users.urls', 'users'), namespace='users')),
     path('api/', include(('core.api_urls', 'core'), namespace='api')),
     path('statistic/', include(('statistic.urls', 'statistic'), namespace='statistics')),
+    path("__debug__/", include("debug_toolbar.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
