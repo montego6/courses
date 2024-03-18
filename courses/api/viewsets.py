@@ -22,20 +22,19 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get'], detail=False, url_path=r'by_subject/(?P<subject_id>[^/.]+)')
     def courses_by_subject(self, request, subject_id):
-        courses = Course.objects.filter(subject_id=subject_id)
+        courses = Course.custom_objects.by_subject(subject_id=subject_id)
         data = CourseSearchSerializer(courses, many=True).data
         return Response(data, status=status.HTTP_200_OK)
     
     @action(methods=['get'], detail=False, url_path=r'by_subcategory/(?P<subcategory_id>[^/.]+)')
     def courses_by_subcategory(self, request, subcategory_id):
-        # courses = Course.objects.filter(subject__parent_subcategory__id=subcategory_id).select_related('subject')
         courses = Course.custom_objects.by_subcategory(subcategory_id=subcategory_id)
         data = CourseSearchSerializer(courses, many=True).data
         return Response(data, status=status.HTTP_200_OK)
     
     @action(methods=['get'], detail=False, url_path=r'by_category/(?P<category_id>[^/.]+)')
     def courses_by_category(self, request, category_id):
-        courses = Course.objects.filter(subject__parent_subcategory__parent_category__id=category_id)
+        courses = Course.custom_objects.by_category(category_id=category_id)
         data = CourseSearchSerializer(courses, many=True).data
         return Response(data, status=status.HTTP_200_OK)
 
