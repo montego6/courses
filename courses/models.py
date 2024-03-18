@@ -56,7 +56,7 @@ class Course(models.Model):
     slug = models.SlugField(max_length=160, unique=True, null=True)
     level = models.CharField(max_length=16, choices=COURSE_LEVEL_CHOICES, default=consts.COURSE_LEVEL_BEGINNER)
     duration = models.PositiveIntegerField(null=True, default=None)
-    options = ArrayField(models.CharField(max_length=24), size=12)
+    options = ArrayField(models.CharField(max_length=24), size=12, null=True)
 
     objects = models.Manager()
     custom_objects = cmanagers.CourseManager()
@@ -72,10 +72,10 @@ class Course(models.Model):
         if self.name != self.__prev_name:
             blogic.delete_stripe_course_item(self)
             blogic.create_stripe_course_item(self)
+        adding = True if self._state.adding else False
         super().save(force_insert, force_update, *args, **kwargs)
-        if self._state.adding:
+        if adding:
             blogic.create_stripe_course_item(self)
-        self.__prev_name = self.name
 
     def __str__(self) -> str:
         return f'{self.name} by {get_user_full_name(self.author)}'

@@ -11,7 +11,7 @@ class HasTeacherProfile(APIView):
         teacher_profile = TeacherProfile.objects.filter(user=request.user)
         if teacher_profile.exists():
             serializer = TeacherProfileSerializer(teacher_profile[0])
-            courses = Course.objects.filter(author=request.user)
+            courses = Course.custom_objects.by_author(author=request.user)
             courses_data = CourseSearchSerializer(courses, many=True).data
             return Response({'profile': True, 'content': serializer.data, 'courses': courses_data})
         else:

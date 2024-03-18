@@ -71,6 +71,7 @@ class Item(models.Model):
 class Lesson(Item):
     file = models.FileField(upload_to='media/courses/lessons/')
     duration = models.PositiveIntegerField(null=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='lessons')
     
     def __str__(self) -> str:
         return f'Lesson with name={self.name} of section with id={self.section.id}'

@@ -35,7 +35,7 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
         return User.objects.filter(student_courses__author=obj.user).distinct().count()
     
     def get_courses(self, obj):
-        courses = Course.objects.filter(author=obj.user)
+        courses = Course.custom_objects.by_author(author=obj.user)
         return CourseSearchSerializer(courses, many=True).data
     
     def create(self, validated_data):

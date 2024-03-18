@@ -30,4 +30,7 @@ class CourseManager(models.Manager):
     def by_category(self, category_id):
         return self.by(subject__parent_subcategory__parent_category=category_id)
     
+    def by_author(self, author):
+        return self.by(author=author)
+    
 

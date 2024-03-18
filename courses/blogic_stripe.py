@@ -80,7 +80,7 @@ def create_stripe_upgrade_prices(course):
         price.stripe = stripe_price
         if idx > 0:
             for i in range(idx):
-                if cmodels.CourseUpgradePrice.objects.filter(course=course).exists():
+                if cmodels.CourseUpgradePrice.objects.filter(course=course, from_option=prices[i].option, to_option=price.option).exists():
                     upgrade = cmodels.CourseUpgradePrice.objects.get(course=course, from_option=prices[i].option, to_option=price.option).stripe_product
                 else:
                     upgrade = stripe.Product.create(name=set_upgrade_name(course.name, prices[i].option, price.option))['id']
