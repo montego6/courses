@@ -16,7 +16,7 @@ from courses.models import Course, CoursePayment, CoursePrice, CourseUpgradePric
 
 
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
+    queryset = Course.objects.all().select_related('author').select_related('author__profile')
     serializer_class = CourseSerializer
     lookup_field = 'slug'
 

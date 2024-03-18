@@ -1,4 +1,4 @@
-from django.db.models import Avg
+from django.db.models import Avg, Prefetch
 from django.urls import reverse
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
@@ -33,7 +33,7 @@ class SectionSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'course', 'items']
 
     def get_items(self, obj):
-        items = SectionItem.objects.filter(section=obj)
+        items = obj.items
         serializer = SectionItemSerializer(items, many=True, read_only=True, context=self.context)
         return serializer.data
 
@@ -59,7 +59,7 @@ class CourseSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
     
     def get_sections(self, obj):
-        sections = Section.objects.filter(course=obj)
+        sections = Section.objects.filter(course=obj).select_related('course').prefetch_related(Prefetch('items'))
         user = get_user_from_context(self.context)
         context = make_payment_context(obj, user)
         context = ExtraContext(context, user, obj).update_context()
